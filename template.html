@@ -205,7 +205,6 @@ $("f").addEventListener("submit",function(e){e.preventDefault();check()});
 $("prov").addEventListener("change",fillOf);
 $("wa").href="https://wa.me/"+WA+"?text="+encodeURIComponent("Hola, necesito ayuda con un trámite.");
 checkUpdateStatus();setInterval(checkUpdateStatus,60000);
-checkUpdateStatus();setInterval(checkUpdateStatus,60000);
 
 fetch("/lotes.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){return{d:d,demo:false}})
 .catch(function(){return{d:SAMPLE,demo:true}}).then(function(res){

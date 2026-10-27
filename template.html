@@ -209,7 +209,7 @@ function check(){
   var o=DATA.d.offices.filter(function(x){return x.id===$("of").value})[0];
   var year=Number($("year").value),num=String($("lote").value).trim();
   if(!$("prov").value){show("bad","Selecciona una provincia","<p>Elige Barcelona o Lleida para continuar.</p>");return}
-  if(!year||!/^\\d{1,6}$/.test(num)){show("bad","Revisa tu lote","<p>Selecciona el año y escribe solo el número de lote, por ejemplo 155.</p>");return}
+  if(!year||!/^\d{1,6}$/.test(num)){show("bad","Revisa tu lote","<p>Selecciona el año y escribe solo el número de lote, por ejemplo 155.</p>");return}
   var U={y:year,n:Number(num)};
   var ref=o?{y:o.y,n:o.n}:parseLote($("ultimo").value);
   if(!ref){

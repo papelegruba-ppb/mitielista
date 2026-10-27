@@ -207,7 +207,7 @@ function rate(o){
 }
 
 function fillProv(){
-  var provs=["Las Palmas","Barcelona","Lleida"];
+  var provs=["A Coruña","Albacete","Alicante","Almería","Araba/Álava","Asturias","Ávila","Badajoz","Balears (Illes)","Barcelona","Burgos","Cáceres","Cádiz","Cantabria","Castellón","Ceuta","Ciudad Real","Córdoba","Cuenca","Girona","Granada","Guadalajara","Guipúzcoa / Gipuzkoa","Huelva","Huesca","Jaén","La Rioja","Las Palmas","León","Lleida","Lugo","Madrid","Málaga","Melilla","Murcia","Navarra","Ourense","Palencia","Pontevedra","Salamanca","Santa Cruz de Tenerife","Segovia","Sevilla","Soria","Tarragona","Teruel","Toledo","Valencia","Valladolid","Vizcaya / Bizkaia","Zamora","Zaragoza"];
   DATA.d.offices.forEach(function(o){if(provs.indexOf(o.prov)<0)provs.push(o.prov)});
   $("prov").innerHTML='<option value="">Elige provincia</option>'+provs.map(function(p){return'<option>'+esc(p)+'</option>'}).join("");
 }

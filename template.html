@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESC}}">
+<link rel="canonical" href="{{URL}}">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large">
+<meta name="theme-color" content="#2455D6">
+<link rel="alternate" hreflang="es" href="{{URL}}">
+<link rel="alternate" hreflang="x-default" href="{{URL}}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mi TIE Lista">
+<meta property="og:locale" content="es_ES">
+<meta property="og:title" content="{{TITLE}}">
+<meta property="og:description" content="{{DESC}}">
+<meta property="og:url" content="{{URL}}">
+{{OGIMG}}
+<meta name="twitter:title" content="{{TITLE}}">
+<meta name="twitter:description" content="{{DESC}}">
+<script type="application/ld+json">{{JSONLD}}</script>
+<script>window.PRESET="{{PRESET}}"</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F1F4F6;--surface:#FFFFFF;--ink:#14212B;--muted:#4F6270;--line:#D3DCE2;--accent:#2455D6;--on-accent:#FFFFFF;
+  --ok:#176F49;--ok-bg:#DDF3E8;--wait:#7A4E00;--wait-bg:#FBEBC8;--bad:#A53A2A;--bad-bg:#F8DDD8;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0F1A22;--surface:#17252F;--ink:#EAF0F3;--muted:#9DB0BC;--line:#2B3E4A;--accent:#8FAEFF;--on-accent:#0F1A22;
+  --ok:#6FD9A5;--ok-bg:#123B2A;--wait:#F2C566;--wait-bg:#3D2E0C;--bad:#FF9C8C;--bad-bg:#45201A}
+}
+:root[data-theme="dark"]{--bg:#0F1A22;--surface:#17252F;--ink:#EAF0F3;--muted:#9DB0BC;--line:#2B3E4A;--accent:#8FAEFF;--on-accent:#0F1A22;
+  --ok:#6FD9A5;--ok-bg:#123B2A;--wait:#F2C566;--wait-bg:#3D2E0C;--bad:#FF9C8C;--bad-bg:#45201A}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:520px;margin:0 auto;padding:28px 20px 40px}
+h1{font:700 2rem/1.1 "Bricolage Grotesque",system-ui,sans-serif;letter-spacing:-.02em;margin:0 0 8px}
+.lead{color:var(--muted);margin:0 0 24px}
+.demo{background:var(--wait-bg);color:var(--wait);border-radius:8px;padding:10px 12px;margin:0 0 20px;font-size:.9rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+label{display:block;font-weight:600;margin:0 0 6px}
+.field{margin:0 0 16px}
+select,input{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:13px 12px;min-height:48px}
+input{font-size:1.25rem;font-weight:600;letter-spacing:.02em}
+.hint{color:var(--muted);font-size:.875rem;margin:6px 0 0}
+select:focus-visible,input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;border:0;border-radius:10px;background:var(--accent);color:var(--on-accent);font:700 1.05rem "Bricolage Grotesque",system-ui,sans-serif;cursor:pointer;text-decoration:none;padding:0 16px}
+.btn.alt{background:transparent;color:var(--ink);border:1.5px solid var(--line);font-weight:500}
+#out{margin-top:20px}
+.res{border-radius:14px;padding:20px;transition:background-color .25s,color .25s}
+.res.ok{background:var(--ok-bg);color:var(--ok)}
+.res.wait{background:var(--wait-bg);color:var(--wait)}
+.res.bad{background:var(--bad-bg);color:var(--bad)}
+.res h2{font:700 1.6rem/1.15 "Bricolage Grotesque",system-ui,sans-serif;letter-spacing:-.01em;margin:0 0 14px}
+.nums{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 14px}
+.nums div{background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 12px}
+.nums small{display:block;color:var(--muted);font-size:.8rem}
+.nums b{font:700 1.4rem "Bricolage Grotesque",system-ui,sans-serif}
+.res p{margin:0 0 10px;color:var(--ink)}
+.acts{display:grid;gap:10px;margin-top:14px}
+footer{color:var(--muted);font-size:.85rem;margin-top:24px}
+footer a{color:var(--accent)}
+.info{margin-top:28px}
+.info h2{font:700 1.15rem "Bricolage Grotesque",system-ui,sans-serif;margin:22px 0 8px}
+.info details{border-bottom:1px solid var(--line);padding:10px 0}
+.info summary{font-weight:600;cursor:pointer}
+.info ul{padding-left:18px;margin:0}
+.info a{color:var(--accent)}
+.brand{display:flex;align-items:center;gap:10px;margin:0 0 22px;color:var(--ink);text-decoration:none;font:700 1.3rem "Bricolage Grotesque",system-ui,sans-serif;letter-spacing:-.01em}
+.about{border-top:1px solid var(--line);padding-top:16px;margin-top:20px}
+.about h2{font:700 1.15rem "Bricolage Grotesque",system-ui,sans-serif;color:var(--ink);margin:0 0 6px}
+@media (prefers-reduced-motion:reduce){.res{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <a class="brand" href="/" aria-label="Mi TIE Lista, inicio"><svg viewBox="0 0 48 48" width="44" height="44" aria-hidden="true"><rect x="2" y="8" width="38" height="28" rx="6" fill="var(--accent)"/><circle cx="14" cy="19" r="4.5" fill="var(--on-accent)"/><path d="M7 31c1-4 3.5-6 7-6s6 2 7 6z" fill="var(--on-accent)"/><rect x="24" y="15" width="11" height="3" rx="1.5" fill="var(--on-accent)"/><rect x="24" y="22" width="8" height="3" rx="1.5" fill="var(--on-accent)" opacity=".7"/><circle cx="37" cy="34" r="10" fill="var(--ok)" stroke="var(--bg)" stroke-width="3"/><path d="M32.5 34.2l3.2 3.2 5.6-6.4" fill="none" stroke="var(--bg)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Mi TIE Lista</span></a>
+  <h1>{{H1}}</h1>
+  <p class="lead">{{LEAD}}</p>
+  <div id="demo" class="demo" hidden>Datos de demostración: todavía no hay datos reales publicados.</div>
+
+  <form class="card" id="f" novalidate>
+    <div class="field">
+      <label for="prov">Provincia</label>
+      <select id="prov" required></select>
+    </div>
+    <div class="field">
+      <label for="of">Oficina de recogida</label>
+      <select id="of" required></select>
+      <p class="hint">Aparece al final de tu resguardo.</p>
+    </div>
+    <div class="field">
+      <label for="lote">Tu lote</label>
+      <input id="lote" inputmode="text" autocomplete="off" placeholder="2026/233" maxlength="12">
+      <p class="hint">Año y número, como en tu resguardo. Ejemplo: 2026/233.</p>
+    </div>
+    <button class="btn" type="submit">Comprobar mi lote</button>
+  </form>
+
+  <div id="out" aria-live="polite"></div>
+
+  {{INFO}}
+  <footer>
+    <p>Herramienta gratuita, sin publicidad. La fecha estimada es orientativa y no es información oficial. Si aún no te han tomado las huellas, todavía no tienes lote.</p>
+    <div class="about">
+      <h2>Quién está detrás</h2>
+      <p>Soy Papelegruba, con más de 10 años de experiencia en trámites administrativos.</p>
+      <a class="btn" id="wa" target="_blank" rel="noopener" href="#">¿Te ayudo con tu trámite? Escríbeme por WhatsApp</a>
+    </div>
+  </footer>
+</main>
+
+<script>
+var WA="34652916014";
+var CITA="https://icp.administracionelectronica.gob.es/icpplus/index.html";
+// Datos de demostración. En producción se cargan desde lotes.json (generado a diario por el scraper).
+var SAMPLE={updated:"2026-10-27",offices:[
+ {id:"bcn1",prov:"Barcelona",name:"Comisaría de Barcelona (ejemplo)",y:2026,n:233,h:[["2026-10-13",196],["2026-10-20",215],["2026-10-27",233]]},
+ {id:"ll1",prov:"Lleida",name:"Comisaría de Lleida (ejemplo)",y:2026,n:105,h:[["2026-10-13",88],["2026-10-20",97],["2026-10-27",105]]}
+]};
+var $=function(i){return document.getElementById(i)};
+var DATA=null;
+
+function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||"null");localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
+function pd(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2])}
+function biz(a,b){var c=0,d=new Date(a);while(d<b){d.setDate(d.getDate()+1);var w=d.getDay();if(w>0&&w<6)c++}return c}
+function addBiz(a,k){var d=new Date(a);while(k>0){d.setDate(d.getDate()+1);var w=d.getDay();if(w>0&&w<6)k--}return d}
+function fmt(d){return d.toLocaleDateString("es-ES",{day:"numeric",month:"long"})}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+function parseLote(s){var m=String(s).trim().match(/^(\d{4})\s*[\/\-\s]\s*0*(\d{1,5})$/);return m?{y:+m[1],n:+m[2]}:null}
+
+function rate(o){
+  var h=o.h.filter(function(x){return true});
+  if(h.length<2)return 0;
+  var a=h[0],b=h[h.length-1],days=biz(pd(a[0]),pd(b[0]));
+  return days>0&&b[1]>a[1]?(b[1]-a[1])/days:0;
+}
+
+function fillProv(){
+  var provs=[];DATA.d.offices.forEach(function(o){if(provs.indexOf(o.prov)<0)provs.push(o.prov)});
+  $("prov").innerHTML='<option value="">Elige provincia</option>'+provs.map(function(p){return'<option>'+esc(p)+'</option>'}).join("");
+}
+function fillOf(){
+  var p=$("prov").value,list=DATA.d.offices.filter(function(o){return o.prov===p});
+  $("of").innerHTML='<option value="">Elige oficina</option>'+list.map(function(o){return'<option value="'+esc(o.id)+'">'+esc(o.name)+'</option>'}).join("");
+  if(list.length===1)$("of").value=list[0].id;
+}
+
+function show(cls,title,body,nums,acts){
+  $("out").innerHTML='<section class="res '+cls+'"><h2>'+title+'</h2>'+(nums||"")+body+'<div class="acts">'+(acts||"")+'</div></section>';
+  $("out").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth",block:"nearest"});
+}
+
+function check(){
+  var o=DATA.d.offices.filter(function(x){return x.id===$("of").value})[0];
+  var U=parseLote($("lote").value);
+  if(!$("prov").value||!o){show("bad","Falta la oficina","<p>Elige tu provincia y la oficina que aparece en tu resguardo.</p>");return}
+  if(!U){show("bad","Revisa tu lote","<p>Escríbelo con el año y el número, por ejemplo 2026/233.</p>");return}
+  store("tie",{p:$("prov").value,o:o.id,l:$("lote").value});
+  var uTxt=U.y+"/"+U.n,lTxt=o.y+"/"+o.n;
+  var nums='<div class="nums"><div><small>Tu lote</small><b>'+uTxt+'</b></div><div><small>Último publicado</small><b>'+lTxt+'</b></div></div>';
+  var cmp=(U.y-o.y)||(U.n-o.n);
+  var wa='<a class="btn alt" target="_blank" rel="noopener" href="https://wa.me/'+WA+'?text='+encodeURIComponent("Hola, tengo dudas con mi TIE. Mi lote es "+uTxt+" en "+o.name+".")+'">Preguntar por WhatsApp</a>';
+  var cita='<a class="btn" target="_blank" rel="noopener" href="'+CITA+'">Pedir cita de recogida</a>';
+  if(cmp<0){show("ok","Tu TIE ya está preparada","<p>Tu lote ya está por debajo del último publicado en esta oficina. Pide cita para recogerla.</p>",nums,cita+wa);return}
+  if(cmp===0){show("ok","Tu TIE debería estar lista","<p>Tu lote es el último publicado. Confírmalo al pedir la cita de recogida.</p>",nums,cita+wa);return}
+  if(U.y>o.y){show("wait","Aún no ha llegado tu lote","<p>El último lote publicado es de un año anterior al tuyo, así que todavía no ha llegado a la oficina.</p>",nums,wa);return}
+  var falta=U.n-o.n,r=rate(o),est="";
+  if(r>0){var d=addBiz(pd(DATA.d.updated),Math.ceil(falta/r));est="<p>Al ritmo actual (unos "+r.toFixed(1).replace(".",",")+" lotes por día hábil), podría estar lista hacia el <b>"+fmt(d)+"</b>. Es orientativo.</p>"}
+  show("wait","Faltan "+falta+" lotes",est||"<p>Todavía no hay suficientes datos para estimar una fecha.</p>",nums,wa);
+}
+
+$("f").addEventListener("submit",function(e){e.preventDefault();check()});
+$("prov").addEventListener("change",fillOf);
+$("wa").href="https://wa.me/"+WA+"?text="+encodeURIComponent("Hola, necesito ayuda con un trámite.");
+
+fetch("/lotes.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){return{d:d,demo:false}})
+.catch(function(){return{d:SAMPLE,demo:true}}).then(function(res){
+  DATA=res;$("demo").hidden=!res.demo;fillProv();
+  if(window.PRESET){var po=DATA.d.offices.filter(function(x){return x.id===PRESET})[0];if(po){$("prov").value=po.prov;fillOf();$("of").value=po.id}}
+  var s=store("tie");
+  if(s){$("prov").value=s.p;fillOf();$("of").value=s.o;$("lote").value=s.l;if($("of").value&&parseLote(s.l))check()}
+});
+</script>
+</body>
+</html>

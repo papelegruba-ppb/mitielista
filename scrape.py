@@ -1,0 +1,97 @@
+"""Lee el último lote TIE publicado en cada oficina (sede de extranjería) y actualiza lotes.json.
+Uso: python scrape.py   |   Añade provincias en PROVINCES."""
+import asyncio, json, re, sys, unicodedata, datetime, pathlib, random
+from playwright.async_api import async_playwright
+
+PROVINCES = ["Barcelona", "Lleida"]
+START = "https://icp.administracionelectronica.gob.es/icpplus/index.html"
+TRAMITE = "RECOGIDA DE TARJETA DE IDENTIDAD DE EXTRANJERO"
+ROOT = pathlib.Path(__file__).parent
+DEBUG = ROOT / "debug"
+RX = re.compile(r"LTIMO LOTE RECIBIDO.{0,120}?(\d{4})\s*/\s*(\d+)", re.S | re.I)
+
+def slug(s):
+    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
+
+async def accept(page):
+    await page.get_by_role("button", name=re.compile("Aceptar", re.I)).first.click()
+    await page.wait_for_load_state("domcontentloaded")
+
+async def open_province(page, prov):
+    await page.goto(START, wait_until="domcontentloaded")
+    await page.locator("select").first.select_option(label=prov)
+    await accept(page)
+
+async def pick_tramite(page):
+    for s in await page.locator("select").all():
+        for o in await s.locator("option").all():
+            if TRAMITE in (await o.text_content() or "").upper():
+                await s.select_option(value=await o.get_attribute("value"))
+                return
+    raise RuntimeError("no se encontró el trámite de recogida de TIE")
+
+async def read_lote(page, prov, value):
+    await open_province(page, prov)
+    await page.locator("select").first.select_option(value=value)
+    await pick_tramite(page)
+    await accept(page)
+    m = RX.search(await page.inner_text("body"))
+    if not m:
+        raise RuntimeError("no aparece el último lote (¿captcha o bloqueo?)")
+    return int(m.group(1)), int(m.group(2))
+
+async def snap(page, name):
+    DEBUG.mkdir(exist_ok=True)
+    (DEBUG / f"{name}.html").write_text(await page.content(), encoding="utf-8")
+    await page.screenshot(path=str(DEBUG / f"{name}.png"), full_page=True)
+
+async def scrape():
+    results = []
+    async with async_playwright() as p:
+        b = await p.chromium.launch(headless=True)
+        ctx = await b.new_context(locale="es-ES", timezone_id="Europe/Madrid",
+              user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36")
+        page = await ctx.new_page(); page.set_default_timeout(30000)
+        for prov in PROVINCES:
+            try:
+                await open_province(page, prov)
+                opts = [((await o.get_attribute("value")) or "", ((await o.text_content()) or "").strip())
+                        for o in await page.locator("select").first.locator("option").all()]
+                offices = [(v, t) for v, t in opts if v.strip() and not t.upper().startswith("SELEC")]
+            except Exception as e:
+                print(f"[{prov}] error: {e}"); await snap(page, slug(prov) + "-provincia"); continue
+            for value, name in offices:
+                try:
+                    y, n = await read_lote(page, prov, value)
+                    results.append({"id": slug(prov + "-" + name)[:48], "prov": prov, "name": name, "y": y, "n": n})
+                    print(f"[{prov}] {name}: {y}/{n}")
+                except Exception as e:
+                    print(f"[{prov}] {name}: error: {e}"); await snap(page, slug(prov + "-" + name)[:40])
+                await asyncio.sleep(random.uniform(2, 4))
+        await b.close()
+    return results
+
+def merge(prev, results, today):
+    old = {o["id"]: o for o in prev.get("offices", [])}
+    out = []
+    for r in results:
+        o = old.get(r["id"], {})
+        h = o.get("h", []) if o.get("y") == r["y"] else []
+        if h and h[-1][0] == today: h[-1][1] = r["n"]
+        else: h.append([today, r["n"]])
+        r["h"] = h[-90:]; out.append(r)
+    seen = {r["id"] for r in results}
+    out += [o for o in old.values() if o["id"] not in seen]
+    return sorted(out, key=lambda o: (o["prov"], o["name"]))
+
+if __name__ == "__main__":
+    results = asyncio.run(scrape())
+    if not results:
+        sys.exit("Sin resultados: se conserva lotes.json y no se publica nada.")
+    f = ROOT / "lotes.json"
+    prev = json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
+    if any("ejemplo" in o["name"] for o in prev.get("offices", [])): prev = {}   # descarta datos de demostración
+    today = datetime.date.today().isoformat()
+    f.write_text(json.dumps({"updated": today, "offices": merge(prev, results, today)}, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(len(results), "oficinas actualizadas")

@@ -1,0 +1,44 @@
+name: actualizar-lotes
+on:
+  schedule:
+    - cron: "30 16 * * 1-5"
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install playwright && playwright install --with-deps chromium
+      - run: python scrape.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: debug
+          path: debug/
+          if-no-files-found: ignore
+      - run: python build.py
+      - name: Guardar histórico
+        run: |
+          git config user.name "lotes-bot"
+          git config user.email "lotes-bot@users.noreply.github.com"
+          git add lotes.json
+          git diff --cached --quiet || git commit -m "Actualiza lotes"
+          git push
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4

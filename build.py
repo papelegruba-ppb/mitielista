@@ -26,7 +26,7 @@ def fdate(d): y, m, dd = d.split("-"); return f"{dd}/{m}/{y}"
 def info(o=None):
     p = ['<section class="info">']
     if o:
-        p.append(f'<h2>Último lote en {esc(o["name"])}</h2><p>El último lote publicado es el <b>{o["y"]}/{o["n"]}</b> (actualizado el {fdate(data["updated"])}). Si tu lote es menor o igual, tu TIE debería estar lista.</p>')
+        p.append(f'<h2>Último lote en {esc(o["name"])}</h2><p>El último lote publicado es el <b>{o["y"]}/{o["n"]}</b> (actualizado el {fdate(data["updated"])}). Si tu lote es igual o menor, puede que la tarjeta ya haya llegado; confirma con la oficina antes de desplazarte.</p>')
     if not offices:
         p.append("<p>En este momento no hay lotes de oficinas que se hayan podido verificar. No mostramos números de ejemplo ni estimaciones inventadas. Vuelve a consultar cuando se recuperen las fuentes.</p>")
     p.append("<h2>Preguntas frecuentes</h2>")

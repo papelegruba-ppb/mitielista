@@ -1,4 +1,19 @@
 {
  "updated": "2026-10-27",
- "offices": []
+ "offices": [
+  {
+   "id": "zaragoza-calatayud",
+   "prov": "Zaragoza",
+   "name": "Calatayud",
+   "y": 2026,
+   "n": 30,
+   "checked": "2026-10-27",
+   "published": "2026-09-10",
+   "source": "Lotenie",
+   "source_url": "https://lotenie.es/zaragoza/",
+   "source_type": "public_unofficial",
+   "source_checked": "2026-10-27T16:25:27.425473+00:00",
+   "h": []
+  }
+ ]
 }

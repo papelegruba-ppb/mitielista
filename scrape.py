@@ -123,3 +123,60 @@ if __name__ == "__main__":
     today = datetime.date.today().isoformat()
     f.write_text(json.dumps({"updated": today, "offices": merge(prev, results, today)}, ensure_ascii=False, indent=1), encoding="utf-8")
     print(len(results), "oficinas actualizadas")
+
+
+# Fallback público: si la sede oficial falla, consultar páginas públicas conocidas.
+# Los datos alternativos se marcan como no oficiales y nunca se hacen pasar por actuales.
+async def fallback_public_sources():
+    import urllib.request
+    from html.parser import HTMLParser
+
+    sources = [
+        ("https://lotenie.es/zaragoza/", "Lotenie"),
+        ("https://portalextranjeria.com/lotes-nie-zaragoza/", "Portal Extranjería"),
+        ("https://sclt.es/tie/zaragoza/zaragoza/", "SCLT"),
+    ]
+    found = []
+    for url, source_name in sources:
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 MiTIELista/1.0"})
+            with urllib.request.urlopen(req, timeout=20) as response:
+                page = response.read().decode("utf-8", "ignore")
+            # Limit extraction to explicit references to Zaragoza's office and a lot number.
+            clean = re.sub(r"<script\\b.*?</script>|<style\\b.*?</style>", " ", page, flags=re.I|re.S)
+            clean = re.sub(r"<[^>]+>", " ", clean)
+            clean = re.sub(r"&nbsp;|&#160;", " ", clean, flags=re.I)
+            clean = re.sub(r"\\s+", " ", clean)
+            patterns = [
+                r"(?:CNP Zaragoza[^.]{0,100}?|Zaragoza Unidad Doc[^.]{0,100}?|Comisaría de Extranjería de Zaragoza[^.]{0,100}?).{0,120}?(?:lote(?: actual)?|lote NIE)[^0-9]{0,30}(?:(20\\d{2})\\s*/\\s*)?(\\d{1,4})",
+                r"(?:lote(?: actual)?|lote NIE)[^0-9]{0,30}(?:(20\\d{2})\\s*/\\s*)?(\\d{1,4}).{0,120}?(?:Zaragoza|Covarrubias)",
+            ]
+            for pattern in patterns:
+                match = re.search(pattern, clean, re.I)
+                if match:
+                    year = int(match.group(1) or datetime.date.today().year)
+                    number = int(match.group(2))
+                    # Only the explicitly matched Zaragoza office is mapped; no province-wide guessing.
+                    found.append({
+                        "id": slug("Zaragoza-Zaragoza Unidad Doc. Extranjeros"),
+                        "prov": "Zaragoza",
+                        "name": "Zaragoza Unidad Doc. Extranjeros",
+                        "y": year, "n": number,
+                        "checked": datetime.date.today().isoformat(),
+                        "source": source_name, "source_url": url,
+                        "source_type": "public_unofficial",
+                        "source_checked": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    })
+                    break
+        except Exception as e:
+            print(f"[fallback:{source_name}] {e}")
+    # Require two distinct public sources to agree before replacing official data.
+    counts = {}
+    for item in found:
+        key = (item["id"], item["y"], item["n"])
+        counts.setdefault(key, []).append(item)
+    agreed = []
+    for (office_id, year, number), items in counts.items():
+        if len({x["source"] for x in items}) >= 2:
+            agreed.append(items[0])
+    return agreed

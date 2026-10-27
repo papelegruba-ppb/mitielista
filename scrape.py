@@ -106,8 +106,9 @@ def merge(prev, results, today):
     for r in results:
         o = old.get(r["id"], {})
         h = o.get("h", []) if o.get("y") == r["y"] else []
-        if h and h[-1][0] == today: h[-1][1] = r["n"]
-        else: h.append([today, r["n"]])
+        if r.get("source_type") != "public_unofficial":
+            if h and h[-1][0] == today: h[-1][1] = r["n"]
+            else: h.append([today, r["n"]])
         r["h"] = h[-90:]; out.append(r)
     seen = {r["id"] for r in results}
     out += [o for o in old.values() if o["id"] not in seen]

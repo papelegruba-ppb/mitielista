@@ -270,7 +270,7 @@ function check(){
   if(cmp<=0){show("ok","Tu lote podría estar listo","<p>El último lote indicado es igual o posterior al tuyo. Confirma la disponibilidad antes de desplazarte.</p>"+note,nums,cita+wa);return}
   var falta=U.n-ref.n,r=o?rate(o):0,est="";
   if(U.y>ref.y){show("wait","Tu lote es de un año posterior","<p>El último lote indicado pertenece a un año anterior al tuyo.</p>"+note,nums,wa);return}
-  if(r>0){var d=addBiz(pd(DATA.d.updated),Math.ceil(falta/r));var early=addBiz(d,-Math.max(1,Math.ceil(4/r)));var late=addBiz(d,Math.max(1,Math.ceil(4/r)));est="<div class=\"estimate\"><div class=\"estimate-label\">Si el ritmo se mantiene</div><div class=\"estimate-date\">"+fmt(d)+" "+d.getFullYear()+"</div><p>Fecha orientativa. Puede cambiar si cambia el ritmo de la oficina.</p><p class=\"estimate-range\">Rango orientativo por variación del ritmo: "+fmt(early)+" – "+fmt(late)+"</p></div>"}
+  if(r>0){var d=addBiz(pd(DATA.d.updated),Math.ceil(falta/r));var early=new Date(d);early.setDate(early.getDate()-4);var late=new Date(d);late.setDate(late.getDate()+4);est="<div class=\"estimate\"><div class=\"estimate-label\">Si el ritmo se mantiene</div><div class=\"estimate-date\">"+fmt(d)+" "+d.getFullYear()+"</div><p>Fecha orientativa. Puede cambiar si cambia el ritmo de la oficina.</p><p class=\"estimate-range\">Rango orientativo por variación del ritmo: "+fmt(early)+" – "+fmt(late)+"</p></div>"}
   show("wait","Tu lote aún no aparece como alcanzado",est||"<p>Faltan "+falta+" lotes según el número introducido. No hay datos suficientes para estimar una fecha.</p>"+note,nums,wa);
 }
 

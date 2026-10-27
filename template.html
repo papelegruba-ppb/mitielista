@@ -97,21 +97,30 @@ footer a{color:var(--accent)}
       <select id="prov" required></select>
     </div>
     <div class="field">
-      <label for="of">Oficina de recogida</label>
-      <select id="of"><option value="">Datos oficiales temporalmente no disponibles</option></select>
-      <p class="hint">Aparece al final de tu resguardo. Si no hay datos oficiales cargados, puedes comparar manualmente abajo.</p>
+      <label for="of">Oficina</label>
+      <select id="of"><option value="">Selecciona provincia primero</option></select>
+      <p class="hint">Elige la oficina que aparece en tu resguardo.</p>
     </div>
-    <div class="field" id="manual-field" hidden>
-      <label for="ultimo">Último lote publicado (consulta manual)</label>
-      <input id="ultimo" inputmode="text" autocomplete="off" placeholder="2026/233" maxlength="12">
-      <p class="hint">Introduce el último lote que hayas comprobado para tu oficina. No se verificará automáticamente.</p>
+    <div class="field" id="office-manual-field" hidden>
+      <label for="office-manual">Nombre de la oficina</label>
+      <input id="office-manual" autocomplete="organization" placeholder="Nombre de la comisaría u oficina">
+      <p class="hint">No tenemos oficinas cargadas para esta provincia. Escribe el nombre para identificar tu consulta.</p>
     </div>
     <div class="field">
-      <label for="lote">Tu lote</label>
-      <input id="lote" inputmode="text" autocomplete="off" placeholder="2026/233" maxlength="12">
-      <p class="hint">Año y número, como en tu resguardo. Ejemplo: 2026/233.</p>
+      <label for="year">Año del lote</label>
+      <select id="year" required></select>
     </div>
-    <button class="btn" type="submit">Comprobar mi lote</button>
+    <div class="field">
+      <label for="lote">Número de lote</label>
+      <input id="lote" inputmode="numeric" autocomplete="off" placeholder="Ej. 155" maxlength="6" required>
+      <p class="hint">Escribe solo el número que aparece después de la barra, sin el año.</p>
+    </div>
+    <div class="field" id="manual-field" hidden>
+      <label for="ultimo">Último lote publicado en tu oficina</label>
+      <input id="ultimo" inputmode="text" autocomplete="off" placeholder="2026/233" maxlength="12">
+      <p class="hint">Hasta que vuelvan los datos automáticos, introduce aquí el último lote que hayas comprobado. No se verifica con la web oficial.</p>
+    </div>
+    <button class="btn" type="submit">Comprobar mi TIE</button>
   </form>
 
   <div id="out" aria-live="polite"></div>
@@ -179,9 +188,16 @@ function fillProv(){
 }
 function fillOf(){
   var p=$("prov").value,list=DATA.d.offices.filter(function(o){return o.prov===p});
-  $("of").innerHTML='<option value="">'+(list.length?"Elige oficina":"No hay datos oficiales disponibles para esta provincia")+'</option>'+list.map(function(o){return'<option value="'+esc(o.id)+'">'+esc(o.name)+'</option>'}).join("");
+  $("of").innerHTML='<option value="">'+(list.length?"Elige oficina":"Datos automáticos no disponibles")+'</option>'+list.map(function(o){return'<option value="'+esc(o.id)+'">'+esc(o.name)+'</option>'}).join("");
+  $("office-manual-field").hidden=list.length>0 || !p;
+  $("manual-field").hidden=list.length>0 || !p;
   if(list.length===1)$("of").value=list[0].id;
-  $("manual-field").hidden=list.length>0;
+}
+function fillYears(){
+  var now=new Date().getFullYear(),html='<option value="">Elige año</option>';
+  for(var y=now+1;y>=2015;y--)html+='<option value="'+y+'">'+y+'</option>';
+  $("year").innerHTML=html;
+  $("year").value=String(now);
 }
 
 function show(cls,title,body,nums,acts){
@@ -191,36 +207,33 @@ function show(cls,title,body,nums,acts){
 
 function check(){
   var o=DATA.d.offices.filter(function(x){return x.id===$("of").value})[0];
-  var U=parseLote($("lote").value);
-  if(!$("prov").value){show("bad","Elige una provincia","<p>Selecciona Barcelona o Lleida para continuar.</p>");return}
-  if(!U){show("bad","Revisa tu lote","<p>Escríbelo con el año y el número, por ejemplo 2026/233.</p>");return}
+  var year=Number($("year").value),num=String($("lote").value).trim();
+  if(!$("prov").value){show("bad","Selecciona una provincia","<p>Elige Barcelona o Lleida para continuar.</p>");return}
+  if(!year||!/^\\d{1,6}$/.test(num)){show("bad","Revisa tu lote","<p>Selecciona el año y escribe solo el número de lote, por ejemplo 155.</p>");return}
+  var U={y:year,n:Number(num)};
   var ref=o?{y:o.y,n:o.n}:parseLote($("ultimo").value);
   if(!ref){
-    show("wait","Datos oficiales temporalmente no disponibles","<p>La web no tiene ahora datos de lotes para esta oficina. Puedes introducir manualmente el último lote publicado en el campo que aparece arriba y volver a comprobar. No vamos a inventar datos.</p>");
+    show("wait","Datos oficiales temporalmente no disponibles","<p>Ahora mismo no tenemos el último lote de esta oficina. Introduce arriba el último lote que hayas comprobado y vuelve a intentarlo.</p>");
     return;
   }
-  if(!o && !$("ultimo").value.trim()){
-    show("wait","Comparación manual","<p>Introduce el último lote publicado que hayas comprobado para tu oficina.</p>");
-    return;
-  }
-  store("tie",{p:$("prov").value,o:o?o.id:"",l:$("lote").value,u:$("ultimo").value});
+  store("tie",{p:$("prov").value,o:o?o.id:"",office:$("office-manual").value,y:String(year),l:num,u:$("ultimo").value});
   var uTxt=U.y+"/"+U.n,lTxt=ref.y+"/"+ref.n;
-  var nums='<div class="nums"><div><small>Tu lote</small><b>'+uTxt+'</b></div><div><small>Último publicado</small><b>'+lTxt+'</b></div></div>';
+  var nums='<div class="nums"><div><small>Tu número de lote</small><b>'+uTxt+'</b></div><div><small>Último lote actual</small><b>'+lTxt+'</b></div></div>';
   var cmp=(U.y-ref.y)||(U.n-ref.n);
-  var wa='<a class="btn alt" target="_blank" rel="noopener" href="https://wa.me/'+WA+'?text='+encodeURIComponent("Hola, tengo dudas con mi TIE. Mi lote es "+uTxt+" en "+$("prov").value+".")+'">Preguntar por WhatsApp</a>';
+  var who=o?o.name:($("office-manual").value.trim()||"Oficina no especificada");
+  var note=o?"":"<p><b>Comparación manual:</b> el último lote lo has introducido tú; no está verificado automáticamente.</p>";
+  var wa='<a class="btn alt" target="_blank" rel="noopener" href="https://wa.me/'+WA+'?text='+encodeURIComponent("Hola, tengo dudas con mi TIE. Mi lote es "+uTxt+" en "+who+".")+'">Preguntar por WhatsApp</a>';
   var cita='<a class="btn" target="_blank" rel="noopener" href="'+CITA+'">Pedir cita de recogida</a>';
-  if(!o){var manualNote="<p><b>Comparación manual:</b> el último lote lo has introducido tú; no se ha verificado con la oficina.</p>";}
-  else {var manualNote="";}
-  if(cmp<0){show("ok","Tu lote ya está alcanzado","<p>El último lote publicado es posterior al tuyo. Confirma la disponibilidad antes de desplazarte.</p>"+manualNote,nums,cita+wa);return}
-  if(cmp===0){show("ok","Tu lote coincide con el último publicado","<p>Confirma la disponibilidad al pedir cita de recogida.</p>"+manualNote,nums,cita+wa);return}
-  if(U.y>ref.y){show("wait","Aún no ha llegado tu lote","<p>El último lote indicado es de un año anterior al tuyo.</p>"+manualNote,nums,wa);return}
+  if(cmp<=0){show("ok","Tu lote podría estar listo","<p>El último lote indicado es igual o posterior al tuyo. Confirma la disponibilidad antes de desplazarte.</p>"+note,nums,cita+wa);return}
   var falta=U.n-ref.n,r=o?rate(o):0,est="";
+  if(U.y>ref.y){show("wait","Tu lote es de un año posterior","<p>El último lote indicado pertenece a un año anterior al tuyo.</p>"+note,nums,wa);return}
   if(r>0){var d=addBiz(pd(DATA.d.updated),Math.ceil(falta/r));est="<p>Al ritmo reciente, podría estar lista hacia el <b>"+fmt(d)+"</b>. Es orientativo.</p>"}
-  show("wait","Faltan "+falta+" lotes",est||"<p>Todavía no hay suficientes datos para estimar una fecha.</p>"+manualNote,nums,wa);
+  show("wait","Tu lote aún no aparece como alcanzado",est||"<p>Faltan "+falta+" lotes según el número introducido. No hay datos suficientes para estimar una fecha.</p>"+note,nums,wa);
 }
 
 $("f").addEventListener("submit",function(e){e.preventDefault();check()});
 $("prov").addEventListener("change",fillOf);
+fillYears();
 $("wa").href="https://wa.me/"+WA+"?text="+encodeURIComponent("Hola, necesito ayuda con un trámite.");
 checkUpdateStatus();setInterval(checkUpdateStatus,60000);
 
@@ -229,7 +242,7 @@ fetch("/lotes.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return
   DATA=res;$("demo").hidden=!res.demo;fillProv();
   if(window.PRESET){var po=DATA.d.offices.filter(function(x){return x.id===PRESET})[0];if(po){$("prov").value=po.prov;fillOf();$("of").value=po.id}}
   var s=store("tie");
-  if(s){$("prov").value=s.p;fillOf();$("of").value=s.o||"";$("lote").value=s.l||"";$("ultimo").value=s.u||"";if(parseLote(s.l))check()}
+  if(s){$("prov").value=s.p;fillOf();$("of").value=s.o||"";$("office-manual").value=s.office||"";$("year").value=s.y||String(new Date().getFullYear());$("lote").value=s.l||"";$("ultimo").value=s.u||"";if(s.l&&s.y)check()}
 });
 </script>
 </body>

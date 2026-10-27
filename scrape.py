@@ -171,9 +171,10 @@ async def fallback_public_sources():
 
 if __name__ == "__main__":
     results = asyncio.run(scrape())
-    if not results:
-        print("La sede oficial no devolvió oficinas; probando fuentes públicas alternativas.")
-        results = asyncio.run(fallback_public_sources())
+    print("Comprobando fuentes públicas alternativas para cubrir oficinas no obtenidas oficialmente.")
+    fallback = asyncio.run(fallback_public_sources())
+    official_ids = {r["id"] for r in results}
+    results.extend(r for r in fallback if r["id"] not in official_ids)
     if not results:
         sys.exit("Sin resultados verificables: se conserva lotes.json y no se publica nada.")
     f = ROOT / "lotes.json"

@@ -13,7 +13,7 @@ offices = data["offices"]
 FAQ = [
  ("¿Qué es el lote de la TIE?", "Es el número de tanda (año/número) que figura en el resguardo de la toma de huellas. La comisaría recibe las tarjetas por lotes y por orden."),
  ("¿Dónde encuentro mi lote?", "En el resguardo que te dan tras la toma de huellas, con el formato año/número, por ejemplo 2026/233. Al final del documento se indica también dónde recoger la tarjeta."),
- ("¿Cómo sé si mi TIE está lista?", "Compara tu lote con el último lote publicado por tu oficina: si el publicado es mayor que el tuyo, tu tarjeta está preparada y puedes pedir cita de recogida."),
+ ("¿Cómo sé si mi TIE está lista?", "Compara tu lote con el último lote publicado por tu oficina. Si tu lote es igual o inferior, podría haber llegado el turno de tu tarjeta, pero la web no confirma que esté físicamente disponible. Confirma siempre con la oficina antes de desplazarte."),
  ("¿La fecha estimada es oficial?", "No. Se calcula con el ritmo reciente de avance de los lotes de cada oficina y es solo orientativa."),
 ]
 esc = html.escape
@@ -27,6 +27,8 @@ def info(o=None):
     p = ['<section class="info">']
     if o:
         p.append(f'<h2>Último lote en {esc(o["name"])}</h2><p>El último lote publicado es el <b>{o["y"]}/{o["n"]}</b> (actualizado el {fdate(data["updated"])}). Si tu lote es menor o igual, tu TIE debería estar lista.</p>')
+    if not offices:
+        p.append("<p>En este momento no hay lotes de oficinas que se hayan podido verificar. No mostramos números de ejemplo ni estimaciones inventadas. Vuelve a consultar cuando se recuperen las fuentes.</p>")
     p.append("<h2>Preguntas frecuentes</h2>")
     p += [f"<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>" for q, a in FAQ]
     p.append("<h2>Último lote por oficina</h2><ul>" + "".join(f'<li><a href="{path(x)}">{esc(x["name"])}</a>: {x["y"]}/{x["n"]}</li>' for x in offices) + "</ul></section>")

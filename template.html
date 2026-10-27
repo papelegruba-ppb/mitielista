@@ -81,6 +81,31 @@ footer a{color:var(--accent)}
 .about{border-top:1px solid var(--line);padding-top:16px;margin-top:20px}
 .about h2{font:700 1.15rem "Bricolage Grotesque",system-ui,sans-serif;color:var(--ink);margin:0 0 6px}
 @media (prefers-reduced-motion:reduce){.res{transition:none}}
+
+/* Formulario visual inspirado en la referencia compartida */
+:root{--bg:#eaf6fb;--surface:rgba(255,255,255,.78);--ink:#173f70;--muted:#7f96b2;--line:#cbdcf2;--accent:#347df4;--on-accent:#fff;--ok:#176f49;--ok-bg:#ddf3e8;--wait:#7a4e00;--wait-bg:#fbebc8;--bad:#a53a2a;--bad-bg:#f8ddd8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#eaf6fb;--surface:rgba(255,255,255,.78);--ink:#173f70;--muted:#7f96b2;--line:#cbdcf2;--accent:#347df4;--on-accent:#fff}}
+body{background:linear-gradient(145deg,#e7f5fb 0%,#f2f8ff 48%,#e4f4fa 100%);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+main{max-width:600px;padding:22px 20px 36px}
+.brand{display:none}
+h1{font-size:1.9rem;margin-bottom:8px}
+.lead{margin-bottom:20px}
+.card{background:rgba(255,255,255,.78);border:1px solid #d6e5f7;border-radius:34px;padding:28px 26px 24px;box-shadow:0 12px 38px rgba(60,112,165,.06);backdrop-filter:blur(8px)}
+label{font-size:.93rem;font-weight:800;color:#153f70;margin-bottom:10px}
+.field{margin-bottom:13px}
+select,input{background:#fff;border:1.3px solid #cbdcf2;border-radius:18px;min-height:58px;padding:14px 16px;color:#254d7b;font-size:1rem}
+select{appearance:auto}
+input{font-size:1rem;font-weight:400;letter-spacing:0}
+.hint{font-size:.85rem;margin-top:7px}
+#lote{border-radius:28px;min-height:46px}
+#manual-field .hint{line-height:1.4}
+.btn{min-height:60px;border-radius:19px;background:linear-gradient(180deg,#4388ff 0%,#2f76ee 100%);box-shadow:0 12px 24px rgba(47,118,238,.18);font-size:1.05rem}
+.btn.alt{box-shadow:none}
+.tie-help{display:inline-block;margin-top:0;margin-bottom:2px;color:#347df4;font-weight:700;font-size:.85rem;text-decoration:none}
+.secure-note{text-align:center;color:#8a9db5;font-size:.85rem;margin-top:12px}
+#out{margin-top:20px}
+@media(max-width:420px){main{padding:16px 14px 28px}.card{padding:24px 20px 22px;border-radius:28px}select,input{min-height:55px}}
+
 </style>
 </head>
 <body>
@@ -93,11 +118,11 @@ footer a{color:var(--accent)}
 
   <form class="card" id="f" novalidate>
     <div class="field">
-      <label for="prov">Provincia</label>
+      <label for="prov"><span aria-hidden="true">📍</span> Provincia</label>
       <select id="prov" required></select>
     </div>
     <div class="field">
-      <label for="of">Oficina</label>
+      <label for="of"><span aria-hidden="true">🏢</span> Oficina</label>
       <select id="of"><option value="">Selecciona provincia primero</option></select>
       <p class="hint">Elige la oficina que aparece en tu resguardo.</p>
     </div>
@@ -107,25 +132,25 @@ footer a{color:var(--accent)}
       <p class="hint">No tenemos oficinas cargadas para esta provincia. Escribe el nombre para identificar tu consulta.</p>
     </div>
     <div class="field">
-      <label for="year">Año del lote</label>
+      <label for="year"><span aria-hidden="true">🗓️</span> Año</label>
       <select id="year" required></select>
     </div>
     <div class="field">
-      <label for="lote">Número de lote</label>
+      <label for="lote"><span aria-hidden="true">#</span> Tu número de lote</label>
       <input id="lote" inputmode="numeric" autocomplete="off" placeholder="Ej. 155" maxlength="6" required>
-      <p class="hint">Escribe solo el número que aparece después de la barra, sin el año.</p>
+      
     </div>
     <div class="field" id="manual-field" hidden>
       <label for="ultimo">Último lote publicado en tu oficina</label>
       <input id="ultimo" inputmode="text" autocomplete="off" placeholder="2026/233" maxlength="12">
       <p class="hint">Hasta que vuelvan los datos automáticos, introduce aquí el último lote que hayas comprobado. No se verifica con la web oficial.</p>
     </div>
-    <button class="btn" type="submit">Comprobar mi TIE</button>
+    <a class="tie-help" href="#info-lote">¿Dónde ver mi número de lote?</a><button class="btn" type="submit">Comprobar mi TIE</button><div class="secure-note">🔒 Comprobación segura • Sin registro</div>
   </form>
 
   <div id="out" aria-live="polite"></div>
 
-  {{INFO}}
+  <section class="info" id="info-lote">{{INFO}}</section>
   <footer>
     <p>Herramienta gratuita, sin publicidad. La fecha estimada es orientativa y no es información oficial. Si aún no te han tomado las huellas, todavía no tienes lote.</p>
     <div class="about">
@@ -208,7 +233,7 @@ function show(cls,title,body,nums,acts){
 function check(){
   var o=DATA.d.offices.filter(function(x){return x.id===$("of").value})[0];
   var year=Number($("year").value),num=String($("lote").value).trim();
-  if(!$("prov").value){show("bad","Selecciona una provincia","<p>Elige Barcelona o Lleida para continuar.</p>");return}
+  if(!$("prov").value){show("bad","Selecciona una provincia","<p>Elige una provincia para continuar.</p>");return}
   if(!year||!/^\d{1,6}$/.test(num)){show("bad","Revisa tu lote","<p>Selecciona el año y escribe solo el número de lote, por ejemplo 155.</p>");return}
   var U={y:year,n:Number(num)};
   var ref=o?{y:o.y,n:o.n}:parseLote($("ultimo").value);

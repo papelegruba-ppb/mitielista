@@ -132,13 +132,13 @@ async def fallback_public_sources():
             with urllib.request.urlopen(req, timeout=20) as response:
                 page = response.read().decode("utf-8", "ignore")
             # Limit extraction to explicit references to Zaragoza's office and a lot number.
-            clean = re.sub(r"<script\\b.*?</script>|<style\\b.*?</style>", " ", page, flags=re.I|re.S)
+            clean = re.sub(r"<script\b.*?</script>|<style\b.*?</style>", " ", page, flags=re.I|re.S)
             clean = re.sub(r"<[^>]+>", " ", clean)
             clean = re.sub(r"&nbsp;|&#160;", " ", clean, flags=re.I)
-            clean = re.sub(r"\\s+", " ", clean)
+            clean = re.sub(r"\s+", " ", clean)
             patterns = [
-                r"(?:CNP Zaragoza[^.]{0,100}?|Zaragoza Unidad Doc[^.]{0,100}?|Comisaría de Extranjería de Zaragoza[^.]{0,100}?).{0,120}?(?:lote(?: actual)?|lote NIE)[^0-9]{0,30}(?:(20\\d{2})\\s*/\\s*)?(\\d{1,4})",
-                r"(?:lote(?: actual)?|lote NIE)[^0-9]{0,30}(?:(20\\d{2})\\s*/\\s*)?(\\d{1,4}).{0,120}?(?:Zaragoza|Covarrubias)",
+                r"(?:CNP Zaragoza[^.]{0,100}?|Zaragoza Unidad Doc[^.]{0,100}?|Comisaría de Extranjería de Zaragoza[^.]{0,100}?).{0,120}?(?:lote(?: actual)?|lote NIE)[^0-9]{0,30}(?:(20\d{2})\s*/\s*)?(\d{1,4})",
+                r"(?:lote(?: actual)?|lote NIE)[^0-9]{0,30}(?:(20\d{2})\s*/\s*)?(\d{1,4}).{0,120}?(?:Zaragoza|Covarrubias)",
             ]
             for pattern in patterns:
                 match = re.search(pattern, clean, re.I)

@@ -113,18 +113,6 @@ def merge(prev, results, today):
     out += [o for o in old.values() if o["id"] not in seen]
     return sorted(out, key=lambda o: (o["prov"], o["name"]))
 
-if __name__ == "__main__":
-    results = asyncio.run(scrape())
-    if not results:
-        sys.exit("Sin resultados: se conserva lotes.json y no se publica nada.")
-    f = ROOT / "lotes.json"
-    prev = json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
-    if any("ejemplo" in o["name"] for o in prev.get("offices", [])): prev = {}   # descarta datos de demostración
-    today = datetime.date.today().isoformat()
-    f.write_text(json.dumps({"updated": today, "offices": merge(prev, results, today)}, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(len(results), "oficinas actualizadas")
-
-
 # Fallback público: si la sede oficial falla, consultar páginas públicas conocidas.
 # Los datos alternativos se marcan como no oficiales y nunca se hacen pasar por actuales.
 async def fallback_public_sources():
@@ -180,3 +168,17 @@ async def fallback_public_sources():
         if len({x["source"] for x in items}) >= 2:
             agreed.append(items[0])
     return agreed
+
+if __name__ == "__main__":
+    results = asyncio.run(scrape())
+    if not results:
+        print("La sede oficial no devolvió oficinas; probando fuentes públicas alternativas.")
+        results = asyncio.run(fallback_public_sources())
+    if not results:
+        sys.exit("Sin resultados verificables: se conserva lotes.json y no se publica nada.")
+    f = ROOT / "lotes.json"
+    prev = json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
+    if any("ejemplo" in o["name"] for o in prev.get("offices", [])): prev = {}   # descarta datos de demostración
+    today = datetime.date.today().isoformat()
+    f.write_text(json.dumps({"updated": today, "offices": merge(prev, results, today)}, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(len(results), "oficinas actualizadas")

@@ -131,29 +131,29 @@ async def fallback_public_sources():
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 MiTIELista/1.0"})
             with urllib.request.urlopen(req, timeout=20) as response:
                 page = response.read().decode("utf-8", "ignore")
-            clean = re.sub(r"<script\\b.*?</script>|<style\\b.*?</style>", " ", page, flags=re.I|re.S)
+            clean = re.sub(r"<script\b.*?</script>|<style\b.*?</style>", " ", page, flags=re.I|re.S)
             clean = re.sub(r"<[^>]+>", " ", clean)
             clean = (clean.replace("&nbsp;", " ").replace("&#160;", " ")
                         .replace("&amp;", "&").replace("&#8217;", "'"))
-            clean = re.sub(r"\\s+", " ", clean)
+            clean = re.sub(r"\s+", " ", clean)
             # La página contiene varias oficinas; extraer cada bloque por nombre y su lote/fecha.
             office_specs = [
-                ("Zaragoza Unidad Doc. Extranjeros", r"(?:Zaragoza Unidad Doc\\.? Extranjeros|Comisaría de Extranjería de Zaragoza|CNP Zaragoza)", "Zaragoza Unidad Doc. Extranjeros"),
+                ("Zaragoza Unidad Doc. Extranjeros", r"(?:Zaragoza Unidad Doc\.? Extranjeros|Comisaría de Extranjería de Zaragoza|CNP Zaragoza)", "Zaragoza Unidad Doc. Extranjeros"),
                 ("Calatayud", r"(?:CNP Calatayud|Comisaría de Extranjería de Calatayud|Calatayud)", "Calatayud"),
             ]
             for office_id_name, marker, office_name in office_specs:
                 for hit in re.finditer(marker, clean, re.I):
                     block = clean[max(0, hit.start()-160):min(len(clean), hit.end()+450)]
-                    lm = re.search(r"(?:LOTE(?: NIE)?(?: ACTUAL)?|Lote actual|lote actual|Current lote)[^0-9]{0,40}(?:(20\\d{2})\\s*/\\s*)?(\\d{1,4})", block, re.I)
+                    lm = re.search(r"(?:LOTE(?: NIE)?(?: ACTUAL)?|Lote actual|lote actual|Current lote)[^0-9]{0,40}(?:(20\d{2})\s*/\s*)?(\d{1,4})", block, re.I)
                     if not lm:
-                        lm = re.search(r"(20\\d{2})\\s*/\\s*(\\d{1,4})", block)
+                        lm = re.search(r"(20\d{2})\s*/\s*(\d{1,4})", block)
                     if not lm:
                         continue
                     year = int(lm.group(1) or datetime.date.today().year)
                     number = int(lm.group(2))
-                    dm = re.search(r"(?:Act(?:ualizado)?|Actualizado|Última actualización|Last update)[^0-9]{0,25}(\\d{1,2})[/-](\\d{1,2})[/-](20\\d{2})", block, re.I)
+                    dm = re.search(r"(?:Act(?:ualizado)?|Actualizado|Última actualización|Last update)[^0-9]{0,25}(\d{1,2})[/-](\d{1,2})[/-](20\d{2})", block, re.I)
                     if not dm:
-                        dm = re.search(r"(\\d{1,2})/(\\d{1,2})/(20\\d{2})", block)
+                        dm = re.search(r"(\d{1,2})/(\d{1,2})/(20\d{2})", block)
                     published = f"{dm.group(3)}-{int(dm.group(2)):02d}-{int(dm.group(1)):02d}" if dm else None
                     found.append({
                         "id": slug("Zaragoza-" + office_name), "prov": "Zaragoza",

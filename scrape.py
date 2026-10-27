@@ -19,7 +19,8 @@ async def accept(page):
     await page.wait_for_load_state("domcontentloaded")
 
 async def open_province(page, prov):
-    await page.goto(START, wait_until="domcontentloaded")
+    # La sede puede tardar en responder; damos hasta 90 s para navegar.
+    await page.goto(START, wait_until="domcontentloaded", timeout=90000)
     await page.locator("select").first.select_option(label=prov)
     await accept(page)
 
@@ -42,9 +43,17 @@ async def read_lote(page, prov, value):
     return int(m.group(1)), int(m.group(2))
 
 async def snap(page, name):
+    """Guarda lo que se pueda del diagnóstico sin ocultar el error original."""
     DEBUG.mkdir(exist_ok=True)
-    (DEBUG / f"{name}.html").write_text(await page.content(), encoding="utf-8")
-    await page.screenshot(path=str(DEBUG / f"{name}.png"), full_page=True)
+    try:
+        html = await page.content()
+        (DEBUG / f"{name}.html").write_text(html, encoding="utf-8")
+    except Exception as e:
+        print(f"[debug] no se pudo guardar HTML ({name}): {e}")
+    try:
+        await page.screenshot(path=str(DEBUG / f"{name}.png"), full_page=True, timeout=15000)
+    except Exception as e:
+        print(f"[debug] no se pudo guardar captura ({name}): {e}")
 
 async def scrape():
     results = []
@@ -52,7 +61,9 @@ async def scrape():
         b = await p.chromium.launch(headless=True)
         ctx = await b.new_context(locale="es-ES", timezone_id="Europe/Madrid",
               user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36")
-        page = await ctx.new_page(); page.set_default_timeout(30000)
+        page = await ctx.new_page()
+        page.set_default_timeout(90000)
+        page.set_default_navigation_timeout(90000)
         for prov in PROVINCES:
             try:
                 await open_province(page, prov)

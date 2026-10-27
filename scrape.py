@@ -3,7 +3,17 @@ Uso: python scrape.py   |   Añade provincias en PROVINCES."""
 import asyncio, json, re, sys, unicodedata, datetime, pathlib, random
 from playwright.async_api import async_playwright
 
-PROVINCES = ["Barcelona", "Lleida"]
+PROVINCES = [
+    "A Coruña", "Albacete", "Alicante", "Almería", "Araba/Álava", "Asturias",
+    "Ávila", "Badajoz", "Balears (Illes)", "Barcelona", "Burgos", "Cáceres",
+    "Cádiz", "Cantabria", "Castellón", "Ceuta", "Ciudad Real", "Córdoba",
+    "Cuenca", "Girona", "Granada", "Guadalajara", "Guipúzcoa / Gipuzkoa",
+    "Huelva", "Huesca", "Jaén", "La Rioja", "Las Palmas", "León", "Lleida",
+    "Lugo", "Madrid", "Málaga", "Melilla", "Murcia", "Navarra", "Ourense",
+    "Palencia", "Pontevedra", "Salamanca", "Santa Cruz de Tenerife", "Segovia",
+    "Sevilla", "Soria", "Tarragona", "Teruel", "Toledo", "Valencia",
+    "Valladolid", "Vizcaya / Bizkaia", "Zamora", "Zaragoza"
+]
 START = "https://icp.administracionelectronica.gob.es/icpplus/index.html"
 TRAMITE = "RECOGIDA DE TARJETA DE IDENTIDAD DE EXTRANJERO"
 ROOT = pathlib.Path(__file__).parent
@@ -82,11 +92,11 @@ async def scrape():
             for value, name in offices:
                 try:
                     y, n = await read_lote(page, prov, value)
-                    results.append({"id": slug(prov + "-" + name)[:48], "prov": prov, "name": name, "y": y, "n": n})
+                    results.append({"id": slug(prov + "-" + name)[:48], "prov": prov, "name": name, "y": y, "n": n, "checked": datetime.date.today().isoformat()})
                     print(f"[{prov}] {name}: {y}/{n}")
                 except Exception as e:
                     print(f"[{prov}] {name}: error: {e}"); await snap(page, slug(prov + "-" + name)[:40])
-                await asyncio.sleep(random.uniform(2, 4))
+                await asyncio.sleep(random.uniform(0.5, 1.2))
         await b.close()
     return results
 

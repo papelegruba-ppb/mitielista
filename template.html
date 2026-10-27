@@ -128,7 +128,6 @@ h1{font-size:2.5rem;max-width:800px}.lead{max-width:760px;margin-bottom:28px}
   <a class="brand" href="/" aria-label="Mi TIE Lista, inicio"><svg viewBox="0 0 48 48" width="44" height="44" aria-hidden="true"><rect x="2" y="8" width="38" height="28" rx="6" fill="var(--accent)"/><circle cx="14" cy="19" r="4.5" fill="var(--on-accent)"/><path d="M7 31c1-4 3.5-6 7-6s6 2 7 6z" fill="var(--on-accent)"/><rect x="24" y="15" width="11" height="3" rx="1.5" fill="var(--on-accent)"/><rect x="24" y="22" width="8" height="3" rx="1.5" fill="var(--on-accent)" opacity=".7"/><circle cx="37" cy="34" r="10" fill="var(--ok)" stroke="var(--bg)" stroke-width="3"/><path d="M32.5 34.2l3.2 3.2 5.6-6.4" fill="none" stroke="var(--bg)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Mi TIE Lista</span></a>
   <h1>{{H1}}</h1>
   <p class="lead">{{LEAD}}</p>
-  <div id="demo" class="demo" hidden>Datos de demostración: todavía no hay datos reales publicados.</div>
   <div id="update-status" class="update-status" role="status" aria-live="polite" hidden><strong>Obteniendo datos de los lotes</strong><span>La actualización está en curso. Tiempo transcurrido: <span id="update-elapsed" class="update-time">00:00</span>. Puedes consultar los últimos datos guardados mientras termina.</span></div>
 
   <form class="card" id="f" novalidate>
@@ -165,11 +164,7 @@ h1{font-size:2.5rem;max-width:800px}.lead{max-width:760px;margin-bottom:28px}
 <script>
 var WA="34652916014";
 var CITA="https://icp.administracionelectronica.gob.es/icpplus/index.html";
-// Datos de demostración. En producción se cargan desde lotes.json (generado a diario por el scraper).
-var SAMPLE={updated:"2026-10-27",offices:[
- {id:"bcn1",prov:"Barcelona",name:"Comisaría de Barcelona (ejemplo)",y:2026,n:233,h:[["2026-10-13",196],["2026-10-20",215],["2026-10-27",233]]},
- {id:"ll1",prov:"Lleida",name:"Comisaría de Lleida (ejemplo)",y:2026,n:105,h:[["2026-10-13",88],["2026-10-20",97],["2026-10-27",105]]}
-]};
+// Los resultados se cargan exclusivamente desde lotes.json; nunca se muestran datos inventados.
 var $=function(i){return document.getElementById(i)};
 var DATA=null;
 var updateTimer=null;
@@ -258,9 +253,8 @@ $("f").addEventListener("submit",function(e){e.preventDefault();check()});
 $("wa").href="https://wa.me/"+WA+"?text="+encodeURIComponent("Hola, necesito ayuda con un trámite.");
 checkUpdateStatus();setInterval(checkUpdateStatus,60000);
 
-fetch("/lotes.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){return{d:d,demo:false}})
-.catch(function(){return{d:{updated:null,offices:[]},demo:true}}).then(function(res){
-  DATA=res;$("demo").hidden=!res.demo;fillProv();
+fetch("/lotes.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("No se pudo cargar lotes.json");return r.json()}).catch(function(){return{updated:null,offices:[]}}).then(function(d){
+  DATA={d:d};fillProv();
   if(window.PRESET){var po=DATA.d.offices.filter(function(x){return x.id===PRESET})[0];if(po){$("prov").value=po.prov;fillOf();$("of").value=po.id}}
   var s=store("tie");
   if(s){$("prov").value=s.p||"";fillOf();$("of").value=s.o||"";$("lote").value=s.l||"";}

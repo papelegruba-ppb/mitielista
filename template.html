@@ -43,7 +43,11 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-app
 main{max-width:520px;margin:0 auto;padding:28px 20px 40px}
 h1{font:700 2rem/1.1 "Bricolage Grotesque",system-ui,sans-serif;letter-spacing:-.02em;margin:0 0 8px}
 .lead{color:var(--muted);margin:0 0 24px}
-.demo{background:var(--wait-bg);color:var(--wait);border-radius:8px;padding:10px 12px;margin:0 0 20px;font-size:.9rem}\n.update-status{background:var(--wait-bg);color:var(--wait);border-radius:10px;padding:12px 14px;margin:0 0 20px;font-size:.92rem}\n.update-status strong{display:block;margin-bottom:3px}\n.update-status[hidden]{display:none}\n.update-time{font-variant-numeric:tabular-nums;font-weight:700}
+.demo{background:var(--wait-bg);color:var(--wait);border-radius:8px;padding:10px 12px;margin:0 0 20px;font-size:.9rem}
+.update-status{background:var(--wait-bg);color:var(--wait);border-radius:10px;padding:12px 14px;margin:0 0 20px;font-size:.92rem}
+.update-status strong{display:block;margin-bottom:3px}
+.update-status[hidden]{display:none}
+.update-time{font-variant-numeric:tabular-nums;font-weight:700}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
 label{display:block;font-weight:600;margin:0 0 6px}
 .field{margin:0 0 16px}
@@ -84,7 +88,8 @@ footer a{color:var(--accent)}
   <a class="brand" href="/" aria-label="Mi TIE Lista, inicio"><svg viewBox="0 0 48 48" width="44" height="44" aria-hidden="true"><rect x="2" y="8" width="38" height="28" rx="6" fill="var(--accent)"/><circle cx="14" cy="19" r="4.5" fill="var(--on-accent)"/><path d="M7 31c1-4 3.5-6 7-6s6 2 7 6z" fill="var(--on-accent)"/><rect x="24" y="15" width="11" height="3" rx="1.5" fill="var(--on-accent)"/><rect x="24" y="22" width="8" height="3" rx="1.5" fill="var(--on-accent)" opacity=".7"/><circle cx="37" cy="34" r="10" fill="var(--ok)" stroke="var(--bg)" stroke-width="3"/><path d="M32.5 34.2l3.2 3.2 5.6-6.4" fill="none" stroke="var(--bg)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Mi TIE Lista</span></a>
   <h1>{{H1}}</h1>
   <p class="lead">{{LEAD}}</p>
-  <div id="demo" class="demo" hidden>Datos de demostración: todavía no hay datos reales publicados.</div>\n  <div id="update-status" class="update-status" role="status" aria-live="polite" hidden><strong>Obteniendo datos de los lotes</strong><span>La actualización está en curso. Tiempo transcurrido: <span id="update-elapsed" class="update-time">00:00</span>. Puedes consultar los últimos datos guardados mientras termina.</span></div>
+  <div id="demo" class="demo" hidden>Datos de demostración: todavía no hay datos reales publicados.</div>
+  <div id="update-status" class="update-status" role="status" aria-live="polite" hidden><strong>Obteniendo datos de los lotes</strong><span>La actualización está en curso. Tiempo transcurrido: <span id="update-elapsed" class="update-time">00:00</span>. Puedes consultar los últimos datos guardados mientras termina.</span></div>
 
   <form class="card" id="f" novalidate>
     <div class="field">
@@ -127,6 +132,24 @@ var SAMPLE={updated:"2026-10-27",offices:[
 ]};
 var $=function(i){return document.getElementById(i)};
 var DATA=null;
+var updateTimer=null;
+function elapsedText(ms){
+  var s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+  return (h?String(h).padStart(2,"0")+":":"")+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0");
+}
+function checkUpdateStatus(){
+  fetch("https://api.github.com/repos/papelegruba-ppb/mitielista/actions/workflows/lotes.yml/runs?per_page=5",{cache:"no-store"})
+    .then(function(r){if(!r.ok)throw new Error("status unavailable");return r.json()})
+    .then(function(d){
+      var run=(d.workflow_runs||[]).filter(function(x){return x.status==="in_progress"})[0];
+      var box=$("update-status");
+      if(!run||!run.created_at){box.hidden=true;if(updateTimer)clearInterval(updateTimer);updateTimer=null;return}
+      var started=Date.parse(run.created_at);
+      box.hidden=false;
+      function tick(){ $("update-elapsed").textContent=elapsedText(Date.now()-started); }
+      tick();if(updateTimer)clearInterval(updateTimer);updateTimer=setInterval(tick,1000);
+    }).catch(function(){ $("update-status").hidden=true; });
+}
 
 function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||"null");localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
 function pd(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2])}
@@ -180,7 +203,9 @@ function check(){
 
 $("f").addEventListener("submit",function(e){e.preventDefault();check()});
 $("prov").addEventListener("change",fillOf);
-$("wa").href="https://wa.me/"+WA+"?text="+encodeURIComponent("Hola, necesito ayuda con un trámite.");\ncheckUpdateStatus();setInterval(checkUpdateStatus,60000);
+$("wa").href="https://wa.me/"+WA+"?text="+encodeURIComponent("Hola, necesito ayuda con un trámite.");
+checkUpdateStatus();setInterval(checkUpdateStatus,60000);
+checkUpdateStatus();setInterval(checkUpdateStatus,60000);
 
 fetch("/lotes.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){return{d:d,demo:false}})
 .catch(function(){return{d:SAMPLE,demo:true}}).then(function(res){

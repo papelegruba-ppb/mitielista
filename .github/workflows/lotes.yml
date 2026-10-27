@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install playwright && playwright install --with-deps chromium
-      - run: python scrape.py
+      - name: Consultar lotes\n        run: python scrape.py\n        timeout-minutes: 15\n        continue-on-error: true
       - uses: actions/upload-artifact@v4
         if: always()
         with:

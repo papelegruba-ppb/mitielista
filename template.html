@@ -68,6 +68,11 @@ select:focus-visible,input:focus-visible,button:focus-visible,a:focus-visible{ou
 .nums small{display:block;color:var(--muted);font-size:.8rem}
 .nums b{font:700 1.4rem "Bricolage Grotesque",system-ui,sans-serif}
 .res p{margin:0 0 10px;color:var(--ink)}
+.situation{margin-bottom:16px}.situation-kicker{font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.75}
+.situation-place{font-weight:700;margin-top:4px}.situation-gap{font:700 1.45rem/1.25 "Bricolage Grotesque",system-ui,sans-serif;margin:12px 0 16px}
+.situation-gap strong{white-space:nowrap}.estimate{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+.estimate-label{font-size:.85rem;color:var(--muted);font-weight:700}.estimate-date{font:700 1.75rem "Bricolage Grotesque",system-ui,sans-serif;margin:3px 0 8px;color:var(--ink)}
+.estimate-range{font-weight:700;font-size:.9rem}
 .acts{display:grid;gap:10px;margin-top:14px}
 footer{color:var(--muted);font-size:.85rem;margin-top:24px}
 footer a{color:var(--accent)}
@@ -104,6 +109,16 @@ input{font-size:1rem;font-weight:400;letter-spacing:0}
 .tie-help{display:inline-block;margin-top:0;margin-bottom:2px;color:#347df4;font-weight:700;font-size:.85rem;text-decoration:none}
 .secure-note{text-align:center;color:#8a9db5;font-size:.85rem;margin-top:12px}
 #out{margin-top:20px}
+@media(min-width:820px){
+main{max-width:1120px;padding:36px 32px 56px;display:grid;grid-template-columns:minmax(320px,.85fr) minmax(420px,1.15fr);column-gap:28px;align-items:start}
+h1,.lead,.demo,.update-status,.info,footer{grid-column:1/-1}
+h1{font-size:2.5rem;max-width:800px}.lead{max-width:760px;margin-bottom:28px}
+.card{padding:28px;border-radius:28px}#out{margin-top:0;min-width:0}.res{padding:26px;border-radius:24px}
+.res h2{font-size:1.9rem}.nums{gap:14px}.nums div{padding:16px}.nums b{font-size:1.7rem}
+.acts{grid-template-columns:1fr 1fr}.info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:32px}
+.info>h2,.info>p{grid-column:1/-1}
+}
+@media(max-width:819px){main{display:block}}
 @media(max-width:420px){main{padding:16px 14px 28px}.card{padding:24px 20px 22px;border-radius:28px}select,input{min-height:55px}}
 
 </style>
@@ -245,7 +260,7 @@ function check(){
   }
   store("tie",{p:$("prov").value,o:o?o.id:"",office:$("office-manual").value,y:String(year),l:num,u:$("ultimo").value});
   var uTxt=U.y+"/"+U.n,lTxt=ref.y+"/"+ref.n;
-  var nums='<div class="nums"><div><small>Tu número de lote</small><b>'+uTxt+'</b></div><div><small>Último lote actual</small><b>'+lTxt+'</b></div></div>';
+  var nums='<div class="situation"><div class="situation-kicker">Tu situación de hoy</div><div class="situation-place">'+esc(o?o.name:$("prov").value)+' · '+esc($("prov").value)+'</div><div class="situation-gap">'+(cmp>0?'Estás a <strong>'+falta+' lotes</strong> de tu tarjeta.':'Tu lote está dentro del último lote indicado.')+'</div><div class="nums"><div><small>AHORA · último lote</small><b>'+lTxt+'</b></div><div><small>TU LOTE</small><b>'+uTxt+'</b></div></div></div>';
   var cmp=(U.y-ref.y)||(U.n-ref.n);
   var selectedOffice=$("of").selectedOptions&&$("of").selectedOptions[0]?$("of").selectedOptions[0].textContent:"";
   var who=o?o.name:($("office-manual").value.trim()||selectedOffice||"Oficina no especificada");
@@ -255,7 +270,7 @@ function check(){
   if(cmp<=0){show("ok","Tu lote podría estar listo","<p>El último lote indicado es igual o posterior al tuyo. Confirma la disponibilidad antes de desplazarte.</p>"+note,nums,cita+wa);return}
   var falta=U.n-ref.n,r=o?rate(o):0,est="";
   if(U.y>ref.y){show("wait","Tu lote es de un año posterior","<p>El último lote indicado pertenece a un año anterior al tuyo.</p>"+note,nums,wa);return}
-  if(r>0){var d=addBiz(pd(DATA.d.updated),Math.ceil(falta/r));est="<p>Al ritmo reciente, podría estar lista hacia el <b>"+fmt(d)+"</b>. Es orientativo.</p>"}
+  if(r>0){var d=addBiz(pd(DATA.d.updated),Math.ceil(falta/r));var early=addBiz(d,-Math.max(1,Math.ceil(4/r)));var late=addBiz(d,Math.max(1,Math.ceil(4/r)));est="<div class=\"estimate\"><div class=\"estimate-label\">Si el ritmo se mantiene</div><div class=\"estimate-date\">"+fmt(d)+" "+d.getFullYear()+"</div><p>Fecha orientativa. Puede cambiar si cambia el ritmo de la oficina.</p><p class=\"estimate-range\">Rango orientativo por variación del ritmo: "+fmt(early)+" – "+fmt(late)+"</p></div>"}
   show("wait","Tu lote aún no aparece como alcanzado",est||"<p>Faltan "+falta+" lotes según el número introducido. No hay datos suficientes para estimar una fecha.</p>"+note,nums,wa);
 }
 

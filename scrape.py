@@ -170,7 +170,14 @@ async def fallback_public_sources():
     return agreed
 
 if __name__ == "__main__":
-    results = asyncio.run(scrape())
+    try:
+        results = asyncio.run(asyncio.wait_for(scrape(), timeout=15 * 60))
+    except asyncio.TimeoutError:
+        print("La consulta oficial superó 15 minutos; se activa el fallback público.")
+        results = []
+    except Exception as e:
+        print(f"Falló la consulta oficial: {e}; se activa el fallback público.")
+        results = []
     print("Comprobando fuentes públicas alternativas para cubrir oficinas no obtenidas oficialmente.")
     fallback = asyncio.run(fallback_public_sources())
     official_ids = {r["id"] for r in results}

@@ -207,12 +207,14 @@ function rate(o){
 }
 
 function fillProv(){
-  var provs=["Barcelona","Lleida"];
+  var provs=["Las Palmas","Barcelona","Lleida"];
   DATA.d.offices.forEach(function(o){if(provs.indexOf(o.prov)<0)provs.push(o.prov)});
   $("prov").innerHTML='<option value="">Elige provincia</option>'+provs.map(function(p){return'<option>'+esc(p)+'</option>'}).join("");
 }
 function fillOf(){
   var p=$("prov").value,list=DATA.d.offices.filter(function(o){return o.prov===p});
+  var staticOffices=p==="Las Palmas"?["CNP MASPALOMAS, Avenida de Moya, 4","CNP PUERTO ROSARIO, HERBANIA, 28","CNP SANTA LUCIA DE TIRAJANA, DOCTOR NEGRIN, 10","CNP TUINEJE, PACO HIERRO, S/N","COMISARIA CNP ARRECIFE, MASTELERO, S/N","Las Palmas de Gran Canaria, PLAZA DE LA CONCORDIA, 5"]:[];
+  if(!list.length&&staticOffices.length){$("of").innerHTML='<option value="">Elige oficina</option>'+staticOffices.map(function(n){return '<option value="manual:'+esc(n)+'">'+esc(n)+'</option>'}).join("");$("office-manual-field").hidden=true;$("manual-field").hidden=false;return}
   $("of").innerHTML='<option value="">'+(list.length?"Elige oficina":"Datos automáticos no disponibles")+'</option>'+list.map(function(o){return'<option value="'+esc(o.id)+'">'+esc(o.name)+'</option>'}).join("");
   $("office-manual-field").hidden=list.length>0 || !p;
   $("manual-field").hidden=list.length>0 || !p;
@@ -245,7 +247,8 @@ function check(){
   var uTxt=U.y+"/"+U.n,lTxt=ref.y+"/"+ref.n;
   var nums='<div class="nums"><div><small>Tu número de lote</small><b>'+uTxt+'</b></div><div><small>Último lote actual</small><b>'+lTxt+'</b></div></div>';
   var cmp=(U.y-ref.y)||(U.n-ref.n);
-  var who=o?o.name:($("office-manual").value.trim()||"Oficina no especificada");
+  var selectedOffice=$("of").selectedOptions&&$("of").selectedOptions[0]?$("of").selectedOptions[0].textContent:"";
+  var who=o?o.name:($("office-manual").value.trim()||selectedOffice||"Oficina no especificada");
   var note=o?"":"<p><b>Comparación manual:</b> el último lote lo has introducido tú; no está verificado automáticamente.</p>";
   var wa='<a class="btn alt" target="_blank" rel="noopener" href="https://wa.me/'+WA+'?text='+encodeURIComponent("Hola, tengo dudas con mi TIE. Mi lote es "+uTxt+" en "+who+".")+'">Preguntar por WhatsApp</a>';
   var cita='<a class="btn" target="_blank" rel="noopener" href="'+CITA+'">Pedir cita de recogida</a>';

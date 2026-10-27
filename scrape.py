@@ -16,11 +16,18 @@ def slug(s):
 
 async def accept(page):
     await page.get_by_role("button", name=re.compile("Aceptar", re.I)).first.click()
-    await page.wait_for_load_state("domcontentloaded")
+    # Algunas respuestas de la sede mantienen la navegación abierta; no bloquearse
+    # esperando DOMContentLoaded si el formulario ya está disponible.
+    try:
+        await page.wait_for_load_state("domcontentloaded", timeout=15000)
+    except Exception:
+        pass
 
 async def open_province(page, prov):
-    # La sede puede tardar en responder; damos hasta 90 s para navegar.
-    await page.goto(START, wait_until="domcontentloaded", timeout=90000)
+    # Esperar a que el servidor entregue el documento, no a que terminen
+    # todos los eventos de carga: la sede a veces no dispara DOMContentLoaded.
+    await page.goto(START, wait_until="commit", timeout=90000)
+    await page.locator("select").first.wait_for(state="visible", timeout=30000)
     await page.locator("select").first.select_option(label=prov)
     await accept(page)
 

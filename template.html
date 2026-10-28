@@ -284,12 +284,27 @@ var isAppleMobile=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.plat
 if(isAppleMobile&&!("standalone" in navigator&&navigator.standalone)){installButton.hidden=false;installButton.textContent="Añadir al inicio";}
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("/service-worker.js").catch(function(){});});}
 
-fetch("/lotes.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("No se pudo cargar lotes.json");return r.json()}).catch(function(){return{updated:null,offices:[]}}).then(function(d){
-  DATA={d:d};fillProv();
-  if(window.PRESET){var po=DATA.d.offices.filter(function(x){return x.id===PRESET})[0];if(po){$("prov").value=po.prov;fillOf();$("of").value=po.id}}
-  var s=store("tie");
-  if(s){$("prov").value=s.p||"";fillOf();$("of").value=s.o||"";$("lote").value=s.l||"";}
-});
+// La lista de provincias se muestra inmediatamente, sin depender de la descarga de datos.
+var PROVINCIAS_BASE=["A Coruña","Albacete","Alicante","Almería","Araba/Álava","Asturias","Ávila","Badajoz","Balears (Illes)","Barcelona","Burgos","Cáceres","Cádiz","Cantabria","Castellón","Ceuta","Ciudad Real","Córdoba","Cuenca","Girona","Granada","Guadalajara","Guipúzcoa / Gipuzkoa","Huelva","Huesca","Jaén","La Rioja","Las Palmas","León","Lleida","Lugo","Madrid","Málaga","Melilla","Murcia","Navarra","Ourense","Palencia","Pontevedra","Salamanca","Santa Cruz de Tenerife","Segovia","Sevilla","Soria","Tarragona","Teruel","Toledo","Valencia","Valladolid","Vizcaya / Bizkaia","Zamora","Zaragoza"];
+$("prov").innerHTML='<option value="">Elige provincia</option>'+PROVINCIAS_BASE.map(function(p){return '<option>'+esc(p)+'</option>'}).join("");
+$("of").innerHTML='<option value="">Cargando oficinas…</option>';
+$("of").disabled=true;
+function loadOfficeData(){
+  fetch("/lotes.json?v=20261028b",{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(function(d){
+    if(!d||!Array.isArray(d.offices))throw new Error("Formato de datos inválido");
+    DATA={d:d};fillProv();
+    var s=store("tie");
+    if(window.PRESET){var po=DATA.d.offices.filter(function(x){return x.id===PRESET})[0];if(po){$("prov").value=po.prov;fillOf();$("of").value=po.id}}
+    else if(s){$("prov").value=s.p||"";fillOf();$("of").value=s.o||"";$("lote").value=s.l||"";}
+    if(!$("prov").value)fillOf();
+  }).catch(function(){
+    DATA={d:{updated:null,offices:[]}};
+    $("of").innerHTML='<option value="">No se pudieron cargar las oficinas; recarga la página</option>';
+    $("of").disabled=true;
+    show("bad","No se pudieron cargar los datos","<p>La lista de provincias está disponible, pero no se ha podido descargar el archivo de oficinas. Comprueba la conexión y recarga la página.</p>");
+  });
+}
+loadOfficeData();
 </script>
 </body>
 </html>

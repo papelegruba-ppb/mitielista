@@ -7,8 +7,10 @@
 <meta name="description" content="{{DESC}}">
 <link rel="canonical" href="{{URL}}">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/logo.svg">
 <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large">
-<meta name="theme-color" content="#2455D6">
+<meta name="theme-color" content="#f4eaff">
 <link rel="alternate" hreflang="es" href="{{URL}}">
 <link rel="alternate" hreflang="x-default" href="{{URL}}">
 <meta property="og:type" content="website">
@@ -96,15 +98,15 @@ footer a{color:var(--accent)}
 *{box-sizing:border-box}
 html{background:var(--bg);scroll-behavior:smooth}
 body{margin:0;background:linear-gradient(125deg,#f4eaff 0%,#fff 42%,#fff1df 100%);background-attachment:fixed;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}
-main{width:min(100% - 40px,1080px);margin:0 auto;padding:28px 0 52px;display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.92fr);grid-template-areas:"brand brand" "title title" "lead lead" "status status" "form output" "info info" "footer footer";gap:0 28px;align-items:start}
-.brand{grid-area:brand;display:flex;align-items:center;gap:10px;width:max-content;margin:0 0 30px;color:var(--ink);text-decoration:none;font-weight:750;letter-spacing:-.03em}
-.brand img{width:38px;height:38px}
-h1{grid-area:title;font-size:clamp(2rem,4vw,3.15rem);line-height:1.04;letter-spacing:-.055em;margin:0 0 12px;font-weight:780}
+main{width:min(calc(100% - 64px),1240px);margin:0 auto;padding:34px 0 60px;display:grid;grid-template-columns:minmax(360px,.82fr) minmax(0,1.18fr);grid-template-areas:"brand brand" "title title" "lead lead" "status status" "form output" "info info" "footer footer";column-gap:32px;row-gap:0;align-items:start}
+.brand-row{grid-area:brand;display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 30px}.brand{display:flex;align-items:center;gap:10px;width:max-content;margin:0;color:var(--ink);text-decoration:none;font-weight:750;letter-spacing:-.03em}
+.brand img{width:54px;height:54px;flex:0 0 54px;display:block;object-fit:contain;border-radius:14px;background:#fff;box-shadow:0 4px 14px rgba(45,28,68,.08)}
+h1{grid-area:title;font-size:clamp(2.4rem,4vw,3.6rem);line-height:1.04;letter-spacing:-.055em;margin:0 0 12px;font-weight:780}
 h1::after{content:".";color:#ff9a55}
 .lead{grid-area:lead;max-width:680px;color:#625b6c;font-size:1rem;margin:0 0 20px}
 #update-status{grid-area:status;margin:0 0 22px}
-.card{grid-area:form;min-width:0;background:rgba(255,255,255,.86);border:1px solid rgba(226,216,238,.9);border-radius:20px;padding:26px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}
-#out{grid-area:output;min-width:0;margin:0 0 24px}
+.card{grid-area:form;min-width:0;width:100%;background:rgba(255,255,255,.86);border:1px solid rgba(226,216,238,.9);border-radius:20px;padding:26px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+#out{grid-area:output;min-width:0;margin:0 0 24px;align-self:start}
 .info{grid-area:info}
 footer{grid-area:footer}
 label{display:block;color:#373140;font-size:.9rem;font-weight:650;margin:0 0 7px}
@@ -121,10 +123,10 @@ small,.muted,.help{color:var(--muted)}
 #out:not(:empty){background:rgba(255,255,255,.82);border:1px solid #e8e1ef;border-radius:20px;padding:24px;box-shadow:var(--shadow)}
 .info{margin-top:28px;padding:22px 24px;background:rgba(255,255,255,.6);border:1px solid #eee6f4;border-radius:18px}
 footer{padding-top:22px;color:var(--muted);font-size:.85rem}
-@media(max-width:760px){
- main{width:min(100% - 28px,560px);padding:20px 0 36px;display:flex;flex-direction:column;gap:0}
- .brand{margin-bottom:26px;font-size:.95rem}
- .brand img{width:34px;height:34px}
+@media(min-width:761px){.card{padding:30px}.info{margin-top:36px}footer{margin-top:8px}}\n@media(max-width:1000px) and (min-width:761px){main{width:calc(100% - 40px);grid-template-columns:minmax(300px,.9fr) minmax(0,1.1fr);column-gap:22px}.card{padding:22px}}\n@media(max-width:760px){
+ main{width:min(calc(100% - 32px),620px);padding:20px 0 36px;display:flex;flex-direction:column;gap:0}
+ .brand-row{width:100%;margin-bottom:26px}.brand{font-size:1.05rem}.install-app{max-width:170px;min-height:42px;padding:9px 12px;font-size:.85rem}
+ .brand img{width:46px;height:46px;flex-basis:46px}
  h1{font-size:clamp(2rem,9vw,2.65rem);margin-bottom:10px}
  .lead{font-size:.95rem;margin-bottom:18px}
  #update-status{margin-bottom:18px}
@@ -143,7 +145,7 @@ footer{padding-top:22px;color:var(--muted);font-size:.85rem}
 </head>
 <body>
 <main>
-  <a class="brand" href="/" aria-label="Mi TIE Listo, inicio"><img src="/logo.svg" width="54" height="54" alt="" style="object-fit:contain"><span>Mi TIE Listo</span></a>
+  <div class="brand-row"><a class="brand" href="/" aria-label="Mi TIE Lista, inicio"><img src="/logo.svg" width="54" height="54" alt=""><span>Mi TIE Lista</span></a><button class="install-app" id="install-app" type="button" hidden>Instalar aplicación</button></div>
   <h1>{{H1}}</h1>
   <p class="lead">{{LEAD}}</p>
   <div id="update-status" class="update-status" role="status" aria-live="polite" hidden><strong>Obteniendo datos de los lotes</strong><span>La actualización está en curso. Tiempo transcurrido: <span id="update-elapsed" class="update-time">00:00</span>. Puedes consultar los últimos datos guardados mientras termina.</span></div>
@@ -270,6 +272,13 @@ $("f").addEventListener("submit",function(e){e.preventDefault();check()});
 
 $("wa").href="https://wa.me/"+WA+"?text="+encodeURIComponent("Hola, necesito ayuda con un trámite.");
 checkUpdateStatus();setInterval(checkUpdateStatus,60000);
+
+var installPrompt=null;
+var installButton=$("install-app");
+window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();installPrompt=e;installButton.hidden=false;});
+installButton.addEventListener("click",function(){if(!installPrompt){show("wait","Instalar Mi TIE Lista","<p>En Safari, abre el menú Compartir y elige “Añadir a pantalla de inicio”. En Chrome o Edge, usa “Instalar aplicación” en el menú del navegador.</p>");return;}installPrompt.prompt();installPrompt.userChoice.finally(function(){installPrompt=null;installButton.hidden=true;});});
+window.addEventListener("appinstalled",function(){installButton.hidden=true;});
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("/service-worker.js").catch(function(){});});}
 
 fetch("/lotes.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("No se pudo cargar lotes.json");return r.json()}).catch(function(){return{updated:null,offices:[]}}).then(function(d){
   DATA={d:d};fillProv();

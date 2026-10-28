@@ -276,8 +276,10 @@ checkUpdateStatus();setInterval(checkUpdateStatus,60000);
 var installPrompt=null;
 var installButton=$("install-app");
 window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();installPrompt=e;installButton.hidden=false;});
-installButton.addEventListener("click",function(){if(!installPrompt){show("wait","Instalar Mi TIE Lista","<p>En Safari, abre el menú Compartir y elige “Añadir a pantalla de inicio”. En Chrome o Edge, usa “Instalar aplicación” en el menú del navegador.</p>");return;}installPrompt.prompt();installPrompt.userChoice.finally(function(){installPrompt=null;installButton.hidden=true;});});
+installButton.addEventListener("click",function(){if(!installPrompt){show("wait","Instalar Mi TIE Lista","<p>En iPhone o iPad: abre esta página en Safari, pulsa Compartir y elige “Añadir a pantalla de inicio”. En Mac, Chrome o Edge: abre el menú del navegador y selecciona “Instalar aplicación” o “Añadir al Dock”, si aparece.</p>");return;}installPrompt.prompt();installPrompt.userChoice.finally(function(){installPrompt=null;installButton.hidden=true;});});
 window.addEventListener("appinstalled",function(){installButton.hidden=true;});
+var isAppleMobile=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+if(isAppleMobile&&!("standalone" in navigator&&navigator.standalone)){installButton.hidden=false;installButton.textContent="Añadir al inicio";}
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("/service-worker.js").catch(function(){});});}
 
 fetch("/lotes.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("No se pudo cargar lotes.json");return r.json()}).catch(function(){return{updated:null,offices:[]}}).then(function(d){

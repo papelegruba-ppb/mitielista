@@ -70,7 +70,7 @@ write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="htt
       "".join(f"<url><loc>{u}</loc><lastmod>{data['updated']}</lastmod></url>\n" for u in urls) + "</urlset>\n")
 write("robots.txt", f"User-agent: *\nAllow: /\n\nSitemap: {DOMAIN}/sitemap.xml\n")
 write("CNAME", DOMAIN.split("//")[1] + "\n")
-for f in ("favicon.svg", "logo.svg", "og.png"):
+for f in ("favicon.svg", "logo.svg", "og.png", "manifest.json", "service-worker.js"):
     if (ROOT / f).exists(): shutil.copy(ROOT / f, OUT / f)
 write("lotes.json", json.dumps(data, ensure_ascii=False))
 print(len(urls), "URLs en el sitemap")

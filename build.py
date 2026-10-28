@@ -26,7 +26,12 @@ def fdate(d): y, m, dd = d.split("-"); return f"{dd}/{m}/{y}"
 def info(o=None):
     p = ['<section class="info">']
     if o:
-        p.append(f'<h2>Último lote en {esc(o["name"])}</h2><p>El último lote publicado es el <b>{o["y"]}/{o["n"]}</b> (actualizado el {fdate(data["updated"])}). Si tu lote es igual o menor, puede que la tarjeta ya haya llegado; confirma con la oficina antes de desplazarte.</p>')
+        if o.get("source_type") == "public_unofficial":
+            published = fdate(o["published"]) if o.get("published") else "sin fecha de publicación confirmada"
+            source = esc(o.get("source", "fuente pública no oficial"))
+            p.append(f'<h2>Último lote publicado en {esc(o["name"])}</h2><p><b>{o["y"]}/{o["n"]}</b>. Dato <b>no oficial</b>, publicado {published}; comprobado el {fdate(o.get("checked", data["updated"]))} en {source}. Puede estar desfasado y no confirma que tu tarjeta esté disponible. Confirma con la oficina antes de desplazarte.</p>')
+        else:
+            p.append(f'<h2>Último lote en {esc(o["name"])}</h2><p>El último lote publicado es el <b>{o["y"]}/{o["n"]}</b> (comprobado el {fdate(o.get("checked", data["updated"]))}). Si tu lote es igual o menor, puede que la tarjeta haya llegado; confirma con la oficina antes de desplazarte.</p>')
     if not offices:
         p.append("<p>En este momento no hay lotes de oficinas que se hayan podido verificar. No mostramos números de ejemplo ni estimaciones inventadas. Vuelve a consultar cuando se recuperen las fuentes.</p>")
     p.append("<h2>Preguntas frecuentes</h2>")
@@ -59,8 +64,8 @@ write("index.html", render("Mi TIE Lista: comprueba tu lote y cuándo recogerla"
 for o in offices:
     u = DOMAIN + path(o); urls.append(u)
     write(path(o) + "index.html", render((lambda t: t + (' | ' + SITE if len(t) <= 45 else ''))(f"Lote TIE {o['name']} hoy: {o['y']}/{o['n']}"),
-        f"Último lote TIE publicado en {o['name']} ({o['prov']}): {o['y']}/{o['n']}, actualizado el {fdate(data['updated'])}. Comprueba si tu tarjeta está lista y la fecha estimada.",
-        u, f"Lote TIE en {o['name']}", f"Último lote publicado: {o['y']}/{o['n']}. Escribe el tuyo y comprueba si tu TIE está lista.", o["id"], info(o)))
+        f"Último lote TIE publicado en {o['name']} ({o['prov']}): {o['y']}/{o['n']}. Dato no oficial; comprueba la fecha de publicación y confirma con la oficina.",
+        u, f"Lote TIE en {o['name']}", f"Último lote publicado: {o['y']}/{o['n']}. Dato no oficial si se indica; confirma siempre con la oficina.", o["id"], info(o)))
 write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
       "".join(f"<url><loc>{u}</loc><lastmod>{data['updated']}</lastmod></url>\n" for u in urls) + "</urlset>\n")
 write("robots.txt", f"User-agent: *\nAllow: /\n\nSitemap: {DOMAIN}/sitemap.xml\n")

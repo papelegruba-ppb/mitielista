@@ -36,7 +36,7 @@ async def accept(page):
 async def open_province(page, prov):
     # Esperar a que el servidor entregue el documento, no a que terminen
     # todos los eventos de carga: la sede a veces no dispara DOMContentLoaded.
-    await page.goto(START, wait_until="commit", timeout=90000)
+    await page.goto(START, wait_until="commit", timeout=20000)
     await page.locator("select").first.wait_for(state="visible", timeout=30000)
     await page.locator("select").first.select_option(label=prov)
     await accept(page)
@@ -79,8 +79,8 @@ async def scrape():
         ctx = await b.new_context(locale="es-ES", timezone_id="Europe/Madrid",
               user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36")
         page = await ctx.new_page()
-        page.set_default_timeout(90000)
-        page.set_default_navigation_timeout(90000)
+        page.set_default_timeout(30000)
+        page.set_default_navigation_timeout(20000)
         for prov in PROVINCES:
             try:
                 await open_province(page, prov)
@@ -179,9 +179,9 @@ async def fallback_public_sources():
 
 if __name__ == "__main__":
     try:
-        results = asyncio.run(asyncio.wait_for(scrape(), timeout=15 * 60))
+        results = asyncio.run(asyncio.wait_for(scrape(), timeout=30 * 60))
     except asyncio.TimeoutError:
-        print("La consulta oficial superó 15 minutos; se activa el fallback público.")
+        print("La consulta oficial superó 30 minutos; se activa el fallback público.")
         results = []
     except Exception as e:
         print(f"Falló la consulta oficial: {e}; se activa el fallback público.")

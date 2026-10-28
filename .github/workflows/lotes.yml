@@ -28,7 +28,7 @@ jobs:
       - run: pip install playwright && playwright install --with-deps chromium
       - name: Consultar lotes
         run: python scrape.py
-        timeout-minutes: 20
+        timeout-minutes: 35
       - uses: actions/upload-artifact@v4
         if: always()
         with:

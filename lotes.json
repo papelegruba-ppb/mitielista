@@ -2,6 +2,20 @@
  "updated": "2026-10-28",
  "offices": [
   {
+   "id": "zaragoza-calatayud",
+   "prov": "Zaragoza",
+   "name": "Calatayud",
+   "y": 2026,
+   "n": 30,
+   "checked": "2026-10-28",
+   "published": "2026-09-10",
+   "source": "Lotenie",
+   "source_url": "https://lotenie.es/zaragoza/",
+   "source_type": "public_unofficial",
+   "source_checked": "2026-10-28T10:35:06.683918+00:00",
+   "h": []
+  },
+  {
    "id": "zaragoza-zaragoza-unidad-doc-extranjeros",
    "prov": "Zaragoza",
    "name": "Zaragoza Unidad Doc. Extranjeros",
@@ -10,19 +24,6 @@
    "checked": "2026-10-28",
    "published": "2026-10-09",
    "source": "Lotenie / Portal Extranjería / SCLT",
-   "source_url": "https://lotenie.es/zaragoza/",
-   "source_type": "public_unofficial",
-   "h": []
-  },
-  {
-   "id": "zaragoza-calatayud",
-   "prov": "Zaragoza",
-   "name": "Calatayud",
-   "y": 2026,
-   "n": 30,
-   "checked": "2026-10-28",
-   "published": "2026-09-10",
-   "source": "Lotenie / Portal Extranjería",
    "source_url": "https://lotenie.es/zaragoza/",
    "source_type": "public_unofficial",
    "h": []

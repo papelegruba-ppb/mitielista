@@ -50,13 +50,44 @@ async def pick_tramite(page):
     raise RuntimeError("no se encontró el trámite de recogida de TIE")
 
 async def read_lote(page, prov, value):
+    # El flujo de ICP+ exige primero provincia, después trámite y finalmente oficina.
     await open_province(page, prov)
-    await page.locator("select").first.select_option(value=value)
     await pick_tramite(page)
+    await accept(page)
+
+    # Tras elegir el trámite, ICP+ carga el selector de oficinas. No asumir que
+    # sigue siendo el primer <select>: localizar el desplegable que contiene la
+    # oficina concreta y seleccionarla por value.
+    candidates = await page.locator("select").all()
+    selected = False
+    for select in candidates:
+        try:
+            option = select.locator("option").filter(has_text=re.compile(
+                "^" + re.escape(value) + "$"
+            ))
+            if await option.count():
+                await select.select_option(value=value)
+                selected = True
+                break
+        except Exception:
+            continue
+    if not selected:
+        # Algunos formularios vuelven a poblar el primer selector tras el trámite.
+        for select in await page.locator("select").all():
+            try:
+                if await select.locator(f'option[value="{value}"]').count():
+                    await select.select_option(value=value)
+                    selected = True
+                    break
+            except Exception:
+                continue
+    if not selected:
+        raise RuntimeError(f"la oficina con identificador {value!r} no aparece después de elegir el trámite")
+
     await accept(page)
     m = RX.search(await page.inner_text("body"))
     if not m:
-        raise RuntimeError("no aparece el último lote (¿captcha o bloqueo?)")
+        raise RuntimeError("no aparece el último lote (¿captcha, bloqueo o trámite/oficina no disponibles?)")
     return int(m.group(1)), int(m.group(2))
 
 async def snap(page, name):

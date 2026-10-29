@@ -114,68 +114,145 @@ def merge(prev, results, today):
     out += [o for o in old.values() if o["id"] not in seen]
     return sorted(out, key=lambda o: (o["prov"], o["name"]))
 
-# Fuentes públicas alternativas. Se conserva la fecha de publicación de cada fuente;
-# nunca se presenta la fecha de consulta como si el lote se hubiera actualizado hoy.
+# Fuentes públicas alternativas. Portal Extranjería publica páginas por provincia
+# con lotes por oficina. No se consulta gob.es en esta función.
 async def fallback_public_sources():
     import urllib.request
     from html.parser import HTMLParser
+    from urllib.parse import urljoin, urlparse
 
-    sources = [
-        ("https://lotenie.es/zaragoza/", "Lotenie"),
-        ("https://portalextranjeria.com/lotes-nie-zaragoza/", "Portal Extranjería"),
-        ("https://sclt.es/tie/zaragoza/zaragoza/", "SCLT"),
-    ]
-    found = []
-    for url, source_name in sources:
+    ROOT_URL = "https://portalextranjeria.com/lotes-nie/"
+    HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; MiTIELista/1.0; +https://github.com/papelegruba-ppb/mitielista)"}
+
+    class TextExtractor(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.parts = []
+            self.links = []
+            self._link = None
+            self._skip = 0
+        def handle_starttag(self, tag, attrs):
+            attrs = dict(attrs)
+            if tag in ("script", "style", "noscript"):
+                self._skip += 1
+            if tag == "a" and attrs.get("href"):
+                self._link = [attrs["href"], []]
+            if tag in ("br", "p", "div", "section", "article", "h1", "h2", "h3", "li"):
+                self.parts.append(" ")
+        def handle_endtag(self, tag):
+            if tag in ("script", "style", "noscript") and self._skip:
+                self._skip -= 1
+            if tag == "a" and self._link:
+                self.links.append((self._link[0], "".join(self._link[1]).strip()))
+                self._link = None
+            if tag in ("p", "div", "section", "article", "h1", "h2", "h3", "li"):
+                self.parts.append(" ")
+        def handle_data(self, data):
+            if self._skip:
+                return
+            self.parts.append(data)
+            if self._link is not None:
+                self._link[1].append(data)
+        @property
+        def text(self):
+            return re.sub(r"\s+", " ", " ".join(self.parts)).strip()
+
+    def fetch(url):
+        req = urllib.request.Request(url, headers=HEADERS)
+        with urllib.request.urlopen(req, timeout=25) as response:
+            if response.status != 200:
+                raise RuntimeError(f"HTTP {response.status}")
+            raw = response.read()
+        parser = TextExtractor()
+        parser.feed(raw.decode("utf-8", "replace"))
+        return parser
+
+    def iso_date(match):
+        if not match:
+            return None
+        day, month, year = map(int, match.groups())
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 MiTIELista/1.0"})
-            with urllib.request.urlopen(req, timeout=20) as response:
-                page = response.read().decode("utf-8", "ignore")
-            clean = re.sub(r"<script\b.*?</script>|<style\b.*?</style>", " ", page, flags=re.I|re.S)
-            clean = re.sub(r"<[^>]+>", " ", clean)
-            clean = (clean.replace("&nbsp;", " ").replace("&#160;", " ")
-                        .replace("&amp;", "&").replace("&#8217;", "'"))
-            clean = re.sub(r"\s+", " ", clean)
-            # La página contiene varias oficinas; extraer cada bloque por nombre y su lote/fecha.
-            office_specs = [
-                ("Zaragoza Unidad Doc. Extranjeros", r"(?:Zaragoza Unidad Doc\.? Extranjeros|Comisaría de Extranjería de Zaragoza|CNP Zaragoza)", "Zaragoza Unidad Doc. Extranjeros"),
-                ("Calatayud", r"(?:CNP Calatayud|Comisaría de Extranjería de Calatayud|Calatayud)", "Calatayud"),
-            ]
-            for office_id_name, marker, office_name in office_specs:
-                for hit in re.finditer(marker, clean, re.I):
-                    block = clean[max(0, hit.start()-160):min(len(clean), hit.end()+450)]
-                    lm = re.search(r"(?:LOTE(?: NIE)?(?: ACTUAL)?|Lote actual|lote actual|Current lote)[^0-9]{0,40}(?:(20\d{2})\s*/\s*)?(\d{1,4})", block, re.I)
-                    if not lm:
-                        lm = re.search(r"(20\d{2})\s*/\s*(\d{1,4})", block)
-                    if not lm:
+            return datetime.date(year, month, day).isoformat()
+        except ValueError:
+            return None
+
+    today = datetime.date.today().isoformat()
+    found = []
+    try:
+        index = fetch(ROOT_URL)
+        province_pages = []
+        for href, label in index.links:
+            absolute = urljoin(ROOT_URL, href).split("#", 1)[0]
+            path = urlparse(absolute).path.rstrip("/") + "/"
+            if urlparse(absolute).netloc != "portalextranjeria.com":
+                continue
+            if re.fullmatch(r"/lotes-nie-[a-z0-9-]+/", path) and absolute not in province_pages:
+                province_pages.append(absolute)
+        # La página nacional puede enlazar solo una parte de provincias; se siguen
+        # todos los enlaces provinciales encontrados y se informa de errores parciales.
+        print(f"[fallback:Portal Extranjería] páginas provinciales detectadas: {len(province_pages)}")
+        for url in province_pages:
+            try:
+                parser = fetch(url)
+                text = parser.text
+                title_match = re.search(r"Lotes NIE\s+(.+?)\s+(?:hoy|actual)", text, re.I)
+                prov = title_match.group(1).strip(" :-") if title_match else ""
+                if not prov:
+                    slug_match = re.search(r"/lotes-nie-(.+)/$", urlparse(url).path)
+                    prov = slug_match.group(1).replace("-", " ").title() if slug_match else "Desconocida"
+                # Cada bloque publicado contiene nombre de comisaría, lote y fecha.
+                pattern = re.compile(
+                    r"(?:Comisar[ií]a de Polic[ií]a de|Comisar[ií]a de|Oficina de)\s+(.{2,100}?)\s+"
+                    r"LOTE NIE ACTUAL\s*:\s*0*(\d{1,4})\s*"
+                    r"\(Actualizado\s*:\s*(\d{1,2})/(\d{1,2})/(\d{4})\)",
+                    re.I
+                )
+                matches = list(pattern.finditer(text))
+                # Algunos listados usan encabezado de oficina seguido directamente del lote.
+                if not matches:
+                    pattern = re.compile(
+                        r"([A-ZÁÉÍÓÚÜÑ][^.!?]{2,90}?)\s+LOTE NIE ACTUAL\s*:\s*0*(\d{1,4})\s*"
+                        r"\(Actualizado\s*:\s*(\d{1,2})/(\d{1,2})/(\d{4})\)",
+                        re.I
+                    )
+                    matches = list(pattern.finditer(text))
+                for m in matches:
+                    name = re.sub(r"\s+", " ", m.group(1)).strip(" :-–")
+                    if not name or name.lower() in {"actual", "hoy"}:
                         continue
-                    year = int(lm.group(1) or datetime.date.today().year)
-                    number = int(lm.group(2))
-                    dm = re.search(r"(?:Act(?:ualizado)?|Actualizado|Última actualización|Last update)[^0-9]{0,25}(\d{1,2})[/-](\d{1,2})[/-](20\d{2})", block, re.I)
-                    if not dm:
-                        dm = re.search(r"(\d{1,2})/(\d{1,2})/(20\d{2})", block)
-                    published = f"{dm.group(3)}-{int(dm.group(2)):02d}-{int(dm.group(1)):02d}" if dm else None
-                    found.append({
-                        "id": slug("Zaragoza-" + office_name), "prov": "Zaragoza",
-                        "name": office_name, "y": year, "n": number,
-                        "checked": datetime.date.today().isoformat(),
-                        "published": published, "source": source_name, "source_url": url,
+                    number = int(m.group(2))
+                    published = iso_date(m.group(3, 4, 5))
+                    item = {
+                        "id": slug(prov + "-" + name)[:48],
+                        "prov": prov,
+                        "name": name,
+                        "y": int(published[:4]) if published else datetime.date.today().year,
+                        "n": number,
+                        "checked": today,
+                        "published": published,
+                        "source": "Portal Extranjería",
+                        "source_url": url,
                         "source_type": "public_unofficial",
                         "source_checked": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                    })
-                    break
-        except Exception as e:
-            print(f"[fallback:{source_name}] {e}")
-    # Solo aceptar el mismo número respaldado por dos fuentes independientes.
-    groups = {}
+                    }
+                    found.append(item)
+                print(f"[fallback:Portal Extranjería] {prov}: {len(matches)} oficinas")
+            except Exception as e:
+                print(f"[fallback:Portal Extranjería] fallo en {url}: {e}")
+    except Exception as e:
+        print(f"[fallback:Portal Extranjería] no se pudo leer el índice nacional: {e}")
+
+    # Deduplicar por oficina conservando la publicación más reciente, sin inventar
+    # fechas ni exigir dos webs que podrían estar copiando la misma fuente.
+    dedup = {}
     for item in found:
-        groups.setdefault((item["id"], item["y"], item["n"]), []).append(item)
-    agreed = []
-    for (office_id, year, number), items in groups.items():
-        if len({x["source"] for x in items}) >= 2:
-            agreed.append(max(items, key=lambda x: x.get("published") or ""))
-            print(f"[fallback] {items[0]['name']}: {year}/{number} (no oficial; publicado {agreed[-1].get('published') or 'fecha no disponible'})")
-    return agreed
+        key = item["id"]
+        current = dedup.get(key)
+        if current is None or (item.get("published") or "") > (current.get("published") or ""):
+            dedup[key] = item
+    results = list(dedup.values())
+    print(f"[fallback] total de oficinas no oficiales extraídas: {len(results)}")
+    return results
 
 if __name__ == "__main__":
     try:

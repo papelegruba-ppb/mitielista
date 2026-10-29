@@ -26,6 +26,8 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install playwright && playwright install --with-deps chromium
+      - name: Tests de parsers
+        run: python -m unittest discover -s tests -v
       - name: Consultar lotes
         run: python scrape.py
         timeout-minutes: 35

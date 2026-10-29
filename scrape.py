@@ -170,7 +170,9 @@ async def fallback_public_sources():
     def iso_date(match):
         if not match:
             return None
-        day, month, year = map(int, match.groups())
+        # Acepta tanto un Match de regex como una tupla de grupos capturados.
+        groups = match.groups() if hasattr(match, "groups") else match
+        day, month, year = map(int, groups)
         try:
             return datetime.date(year, month, day).isoformat()
         except ValueError:

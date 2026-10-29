@@ -267,8 +267,21 @@ if __name__ == "__main__":
         results = []
     print("Comprobando fuentes públicas alternativas para cubrir oficinas no obtenidas oficialmente.")
     fallback = asyncio.run(fallback_public_sources())
-    official_ids = {r["id"] for r in results}
-    results.extend(r for r in fallback if r["id"] not in official_ids)
+    existing_ids = {r["id"] for r in results}
+    results.extend(r for r in fallback if r["id"] not in existing_ids)
+    # Fuentes adicionales: solo se incorporan lotes con formato explícito y trazabilidad.
+    # El frontend actual conserva un registro vigente por oficina; si ya existe una
+    # observación para esa oficina, no se sustituye automáticamente por una señal secundaria.
+    try:
+        from sources import scrape_secondary_sources
+        secondary = scrape_secondary_sources()
+        known_ids = {r["id"] for r in results}
+        for item in secondary:
+            if item["id"] not in known_ids:
+                results.append(item)
+                known_ids.add(item["id"])
+    except Exception as e:
+        print(f"[fuentes adicionales] error aislado: {e}")
     if not results:
         sys.exit("Sin resultados verificables: se conserva lotes.json y no se publica nada.")
     f = ROOT / "lotes.json"

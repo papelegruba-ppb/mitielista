@@ -256,9 +256,9 @@ async def fallback_public_sources():
 
 if __name__ == "__main__":
     try:
-        results = asyncio.run(asyncio.wait_for(scrape(), timeout=30 * 60))
+        results = asyncio.run(asyncio.wait_for(scrape(), timeout=90))
     except asyncio.TimeoutError:
-        print("La consulta oficial superó 30 minutos; se activa el fallback público.")
+        print("La consulta oficial superó 90 segundos; se activa el fallback público.")
         results = []
     except Exception as e:
         print(f"Falló la consulta oficial: {e}; se activa el fallback público.")

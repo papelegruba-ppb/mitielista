@@ -161,6 +161,7 @@ footer{padding-top:22px;color:var(--muted);font-size:.85rem}
       <label for="of"><span aria-hidden="true">🏢</span> Oficina donde recoges la TIE</label>
       <select id="of" required disabled><option value="">Primero elige provincia</option></select>
       <p class="hint">Cada oficina tiene sus propios lotes y su propio ritmo de actualización.</p>
+      <p class="hint" id="office-data-status" role="status" aria-live="polite">Selecciona una provincia para consultar qué datos se han podido extraer.</p>
     </div>
     <div class="field">
       <label for="lote"><span aria-hidden="true">#</span> Tu lote (año opcional)</label>
@@ -234,7 +235,10 @@ function fillOf(){
   var offices=DATA.d.offices.filter(function(o){return o.prov===prov}).sort(function(a,b){return a.name.localeCompare(b.name,"es")});
   sel.innerHTML='<option value="">Elige oficina</option>'+offices.map(function(o){return '<option value="'+esc(o.id)+'">'+esc(o.name)+'</option>'}).join("");
   sel.disabled=!prov||!offices.length;
-  if(prov&&!offices.length)sel.innerHTML='<option value="">No hay oficinas con datos disponibles</option>';
+  var status=$("office-data-status");
+  if(!prov){sel.innerHTML='<option value="">Primero elige provincia</option>';status.textContent="Selecciona una provincia para consultar qué datos se han podido extraer.";}
+  else if(!offices.length){sel.innerHTML='<option value="">No se han podido extraer datos de oficinas para esta provincia</option>';status.textContent="No se han podido extraer datos de lotes para "+prov+". Esta ausencia de datos no significa que no haya oficina ni que no se estén entregando tarjetas.";}
+  else{status.textContent="Datos encontrados para "+offices.length+" oficina(s) de "+prov+". Si tu oficina no aparece, no se han podido extraer sus datos."; }
 }
 
 function show(cls,title,body,nums,acts){
@@ -245,10 +249,10 @@ function show(cls,title,body,nums,acts){
 function check(){
   var prov=$("prov").value, officeId=$("of").value, raw=String($("lote").value).trim();
   if(!prov){show("bad","Selecciona una provincia","<p>Elige una provincia para continuar.</p>");return}
-  if(!officeId){show("bad","Selecciona tu oficina","<p>Elige la comisaría donde recogerás la TIE. Los lotes y el ritmo de avance son distintos en cada oficina.</p>");return}
+  if(!officeId){var disponibles=DATA.d.offices.some(function(x){return x.prov===prov});show("wait","No se han podido extraer los datos", "<p>"+(disponibles?"No se ha seleccionado una oficina. Si tu oficina no aparece en la lista, no se han podido extraer sus datos.":"No se han podido extraer datos de lotes ni oficinas para "+esc(prov)+". Esto no significa que no exista una oficina o que no se estén entregando tarjetas.")+" Puedes consultar de nuevo cuando se actualicen las fuentes.</p>");return}
   var parsed=parseLote(raw), year, num;
   if(parsed){year=parsed.y;num=parsed.n}
-  else if(/^\\d{1,6}$/.test(raw)){year=new Date().getFullYear();num=Number(raw)}
+  else if(/^\d{1,6}$/.test(raw)){year=new Date().getFullYear();num=Number(raw)}
   else {show("bad","Revisa tu lote","<p>Escribe el número, por ejemplo 193, o el año y número, por ejemplo 2026/193.</p>");return}
   var o=DATA.d.offices.filter(function(x){return x.id===officeId&&x.prov===prov})[0];
   if(!o){

@@ -26,12 +26,15 @@ def fdate(d): y, m, dd = d.split("-"); return f"{dd}/{m}/{y}"
 def info(o=None):
     p = ['<section class="info">']
     if o:
-        if o.get("source_type") == "public_unofficial":
-            published = fdate(o["published"]) if o.get("published") else "sin fecha de publicación confirmada"
-            source = esc(o.get("source", "fuente pública no oficial"))
-            p.append(f'<h2>Último lote publicado en {esc(o["name"])}</h2><p><b>{o["y"]}/{o["n"]}</b>. Dato <b>no oficial</b>, publicado {published}; comprobado el {fdate(o.get("checked", data["updated"]))} en {source}. Puede estar desfasado y no confirma que tu tarjeta esté disponible. Confirma con la oficina antes de desplazarte.</p>')
+        published = fdate(o["published"]) if o.get("published") else "sin fecha de publicación confirmada"
+        source = esc(o.get("source", "fuente no identificada"))
+        source_url = esc(o.get("source_url", ""))
+        checked = fdate(o.get("checked", data["updated"]))
+        link = f'<a href="{source_url}" target="_blank" rel="noopener noreferrer">fuente original</a>' if source_url.startswith("https://") else "fuente original no disponible"
+        if o.get("source_type") == "official_public_notice":
+            p.append(f'<h2>Lote indicado en aviso oficial: {esc(o["name"])}</h2><p><b>{o["y"]}/{o["n"]}</b>. Aviso de {source}, publicado {published}; consultado el {checked}. Consulta el {link}. El aviso puede referirse a una categoría de tarjeta o a un lote general; no confirma que una tarjeta individual esté lista.</p>')
         else:
-            p.append(f'<h2>Último lote en {esc(o["name"])}</h2><p>El último lote publicado es el <b>{o["y"]}/{o["n"]}</b> (comprobado el {fdate(o.get("checked", data["updated"]))}). Si tu lote es igual o menor, puede que la tarjeta haya llegado; confirma con la oficina antes de desplazarte.</p>')
+            p.append(f'<h2>Último lote publicado en {esc(o["name"])}</h2><p><b>{o["y"]}/{o["n"]}</b>. Dato <b>no oficial</b> de {source}, publicado {published}; comprobado el {checked}. Consulta la {link}. Puede estar desfasado y no confirma que tu tarjeta esté disponible. Confirma con la oficina antes de desplazarte.</p>')
     if not offices:
         p.append("<p>En este momento no hay lotes de oficinas que se hayan podido verificar. No mostramos números de ejemplo ni estimaciones inventadas. Vuelve a consultar cuando se recuperen las fuentes.</p>")
     p.append("<h2>Preguntas frecuentes</h2>")

@@ -14,7 +14,8 @@ PROVINCES = [
     "Sevilla", "Soria", "Tarragona", "Teruel", "Toledo", "Valencia",
     "Valladolid", "Vizcaya / Bizkaia", "Zamora", "Zaragoza"
 ]
-START = "https://icp.administracionelectronica.gob.es/icpplus/index.html"
+START = "https://icp.administracionelectronica.gob.es/icpplustiem/citar?locale=es"
+START_FALLBACK = "https://icp.administracionelectronica.gob.es/icpplus/index.html"
 TRAMITE = "RECOGIDA DE TARJETA DE IDENTIDAD DE EXTRANJERO"
 ROOT = pathlib.Path(__file__).parent
 DEBUG = ROOT / "debug"
@@ -34,12 +35,21 @@ async def accept(page):
         pass
 
 async def open_province(page, prov):
-    # Esperar a que el servidor entregue el documento, no a que terminen
-    # todos los eventos de carga: la sede a veces no dispara DOMContentLoaded.
-    await page.goto(START, wait_until="commit", timeout=20000)
-    await page.locator("select").first.wait_for(state="visible", timeout=30000)
-    await page.locator("select").first.select_option(label=prov)
-    await accept(page)
+    # La ruta activa de ICP+ TIE es /icpplustiem/, no /icpplus/.
+    # No fijar p=28: ese código corresponde a Madrid y no sirve para el resto.
+    # Probar primero la ruta que el usuario ha confirmado; usar la antigua como
+    # compatibilidad si el portal redirige o no presenta el selector.
+    last_error = None
+    for start in (START, START_FALLBACK):
+        try:
+            await page.goto(start, wait_until="commit", timeout=25000)
+            await page.locator("select").first.wait_for(state="visible", timeout=20000)
+            await page.locator("select").first.select_option(label=prov)
+            await accept(page)
+            return
+        except Exception as e:
+            last_error = e
+    raise RuntimeError(f"no se pudo abrir ICP+ y seleccionar la provincia {prov}: {last_error}")
 
 async def pick_tramite(page):
     for s in await page.locator("select").all():
@@ -289,10 +299,10 @@ async def fallback_public_sources():
 
 if __name__ == "__main__":
     try:
-        results = asyncio.run(asyncio.wait_for(scrape(), timeout=90))
-    except asyncio.TimeoutError:
-        print("La consulta oficial superó 90 segundos; se activa el fallback público.")
-        results = []
+        # La sede puede tardar varios minutos en recorrer todas las provincias.
+        # No cancelar a los 90 s: wait_for descartaba todos los resultados parciales.
+        # El límite global lo controla el timeout del job de GitHub Actions.
+        results = asyncio.run(scrape())
     except Exception as e:
         print(f"Falló la consulta oficial: {e}; se activa el fallback público.")
         results = []

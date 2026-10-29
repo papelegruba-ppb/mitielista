@@ -14,8 +14,8 @@ PROVINCES = [
     "Sevilla", "Soria", "Tarragona", "Teruel", "Toledo", "Valencia",
     "Valladolid", "Vizcaya / Bizkaia", "Zamora", "Zaragoza"
 ]
-START = "https://icp.administracionelectronica.gob.es/icpplustiem/citar?locale=es"
-START_FALLBACK = "https://icp.administracionelectronica.gob.es/icpplus/index.html"
+START = "https://icp.administracionelectronica.gob.es/icpplus/index.html"
+START_TIE = "https://icp.administracionelectronica.gob.es/icpplustiem/citar?locale=es"
 TRAMITE = "RECOGIDA DE TARJETA DE IDENTIDAD DE EXTRANJERO"
 ROOT = pathlib.Path(__file__).parent
 DEBUG = ROOT / "debug"
@@ -35,12 +35,12 @@ async def accept(page):
         pass
 
 async def open_province(page, prov):
-    # La ruta activa de ICP+ TIE es /icpplustiem/, no /icpplus/.
-    # No fijar p=28: ese código corresponde a Madrid y no sirve para el resto.
-    # Probar primero la ruta que el usuario ha confirmado; usar la antigua como
-    # compatibilidad si el portal redirige o no presenta el selector.
+    # Empezar en la página inicial sin provincia seleccionada, como hace una persona.
+    # La URL /icpplustiem/citar?p=28 es una fase posterior específica de Madrid;
+    # nunca se debe reutilizar ese código para otras provincias.
+    # La ruta TIE queda como alternativa si la página inicial no ofrece el selector.
     last_error = None
-    for start in (START, START_FALLBACK):
+    for start in (START, START_TIE):
         try:
             await page.goto(start, wait_until="commit", timeout=25000)
             await page.locator("select").first.wait_for(state="visible", timeout=20000)

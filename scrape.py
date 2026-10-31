@@ -437,20 +437,23 @@ async def fallback_public_sources():
             for record in records
             if record.get("source_url") and urlparse(record["source_url"]).netloc
         }
-        if len(independent) < 2:
+        if not independent:
             continue
+        # Una fuente secundaria explícita también aporta información útil.
+        # Se publica como NO OFICIAL y con confianza baja si no hay corroboración.
         chosen = sorted(records, key=lambda record: (
             record.get("source_type") != "official_public_notice",
             record.get("published") or "",
         ))[0].copy()
         chosen["source"] = " / ".join(sorted({record.get("source", "") for record in records if record.get("source")}))
-        chosen["source_url"] = records[0].get("source_url", "")
+        chosen["source_url"] = chosen.get("source_url") or records[0].get("source_url", "")
         chosen["source_type"] = "public_unofficial" if all(
             record.get("source_type") != "official_public_notice" for record in records
         ) else "official_public_notice"
         chosen["sources_count"] = len(independent)
+        chosen["confidence"] = "high" if len(independent) >= 2 else "low"
         accepted.append(chosen)
-    print(f"[fallback] candidatos={len(candidates)} aceptados con ≥2 fuentes independientes={len(accepted)}")
+    print(f"[fallback] candidatos={len(candidates)} aceptados con al menos 1 fuente trazable={len(accepted)}")
     return accepted
 
 async def main():

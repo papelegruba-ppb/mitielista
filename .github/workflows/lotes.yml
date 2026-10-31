@@ -39,11 +39,13 @@ jobs:
         if: github.event_name != 'push'
         run: python office_catalog.py
         timeout-minutes: 3
+        continue-on-error: true
       - name: Consultar lotes
         if: github.event_name != 'push'
         run: python scrape.py
         timeout-minutes: 35
       - name: Comprobar antigüedad de los datos
+        if: github.event_name != 'push'
         run: |
           python - <<'PY'
           import json

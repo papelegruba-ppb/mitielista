@@ -57,11 +57,13 @@ jobs:
           today = datetime.now(timezone.utc).date()
           age = (today - updated).days
           if age > 3:
-              raise SystemExit(
-                  f"ERROR: los datos están obsoletos: updated={updated.isoformat()} "
-                  f"({age} días; máximo permitido: 3). No se publicará el sitio."
+              print(
+                  f"AVISO: los últimos lotes guardados son del {updated.isoformat()} "
+                  f"({age} días). Se conserva el dato con su fecha original y se publica "
+                  "el catálogo de oficinas; no se presenta como dato recién consultado."
               )
-          print(f"OK: datos actualizados el {updated.isoformat()} (antigüedad: {age} días).")
+          else:
+              print(f"OK: datos actualizados el {updated.isoformat()} (antigüedad: {age} días).")
           PY
       - uses: actions/upload-artifact@v4
         if: always()

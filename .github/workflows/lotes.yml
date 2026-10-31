@@ -1,11 +1,13 @@
 name: actualizar-lotes
 on:
   push:
+    branches: [main]
     paths-ignore:
       - "lotes.json"
+      - "oficinas.json"
       - "site/**"
   schedule:
-    - cron: "0 6 * * 1-5"
+    - cron: "0 */12 * * *"
   workflow_dispatch:
 permissions:
   contents: write
@@ -33,6 +35,10 @@ jobs:
       - name: Tests de parsers
         if: github.event_name != 'push'
         run: python -m unittest discover -s tests
+      - name: Actualizar catálogo oficial de oficinas TIE
+        if: github.event_name != 'push'
+        run: python office_catalog.py
+        timeout-minutes: 3
       - name: Consultar lotes
         if: github.event_name != 'push'
         run: python scrape.py
@@ -82,11 +88,12 @@ jobs:
           PY
           node --check /tmp/mi-tie-lista.js
       - name: Guardar histórico
+        if: github.event_name != 'push'
         run: |
           git config user.name "lotes-bot"
           git config user.email "lotes-bot@users.noreply.github.com"
-          git add lotes.json
-          git diff --cached --quiet || git commit -m "Actualiza lotes"
+          git add lotes.json oficinas.json
+          git diff --cached --quiet || git commit -m "Actualiza lotes y oficinas"
           git pull --rebase origin main
           git push
       - uses: actions/upload-pages-artifact@v3

@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{{TITLE}}</title>
 <meta name="description" content="{{DESC}}">
-<meta name="author" content="Papelegruba">
 {{CANONICAL}}
 <link rel="icon" type="image/svg+xml" href="{{BASE}}favicon.svg">
 <link rel="manifest" href="{{BASE}}manifest.json">
@@ -37,14 +36,12 @@ h1{font:700 clamp(2rem,9vw,2.65rem)/1.04 system-ui,sans-serif;letter-spacing:-.0
 label{display:block;color:var(--ink);font-size:.9rem;font-weight:650;margin:0 0 7px}input,select,textarea{display:block;width:100%;min-width:0;min-height:48px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:12px 14px;font:inherit}input{font-size:1.15rem;font-weight:600;letter-spacing:.02em}input::placeholder{color:var(--muted)}
 select:focus-visible,input:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
 .btn,button,.button,[type=submit]{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;border:0;border-radius:12px;background:var(--accent);color:var(--on-accent);padding:12px 18px;font:700 1rem system-ui,sans-serif;text-align:center;text-decoration:none;cursor:pointer;transition:background-color .15s,transform .15s}.btn:hover,button:hover,.button:hover,[type=submit]:hover{background:var(--accent-hover);transform:translateY(-1px)}.btn.alt{background:transparent;color:var(--ink);border:1.5px solid var(--line);box-shadow:none;font-weight:600}.btn.alt:hover{background:var(--bg)}
-.tie-help{display:inline-block;color:var(--accent);font-weight:650;text-underline-offset:3px;margin:0 0 12px}.secure-note{color:var(--muted);font-size:.82rem;text-align:center;margin-top:12px}.install-app{width:auto;min-height:42px;padding:9px 12px;font-size:.85rem;white-space:nowrap}
 #out{width:100%;margin-top:18px}#out:empty{display:none}#out:not(:empty){background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px 18px;box-shadow:var(--shadow)}
 .res{border-radius:14px;padding:0;transition:background-color .2s,color .2s}.res.ok{background:var(--ok-bg);color:var(--ok);padding:18px}.res.wait{background:var(--wait-bg);color:var(--wait);padding:18px}.res.bad{background:var(--bad-bg);color:var(--bad);padding:18px}.res h2{font:700 1.55rem/1.15 system-ui,sans-serif;letter-spacing:-.01em;margin:0 0 14px}.res p{margin:0 0 10px;color:var(--ink)}
 .situation{margin-bottom:16px}.situation-kicker{font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.75}.situation-place{font-weight:700;margin-top:4px}.situation-gap{font:700 1.4rem/1.25 system-ui,sans-serif;margin:12px 0 16px}.situation-gap strong{white-space:nowrap}
 .nums{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 14px}.nums div{background:var(--surface);color:var(--ink);border-radius:10px;padding:10px 12px;min-width:0}.nums small{display:block;color:var(--muted);font-size:.8rem}.nums b{font:700 1.25rem system-ui,sans-serif;overflow-wrap:anywhere}
 .estimate{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}.estimate-label{font-size:.85rem;color:var(--muted);font-weight:700}.estimate-date{font:700 1.65rem system-ui,sans-serif;margin:3px 0 8px;color:var(--ink)}.estimate-range{font-weight:700;font-size:.9rem}.acts{display:grid;gap:10px;margin-top:14px}
-#info-lote{margin-top:22px}.info{padding:18px;background:rgba(255,255,255,.72);border:1px solid #eee6f4;border-radius:18px}.info h2,.info-notes h2{font:700 1.15rem system-ui,sans-serif;margin:22px 0 8px}.info h2:first-child{margin-top:0}.info details{border-bottom:1px solid var(--line);padding:10px 0}.info summary{font-weight:650;cursor:pointer}.info ul{padding-left:18px;margin:0}.info a,.info-notes a{color:var(--accent);text-underline-offset:3px}
-.info-notes{margin-top:14px;padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px}.info-notes p{margin:0 0 8px}.info-notes p:last-child{margin-bottom:0}
+#info-lote{margin-top:22px}.info{padding:18px;background:var(--surface);border:1px solid var(--line);border-radius:18px}.info h2{font:700 1.15rem system-ui,sans-serif;margin:22px 0 8px}.info h2:first-child{margin-top:0}.info details{border-bottom:1px solid var(--line);padding:10px 0}.info summary{font-weight:650;cursor:pointer}.info ul{padding-left:18px;margin:0}.info a{color:var(--accent);text-underline-offset:3px}
 footer{margin-top:24px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}footer p{margin:0 0 12px}footer a{color:var(--accent)}
 @media(min-width:761px){main{width:min(calc(100% - 48px),1120px);padding:34px 0 60px;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);column-gap:28px;align-items:start}.brand-row,h1,.lead,#updated-status,#info-lote,footer{grid-column:1/-1}.brand-row{margin-bottom:30px}h1{font-size:clamp(2.4rem,4vw,3.6rem);margin-bottom:12px}.lead{max-width:720px;font-size:1rem;margin-bottom:20px}.card{padding:28px}#out{margin:0;align-self:start}#out:not(:empty){padding:24px}#info-lote{margin-top:32px}.info{padding:22px 24px}footer{margin-top:8px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
@@ -52,7 +49,7 @@ footer{margin-top:24px;padding-top:18px;border-top:1px solid var(--line);color:v
 </head>
 <body>
 <main>
-  <div class="brand-row"><a class="brand" href="{{BASE}}" aria-label="Mi TIE Lista, inicio"><svg class="brand-mark" width="54" height="54" viewBox="0 0 128 128" aria-hidden="true" focusable="false"><defs><linearGradient id="logo-bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#efe3ff"/><stop offset="1" stop-color="#fff0dc"/></linearGradient><linearGradient id="logo-accent" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b27be9"/><stop offset="1" stop-color="#ff9c62"/></linearGradient></defs><rect x="3" y="3" width="122" height="122" rx="30" fill="url(#logo-bg)"/><rect x="25" y="25" width="78" height="78" rx="23" fill="#fff" stroke="#e6d8f4" stroke-width="2"/><rect x="39" y="39" width="50" height="50" rx="15" fill="url(#logo-accent)"/><path d="M48 52h32v7H68v19h-8V59H48z" fill="#fff"/><circle cx="94" cy="31" r="5" fill="#ff9c62"/></svg><span>Mi TIE Lista</span></a><button class="install-app" id="install-app" type="button" hidden>Instalar aplicación</button></div>
+  <div class="brand-row"><a class="brand" href="{{BASE}}" aria-label="Mi TIE Lista, inicio"><svg class="brand-mark" width="54" height="54" viewBox="0 0 128 128" aria-hidden="true" focusable="false"><defs><linearGradient id="logo-bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#efe3ff"/><stop offset="1" stop-color="#fff0dc"/></linearGradient><linearGradient id="logo-accent" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b27be9"/><stop offset="1" stop-color="#ff9c62"/></linearGradient></defs><rect x="3" y="3" width="122" height="122" rx="30" fill="url(#logo-bg)"/><rect x="25" y="25" width="78" height="78" rx="23" fill="#fff" stroke="#e6d8f4" stroke-width="2"/><rect x="39" y="39" width="50" height="50" rx="15" fill="url(#logo-accent)"/><path d="M48 52h32v7H68v19h-8V59H48z" fill="#fff"/><circle cx="94" cy="31" r="5" fill="#ff9c62"/></svg><span>Mi TIE Lista</span></a></div>
   <h1>{{H1}}</h1>
   <p class="lead">{{LEAD}}</p>
   <p id="updated-status" class="hint" role="status" aria-live="polite">Fecha de actualización no disponible.</p>
@@ -79,10 +76,10 @@ footer{margin-top:24px;padding-top:18px;border-top:1px solid var(--line);color:v
 
   <div id="out" aria-live="polite"></div>
 
-  <div id="info-lote">{{INFO}}<section class="info-notes" aria-label="Información importante"><p>Herramienta gratuita y sin publicidad.</p><p>Las fechas estimadas son orientativas y no constituyen información oficial.</p><p>Sin toma de huellas no hay lote.</p></section></div>
+  <div id="info-lote">{{INFO}}<section class="info" aria-label="Información importante"><h2>Información importante</h2><p>La consulta es gratuita.</p><p>Las fechas estimadas son orientativas y no constituyen información oficial.</p><p>Sin huellas no hay lote.</p></section></div>
   <footer>
-    <p>Papelegruba · Más de 10 años de experiencia en trámites administrativos</p>
-    <a id="wa" target="_blank" rel="noopener noreferrer" href="https://wa.me/34652916014">WhatsApp</a>
+    <p>Más de 10 años de experiencia en trámites administrativos</p>
+    <a id="wa" target="_blank" rel="noopener noreferrer" href="https://wa.me/34652916014">Contactar por WhatsApp</a>
   </footer>
 </main>
 
@@ -147,7 +144,7 @@ function check(){
   }
   var U={y:year,n:num},ref={y:o.y,n:o.n},uTxt=U.y+"/"+U.n,lTxt=ref.y+"/"+ref.n;
   var cmp=(U.y-ref.y)||(U.n-ref.n),falta=Math.max(0,U.n-ref.n);
-  var officialNotice=o.source_type==="public_unofficial"?'<p class="hint" role="note">Dato no oficial, publicado el '+esc(o.published?pd(o.published).toLocaleDateString("es-ES"):"fecha no confirmada")+' en '+esc(o.source||"fuente no identificada")+' . Confirma con la oficina.</p>':"";
+  var officialNotice=o.source_type==="public_unofficial"?'<p class="hint" role="note">Dato no oficial, publicado el '+esc(o.published?pd(o.published).toLocaleDateString("es-ES"):"fecha no confirmada")+' en '+esc(o.source||"fuente no identificada")+'. Confirma con la oficina.</p>':"";
   var nums=officialNotice+'<div class="situation"><div class="situation-kicker">Tu situación de hoy</div><div class="situation-place">'+esc(o.name)+' · '+esc(prov)+'</div><div class="situation-gap">'+(cmp>0?'Estás a <strong>'+falta+' lotes</strong> de tu tarjeta.':'Tu lote está dentro del último lote indicado.')+'</div><div class="nums"><div><small>ÚLTIMO LOTE DE ESTA OFICINA</small><b>'+lTxt+'</b></div><div><small>TU LOTE</small><b>'+uTxt+'</b></div></div><p class="hint">'+(o.source_type==="official_public_notice"?"Aviso oficial (no confirma disponibilidad individual)":"Fuente no oficial")+' · '+esc(o.source||"Fuente no identificada")+'. Publicado: '+esc(o.published||"sin fecha de publicación confirmada")+'. Comprobado: '+esc(o.checked||DATA.d.updated||"fecha desconocida")+'. '+(/^https:\/\//.test(String(o.source_url||""))?'<a href="'+esc(o.source_url)+'" target="_blank" rel="noopener noreferrer">Ver fuente original</a>':"Fuente original no disponible")+'. El lote no confirma que tu tarjeta individual esté lista.</p><p class="hint">La comparación y la estimación usan únicamente los datos de esta oficina.</p></div>'
   store("tie",{p:prov,o:officeId,l:raw});
   var wa='<a class="btn alt" target="_blank" rel="noopener" href="https://wa.me/'+WA+'?text='+encodeURIComponent("Hola, tengo dudas con mi TIE. Mi lote es "+uTxt+" en "+prov+".")+'">Preguntar por WhatsApp</a>';
@@ -167,13 +164,6 @@ $("f").addEventListener("submit",function(e){e.preventDefault();check()});
 $("wa").href="https://wa.me/"+WA+"?text="+encodeURIComponent("Hola, necesito ayuda con un trámite.");
 
 
-var installPrompt=null;
-var installButton=$("install-app");
-window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();installPrompt=e;installButton.hidden=false;});
-installButton.addEventListener("click",function(){if(!installPrompt){show("wait","Instalar Mi TIE Lista","<p>En iPhone o iPad: abre esta página en Safari, pulsa Compartir y elige “Añadir a pantalla de inicio”. En Mac, Chrome o Edge: abre el menú del navegador y selecciona “Instalar aplicación” o “Añadir al Dock”, si aparece.</p>");return;}installPrompt.prompt();installPrompt.userChoice.finally(function(){installPrompt=null;installButton.hidden=true;});});
-window.addEventListener("appinstalled",function(){installButton.hidden=true;});
-var isAppleMobile=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
-if(isAppleMobile&&!("standalone" in navigator&&navigator.standalone)){installButton.hidden=false;installButton.textContent="Añadir al inicio";}
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register(BASE+"service-worker.js").catch(function(){});});}
 
 // La lista de provincias se muestra inmediatamente, sin depender de la descarga de datos.

@@ -1,6 +1,19 @@
-"""Lee el último lote TIE publicado en cada oficina (sede de extranjería) y actualiza lotes.json.
-Uso: python scrape.py   |   Añade provincias en PROVINCES."""
-import asyncio, json, re, sys, unicodedata, datetime, pathlib, random
+"""Consulta lotes TIE con persistencia parcial, reintentos y fuentes trazables."""
+from __future__ import annotations
+
+import asyncio
+import datetime as dt
+import json
+import pathlib
+import random
+import re
+import sys
+import unicodedata
+from collections import Counter, defaultdict
+from html.parser import HTMLParser
+from urllib.parse import urljoin, urlparse
+import urllib.request
+
 from playwright.async_api import async_playwright
 
 PROVINCES = [
@@ -20,314 +33,413 @@ TRAMITE = "RECOGIDA DE TARJETA DE IDENTIDAD DE EXTRANJERO"
 ROOT = pathlib.Path(__file__).parent
 DEBUG = ROOT / "debug"
 RX = re.compile(r"LTIMO LOTE RECIBIDO.{0,120}?(\d{4})\s*/\s*(\d+)", re.S | re.I)
+MAX_AGE_DAYS = 30
+RETRIES = 2
 
-def slug(s):
-    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
-    return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
+# Configuración extensible por provincia. Solo se habilitan URLs y marcadores
+# cuya estructura se ha observado en el repositorio. Para otras fuentes, TODO.
+FALLBACK_CONFIG = {
+    province: {
+        "sources": {
+            "portal_extranjeria": {
+                "index_url": "https://portalextranjeria.com/lotes-nie/",
+                "province_url": None,  # Se resuelve exclusivamente desde enlaces del índice.
+                "office_specs": [
+                    {
+                        "pattern": re.compile(
+                            r"(?:Comisar[ií]a de Polic[ií]a de|Comisar[ií]a de|Oficina de)\\s+(.{2,100}?)\\s+"
+                            r"LOTE NIE ACTUAL\\s*:\\s*0*(\\d{1,4})\\s*"
+                            r"\\(Actualizado\\s*:\\s*(\\d{1,2})/(\\d{1,2})/(\\d{4})\\)",
+                            re.I,
+                        ),
+                        "date_format": "dmy",
+                    }
+                ],
+            },
+            # TODO: añadir fuentes independientes solo tras verificar URL, HTML,
+            # atribución y marcadores de oficina/lote para esta provincia.
+        },
+    }
+    for province in PROVINCES
+}
+
+def normalize(value: str) -> str:
+    value = unicodedata.normalize("NFKD", str(value)).encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]+", " ", value.lower()).strip()
+
+def slug(value: str) -> str:
+    return normalize(value).replace(" ", "-")
+
+def parse_date(day, month, year):
+    try:
+        return dt.date(int(year), int(month), int(day)).isoformat()
+    except (TypeError, ValueError):
+        return None
+
+def parse_official_lot(text: str):
+    match = RX.search(text)
+    return (int(match.group(1)), int(match.group(2))) if match else None
+
+def parse_portal_html(html_text: str, province: str, source_url: str, checked: str | None = None):
+    """Parser fixtureable para el patrón explícito conocido de Portal Extranjería."""
+    checked = checked or dt.date.today().isoformat()
+    parser = _TextExtractor()
+    parser.feed(html_text)
+    output = []
+    specs = FALLBACK_CONFIG.get(province, {}).get("sources", {}).get("portal_extranjeria", {}).get("office_specs", [])
+    for spec in specs:
+        for match in spec["pattern"].finditer(parser.text):
+            name = re.sub(r"\\s+", " ", match.group(1)).strip(" :-–")
+            published = parse_date(*match.group(3, 4, 5))
+            if not name or not published:
+                continue
+            output.append({
+                "id": slug(province + "-" + name)[:48],
+                "prov": province, "name": name,
+                "y": int(published[:4]), "n": int(match.group(2)),
+                "checked": checked, "published": published,
+                "source": "Portal Extranjería", "source_url": source_url,
+                "source_type": "public_unofficial",
+                "source_checked": dt.datetime.now(dt.timezone.utc).isoformat(),
+            })
+    return output
+
+class _TextExtractor(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.parts, self.links = [], []
+        self._link = None
+        self._skip = 0
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag in ("script", "style", "noscript", "svg"):
+            self._skip += 1
+        if tag == "a" and attrs.get("href"):
+            self._link = [attrs["href"], []]
+        if tag in ("br", "p", "div", "section", "article", "h1", "h2", "h3", "li"):
+            self.parts.append(" ")
+    def handle_endtag(self, tag):
+        if tag in ("script", "style", "noscript", "svg") and self._skip:
+            self._skip -= 1
+        if tag == "a" and self._link:
+            self.links.append((self._link[0], "".join(self._link[1]).strip()))
+            self._link = None
+        if tag in ("p", "div", "section", "article", "h1", "h2", "h3", "li"):
+            self.parts.append(" ")
+    def handle_data(self, data):
+        if self._skip:
+            return
+        self.parts.append(data)
+        if self._link:
+            self._link[1].append(data)
+    @property
+    def text(self):
+        return re.sub(r"\\s+", " ", " ".join(self.parts)).strip()
 
 async def accept(page):
-    await page.get_by_role("button", name=re.compile("Aceptar", re.I)).first.click()
-    # Algunas respuestas de la sede mantienen la navegación abierta; no bloquearse
-    # esperando DOMContentLoaded si el formulario ya está disponible.
     try:
-        await page.wait_for_load_state("domcontentloaded", timeout=15000)
+        await page.get_by_role("button", name=re.compile("Aceptar", re.I)).first.click()
+    except Exception:
+        # El botón puede no existir si la transición ya se completó.
+        pass
+    try:
+        await page.wait_for_load_state("domcontentloaded", timeout=10000)
     except Exception:
         pass
 
-async def open_province(page, prov):
-    # Empezar en la página inicial sin provincia seleccionada, como hace una persona.
-    # La URL /icpplustiem/citar?p=28 es una fase posterior específica de Madrid;
-    # nunca se debe reutilizar ese código para otras provincias.
-    # La ruta TIE queda como alternativa si la página inicial no ofrece el selector.
+async def open_province(page, province):
     last_error = None
     for start in (START, START_TIE):
         try:
             await page.goto(start, wait_until="commit", timeout=25000)
-            await page.locator("select").first.wait_for(state="visible", timeout=20000)
-            await page.locator("select").first.select_option(label=prov)
+            select = page.locator("select").first
+            await select.wait_for(state="visible", timeout=20000)
+            await select.select_option(label=province)
             await accept(page)
             return
-        except Exception as e:
-            last_error = e
-    raise RuntimeError(f"no se pudo abrir ICP+ y seleccionar la provincia {prov}: {last_error}")
+        except Exception as exc:
+            last_error = exc
+    raise RuntimeError(f"no se pudo seleccionar provincia {province}: {last_error}")
 
 async def pick_tramite(page):
-    for s in await page.locator("select").all():
-        for o in await s.locator("option").all():
-            if TRAMITE in (await o.text_content() or "").upper():
-                await s.select_option(value=await o.get_attribute("value"))
+    for select in await page.locator("select").all():
+        for option in await select.locator("option").all():
+            if TRAMITE in ((await option.text_content()) or "").upper():
+                value = await option.get_attribute("value")
+                await select.select_option(value=value)
                 return
     raise RuntimeError("no se encontró el trámite de recogida de TIE")
 
-async def read_lote(page, prov, value):
-    # El flujo de ICP+ exige primero provincia, después trámite y finalmente oficina.
-    await open_province(page, prov)
-    await pick_tramite(page)
-    await accept(page)
-
-    # Tras elegir el trámite, ICP+ carga el selector de oficinas. No asumir que
-    # sigue siendo el primer <select>: localizar el desplegable que contiene la
-    # oficina concreta y seleccionarla por value.
-    candidates = await page.locator("select").all()
-    selected = False
-    for select in candidates:
+async def select_office(page, value):
+    for select in await page.locator("select").all():
         try:
-            option = select.locator("option").filter(has_text=re.compile(
-                "^" + re.escape(value) + "$"
-            ))
-            if await option.count():
+            if await select.locator("option").filter(
+                has=page.locator("option")
+            ).count() < 0:
+                continue
+            if await select.locator(f'option[value="{value}"]').count():
                 await select.select_option(value=value)
-                selected = True
-                break
+                return
         except Exception:
             continue
-    if not selected:
-        # Algunos formularios vuelven a poblar el primer selector tras el trámite.
-        for select in await page.locator("select").all():
-            try:
-                if await select.locator(f'option[value="{value}"]').count():
-                    await select.select_option(value=value)
-                    selected = True
-                    break
-            except Exception:
-                continue
-    if not selected:
-        raise RuntimeError(f"la oficina con identificador {value!r} no aparece después de elegir el trámite")
+    raise RuntimeError(f"la oficina con identificador {value!r} no aparece tras elegir el trámite")
 
+async def read_lote(page, province, value, province_ready=False):
+    # La provincia se abre una vez por lote provincial; para las oficinas
+    # siguientes se reutiliza el contexto/página y se vuelve a elegir el trámite.
+    if not province_ready:
+        await open_province(page, province)
+    await pick_tramite(page)
     await accept(page)
-    m = RX.search(await page.inner_text("body"))
-    if not m:
-        raise RuntimeError("no aparece el último lote (¿captcha, bloqueo o trámite/oficina no disponibles?)")
-    return int(m.group(1)), int(m.group(2))
+    await select_office(page, value)
+    await accept(page)
+    lot = parse_official_lot(await page.inner_text("body"))
+    if not lot:
+        body = (await page.inner_text("body")).lower()
+        if "captcha" in body or "robot" in body:
+            raise RuntimeError("captcha")
+        if any(word in body for word in ("bloqueado", "demasiadas solicitudes", "access denied", "forbidden")):
+            raise RuntimeError("bloqueo")
+        raise RuntimeError("timeout/dato no encontrado: no aparece el último lote")
+    return lot
 
 async def snap(page, name):
-    """Guarda lo que se pueda del diagnóstico sin ocultar el error original."""
     DEBUG.mkdir(exist_ok=True)
     try:
-        html = await page.content()
-        (DEBUG / f"{name}.html").write_text(html, encoding="utf-8")
-    except Exception as e:
-        print(f"[debug] no se pudo guardar HTML ({name}): {e}")
+        (DEBUG / f"{name}.html").write_text(await page.content(), encoding="utf-8")
+    except Exception as exc:
+        print(f"[debug] HTML no disponible ({name}): {exc}")
     try:
         await page.screenshot(path=str(DEBUG / f"{name}.png"), full_page=True, timeout=15000)
-    except Exception as e:
-        print(f"[debug] no se pudo guardar captura ({name}): {e}")
+    except Exception as exc:
+        print(f"[debug] captura no disponible ({name}): {exc}")
 
-async def scrape():
-    results = []
+async def scrape(results: list[dict] | None = None):
+    """Añade cada resultado a la lista compartida en cuanto se obtiene."""
+    if results is None:
+        results = []
+    stats = Counter()
+    errors = Counter()
     async with async_playwright() as p:
-        b = await p.chromium.launch(headless=True)
-        ctx = await b.new_context(locale="es-ES", timezone_id="Europe/Madrid",
-              user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36")
-        page = await ctx.new_page()
+        browser = await p.chromium.launch(headless=True)
+        context = await browser.new_context(
+            locale="es-ES", timezone_id="Europe/Madrid",
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+        )
+        page = await context.new_page()
         page.set_default_timeout(30000)
         page.set_default_navigation_timeout(20000)
-        for prov in PROVINCES:
+        for province in PROVINCES:
             try:
-                await open_province(page, prov)
-                opts = [((await o.get_attribute("value")) or "", ((await o.text_content()) or "").strip())
-                        for o in await page.locator("select").first.locator("option").all()]
-                offices = [(v, t) for v, t in opts if v.strip() and not t.upper().startswith("SELEC")]
-            except Exception as e:
-                print(f"[{prov}] error: {e}"); await snap(page, slug(prov) + "-provincia"); continue
+                await open_province(page, province)
+                options = [
+                    ((await option.get_attribute("value")) or "",
+                     ((await option.text_content()) or "").strip())
+                    for option in await page.locator("select").first.locator("option").all()
+                ]
+                offices = [(value, name) for value, name in options
+                           if value.strip() and not name.upper().startswith("SELEC")]
+            except Exception as exc:
+                stats["province_errors"] += 1
+                cause = classify_error(exc)
+                errors[cause] += 1
+                print(f"[{province}] ERROR ({cause}): {exc}")
+                await snap(page, slug(province) + "-provincia")
+                continue
+            # Cada provincia usa una sesión/página persistente. Si el resultado
+            # deja la página en estado no reutilizable, reiniciar el flujo en esa
+            # misma pestaña, sin crear un contexto nuevo.
+            province_ready = True
             for value, name in offices:
-                try:
-                    y, n = await read_lote(page, prov, value)
-                    results.append({"id": slug(prov + "-" + name)[:48], "prov": prov, "name": name, "y": y, "n": n, "checked": datetime.date.today().isoformat()})
-                    print(f"[{prov}] {name}: {y}/{n}")
-                except Exception as e:
-                    print(f"[{prov}] {name}: error: {e}"); await snap(page, slug(prov + "-" + name)[:40])
+                error = None
+                for attempt in range(RETRIES + 1):
+                    try:
+                        if attempt:
+                            await asyncio.sleep(2 ** attempt + random.random())
+                            await open_province(page, province)
+                            province_ready = True
+                        year, number = await read_lote(page, province, value, province_ready=province_ready)
+                        results.append({
+                            "id": slug(province + "-" + name)[:48], "prov": province,
+                            "name": name, "y": year, "n": number,
+                            "checked": dt.date.today().isoformat(),
+                        })
+                        stats["ok"] += 1
+                        print(f"[{province}] OK {name}: {year}/{number}")
+                        error = None
+                        break
+                    except Exception as exc:
+                        error = exc
+                        cause = classify_error(exc)
+                        if attempt < RETRIES:
+                            print(f"[{province}] REINTENTO {attempt + 1}/{RETRIES} {name} ({cause}): {exc}")
+                if error is not None:
+                    cause = classify_error(error)
+                    stats["errors"] += 1
+                    errors[cause] += 1
+                    print(f"[{province}] ERROR {name} ({cause}): {error}")
+                    await snap(page, slug(province + "-" + name)[:40])
+                    # El siguiente intento/oficina debe recuperar el estado del flujo.
+                    province_ready = False
+                else:
+                    province_ready = False
                 await asyncio.sleep(random.uniform(0.5, 1.2))
-        await b.close()
+        await browser.close()
+    print("Resumen ICP+: " + ", ".join(f"{key}={stats[key]}" for key in ("ok", "errors", "province_errors")))
+    print("Causas: " + (", ".join(f"{key}={value}" for key, value in sorted(errors.items())) or "sin errores"))
     return results
+
+def classify_error(exc):
+    message = str(exc).lower()
+    if "captcha" in message or "robot" in message:
+        return "captcha"
+    if any(word in message for word in ("bloque", "forbidden", "access denied", "429", "403")):
+        return "bloqueo"
+    if any(word in message for word in ("timeout", "timed out", "no aparece", "no encontrado")):
+        return "timeout"
+    return "error"
 
 def merge(prev, results, today):
-    old = {o["id"]: o for o in prev.get("offices", [])}
-    out = []
-    for r in results:
-        o = old.get(r["id"], {})
-        h = o.get("h", []) if o.get("y") == r["y"] else []
-        if r.get("source_type") != "public_unofficial":
-            if h and h[-1][0] == today: h[-1][1] = r["n"]
-            else: h.append([today, r["n"]])
-        r["h"] = h[-90:]; out.append(r)
-    seen = {r["id"] for r in results}
-    out += [o for o in old.values() if o["id"] not in seen]
-    return sorted(out, key=lambda o: (o["prov"], o["name"]))
-
-# Fuentes públicas alternativas. Portal Extranjería publica páginas por provincia
-# con lotes por oficina. No se consulta gob.es en esta función.
-async def fallback_public_sources():
-    import urllib.request
-    from html.parser import HTMLParser
-    from urllib.parse import urljoin, urlparse
-
-    ROOT_URL = "https://portalextranjeria.com/lotes-nie/"
-    HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; MiTIELista/1.0; +https://github.com/papelegruba-ppb/mitielista)"}
-
-    class TextExtractor(HTMLParser):
-        def __init__(self):
-            super().__init__()
-            self.parts = []
-            self.links = []
-            self._link = None
-            self._skip = 0
-        def handle_starttag(self, tag, attrs):
-            attrs = dict(attrs)
-            if tag in ("script", "style", "noscript"):
-                self._skip += 1
-            if tag == "a" and attrs.get("href"):
-                self._link = [attrs["href"], []]
-            if tag in ("br", "p", "div", "section", "article", "h1", "h2", "h3", "li"):
-                self.parts.append(" ")
-        def handle_endtag(self, tag):
-            if tag in ("script", "style", "noscript") and self._skip:
-                self._skip -= 1
-            if tag == "a" and self._link:
-                self.links.append((self._link[0], "".join(self._link[1]).strip()))
-                self._link = None
-            if tag in ("p", "div", "section", "article", "h1", "h2", "h3", "li"):
-                self.parts.append(" ")
-        def handle_data(self, data):
-            if self._skip:
-                return
-            self.parts.append(data)
-            if self._link is not None:
-                self._link[1].append(data)
-        @property
-        def text(self):
-            return re.sub(r"\s+", " ", " ".join(self.parts)).strip()
-
-    def fetch(url):
-        req = urllib.request.Request(url, headers=HEADERS)
-        with urllib.request.urlopen(req, timeout=25) as response:
-            if response.status != 200:
-                raise RuntimeError(f"HTTP {response.status}")
-            raw = response.read()
-        parser = TextExtractor()
-        parser.feed(raw.decode("utf-8", "replace"))
-        return parser
-
-    def iso_date(match):
-        if not match:
-            return None
-        # Acepta tanto un Match de regex como una tupla de grupos capturados.
-        groups = match.groups() if hasattr(match, "groups") else match
-        day, month, year = map(int, groups)
-        try:
-            return datetime.date(year, month, day).isoformat()
-        except ValueError:
-            return None
-
-    today = datetime.date.today().isoformat()
-    found = []
-    try:
-        index = fetch(ROOT_URL)
-        province_pages = []
-        for href, label in index.links:
-            absolute = urljoin(ROOT_URL, href).split("#", 1)[0]
-            path = urlparse(absolute).path.rstrip("/") + "/"
-            if urlparse(absolute).netloc != "portalextranjeria.com":
-                continue
-            if re.fullmatch(r"/lotes-nie-[a-z0-9-]+/", path) and absolute not in province_pages:
-                province_pages.append(absolute)
-        # La página nacional puede enlazar solo una parte de provincias; se siguen
-        # todos los enlaces provinciales encontrados y se informa de errores parciales.
-        print(f"[fallback:Portal Extranjería] páginas provinciales detectadas: {len(province_pages)}")
-        for url in province_pages:
+    old = {office["id"]: office for office in prev.get("offices", [])}
+    cutoff = dt.date.fromisoformat(today) - dt.timedelta(days=MAX_AGE_DAYS)
+    retained = []
+    for office in old.values():
+        dates = []
+        for field in ("published", "checked"):
+            value = office.get(field)
             try:
-                parser = fetch(url)
-                text = parser.text
-                title_match = re.search(r"Lotes NIE\s+(.+?)\s+(?:hoy|actual)", text, re.I)
-                prov = title_match.group(1).strip(" :-") if title_match else ""
-                if not prov:
-                    slug_match = re.search(r"/lotes-nie-(.+)/$", urlparse(url).path)
-                    prov = slug_match.group(1).replace("-", " ").title() if slug_match else "Desconocida"
-                # Cada bloque publicado contiene nombre de comisaría, lote y fecha.
-                pattern = re.compile(
-                    r"(?:Comisar[ií]a de Polic[ií]a de|Comisar[ií]a de|Oficina de)\s+(.{2,100}?)\s+"
-                    r"LOTE NIE ACTUAL\s*:\s*0*(\d{1,4})\s*"
-                    r"\(Actualizado\s*:\s*(\d{1,2})/(\d{1,2})/(\d{4})\)",
-                    re.I
-                )
-                matches = list(pattern.finditer(text))
-                # Algunos listados usan encabezado de oficina seguido directamente del lote.
-                if not matches:
-                    pattern = re.compile(
-                        r"([A-ZÁÉÍÓÚÜÑ][^.!?]{2,90}?)\s+LOTE NIE ACTUAL\s*:\s*0*(\d{1,4})\s*"
-                        r"\(Actualizado\s*:\s*(\d{1,2})/(\d{1,2})/(\d{4})\)",
-                        re.I
-                    )
-                    matches = list(pattern.finditer(text))
-                for m in matches:
-                    name = re.sub(r"\s+", " ", m.group(1)).strip(" :-–")
-                    if not name or name.lower() in {"actual", "hoy"}:
-                        continue
-                    number = int(m.group(2))
-                    published = iso_date(m.group(3, 4, 5))
-                    item = {
-                        "id": slug(prov + "-" + name)[:48],
-                        "prov": prov,
-                        "name": name,
-                        "y": int(published[:4]) if published else datetime.date.today().year,
-                        "n": number,
-                        "checked": today,
-                        "published": published,
-                        "source": "Portal Extranjería",
-                        "source_url": url,
-                        "source_type": "public_unofficial",
-                        "source_checked": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                    }
-                    found.append(item)
-                print(f"[fallback:Portal Extranjería] {prov}: {len(matches)} oficinas")
-            except Exception as e:
-                print(f"[fallback:Portal Extranjería] fallo en {url}: {e}")
-    except Exception as e:
-        print(f"[fallback:Portal Extranjería] no se pudo leer el índice nacional: {e}")
+                dates.append(dt.date.fromisoformat(value[:10]) if value else None)
+            except (TypeError, ValueError):
+                dates.append(None)
+        # Se considera caducado si cualquiera de las fechas disponibles supera
+        # 30 días; sin fechas no se conserva como dato vigente.
+        valid_dates = [date for date in dates if date is not None]
+        if valid_dates and all(date >= cutoff for date in valid_dates):
+            retained.append(office)
+    fresh = {office["id"]: office for office in results}
+    output = []
+    for record in results:
+        previous = old.get(record["id"], {})
+        history = list(previous.get("h", [])) if previous.get("y") == record.get("y") else []
+        if record.get("source_type") != "public_unofficial":
+            if history and history[-1][0] == today:
+                history[-1][1] = record["n"]
+            else:
+                history.append([today, record["n"]])
+        record["h"] = history[-90:]
+        output.append(record)
+    seen = {record["id"] for record in output}
+    output.extend(office for office in retained if office["id"] not in seen)
+    return sorted(output, key=lambda office: (office["prov"], office["name"]))
 
-    # Deduplicar por oficina conservando la publicación más reciente, sin inventar
-    # fechas ni exigir dos webs que podrían estar copiando la misma fuente.
-    dedup = {}
-    for item in found:
-        key = item["id"]
-        current = dedup.get(key)
-        if current is None or (item.get("published") or "") > (current.get("published") or ""):
-            dedup[key] = item
-    results = list(dedup.values())
-    print(f"[fallback] total de oficinas no oficiales extraídas: {len(results)}")
-    return results
+def _fetch_html(url):
+    request = urllib.request.Request(url, headers={
+        "User-Agent": "Mozilla/5.0 (compatible; MiTIELista/1.0; +https://github.com/papelegruba-ppb/mitielista)"
+    })
+    with urllib.request.urlopen(request, timeout=25) as response:
+        if response.status != 200:
+            raise RuntimeError(f"HTTP {response.status}")
+        raw = response.read(2_000_001)
+    if len(raw) > 2_000_000:
+        raise RuntimeError("respuesta demasiado grande")
+    return raw.decode("utf-8", "replace")
 
-if __name__ == "__main__":
+async def fallback_public_sources():
+    """Extrae candidatos configurados y solo publica coincidencias independientes."""
+    today = dt.date.today().isoformat()
+    candidates = []
+    index_url = "https://portalextranjeria.com/lotes-nie/"
     try:
-        # La sede puede tardar varios minutos en recorrer todas las provincias.
-        # No cancelar a los 90 s: wait_for descartaba todos los resultados parciales.
-        # El límite global lo controla el timeout del job de GitHub Actions.
-        results = asyncio.run(scrape())
-    except Exception as e:
-        print(f"Falló la consulta oficial: {e}; se activa el fallback público.")
-        results = []
-    print("Comprobando fuentes públicas alternativas para cubrir oficinas no obtenidas oficialmente.")
-    fallback = asyncio.run(fallback_public_sources())
-    existing_ids = {r["id"] for r in results}
-    results.extend(r for r in fallback if r["id"] not in existing_ids)
-    # Fuentes adicionales: solo se incorporan lotes con formato explícito y trazabilidad.
-    # El frontend actual conserva un registro vigente por oficina; si ya existe una
-    # observación para esa oficina, no se sustituye automáticamente por una señal secundaria.
+        index = _TextExtractor()
+        index.feed(_fetch_html(index_url))
+        links = {}
+        for href, label in index.links:
+            absolute = urljoin(index_url, href).split("#", 1)[0]
+            parsed = urlparse(absolute)
+            if parsed.netloc.lower() != "portalextranjeria.com":
+                continue
+            if re.fullmatch(r"/lotes-nie-[a-z0-9-]+/?", parsed.path):
+                links[parsed.path.rstrip("/") + "/"] = absolute
+        print(f"[fallback:Portal Extranjería] páginas verificadas en índice: {len(links)}")
+        for province, config in FALLBACK_CONFIG.items():
+            source_cfg = config["sources"].get("portal_extranjeria")
+            if not source_cfg:
+                continue
+            # Se enlaza página por índice y se contrasta la provincia desde URL
+            # contra el nombre normalizado. No se inventan URLs de provincias.
+            matching = [(path, url) for path, url in links.items()
+                        if normalize(path.rsplit("-", 1)[-1]) == normalize(province)]
+            # Fallback a slug completo únicamente si el enlace existe realmente.
+            expected = "/lotes-nie-" + slug(province) + "/"
+            matching += [(expected, links[expected])] if expected in links and all(expected != p for p, _ in matching) else []
+            for path, url in matching:
+                try:
+                    html_text = _fetch_html(url)
+                    records = parse_portal_html(html_text, province, url, today)
+                    candidates.extend(records)
+                    print(f"[fallback:{province}] {len(records)} registros candidatos")
+                except Exception as exc:
+                    print(f"[fallback:{province}] error fuente Portal: {exc}")
+    except Exception as exc:
+        print(f"[fallback] índice Portal no disponible: {exc}")
+
+    # Fuente adicional conocida en sources.py; se toma como candidata, no como
+    # evidencia independiente si comparte el mismo dominio o atribución.
     try:
         from sources import scrape_secondary_sources
-        secondary = scrape_secondary_sources()
-        known_ids = {r["id"] for r in results}
-        for item in secondary:
-            if item["id"] not in known_ids:
-                results.append(item)
-                known_ids.add(item["id"])
-    except Exception as e:
-        print(f"[fuentes adicionales] error aislado: {e}")
+        candidates.extend(await asyncio.to_thread(scrape_secondary_sources))
+    except Exception as exc:
+        print(f"[fallback] fuentes secundarias no disponibles: {exc}")
+
+    grouped = defaultdict(list)
+    for item in candidates:
+        if not item.get("published") or not item.get("y"):
+            continue
+        grouped[(normalize(item["prov"]), normalize(item["name"]), item["y"], item["n"])].append(item)
+    accepted = []
+    for key, records in grouped.items():
+        independent = {urlparse(record.get("source_url", "")).netloc.lower()
+                       for record in records if record.get("source_url")}
+        if len(independent) < 2:
+            continue
+        # Las observaciones deben ser del mismo lote/oficina; no se fusionan
+        # publicaciones con diferente número o año.
+        chosen = sorted(records, key=lambda record: (
+            record.get("source_type") != "official_public_notice",
+            record.get("published") or "",
+        ), reverse=False)[0].copy()
+        chosen["source"] = " / ".join(sorted({record.get("source", "") for record in records}))
+        chosen["source_url"] = records[0].get("source_url", "")
+        chosen["source_type"] = "public_unofficial" if all(
+            record.get("source_type") != "official_public_notice" for record in records
+        ) else "official_public_notice"
+        chosen["sources_count"] = len(independent)
+        accepted.append(chosen)
+    print(f"[fallback] candidatos={len(candidates)} aceptados con ≥2 fuentes={len(accepted)}")
+    return accepted
+
+async def main():
+    results = []
+    try:
+        await asyncio.wait_for(scrape(results), timeout=30 * 60)
+    except asyncio.TimeoutError:
+        print(f"TIMEOUT global 30 min; se conservan {len(results)} resultados parciales.")
+    except Exception as exc:
+        print(f"Falló ICP+: {exc}; se conservan {len(results)} resultados parciales.")
+    print("Consultando fuentes públicas de respaldo (solo coincidencia de 2 fuentes independientes).")
+    fallback = await fallback_public_sources()
+    existing = {record["id"] for record in results}
+    results.extend(record for record in fallback if record["id"] not in existing)
     if not results:
         sys.exit("Sin resultados verificables: se conserva lotes.json y no se publica nada.")
-    f = ROOT / "lotes.json"
-    prev = json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
-    if any("ejemplo" in o["name"] for o in prev.get("offices", [])): prev = {}   # descarta datos de demostración
-    today = datetime.date.today().isoformat()
-    f.write_text(json.dumps({"updated": today, "offices": merge(prev, results, today)}, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(len(results), "oficinas actualizadas")
+    data_file = ROOT / "lotes.json"
+    previous = json.loads(data_file.read_text(encoding="utf-8")) if data_file.exists() else {}
+    if any("ejemplo" in office.get("name", "").lower() for office in previous.get("offices", [])):
+        previous = {}
+    today = dt.date.today().isoformat()
+    merged = merge(previous, results, today)
+    data_file.write_text(json.dumps({"updated": today, "offices": merged}, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"Actualización final: resultados={len(results)}, oficinas publicadas={len(merged)}")
+
+if __name__ == "__main__":
+    asyncio.run(main())

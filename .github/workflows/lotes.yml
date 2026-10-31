@@ -26,6 +26,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Instalar Playwright
+        if: github.event_name != 'push'
         run: |
           pip install playwright==1.55.0
           playwright install --with-deps chromium

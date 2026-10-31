@@ -469,7 +469,8 @@ async def main():
     existing = {record["id"] for record in results}
     results.extend(record for record in fallback if record["id"] not in existing)
     if not results:
-        sys.exit("Sin resultados verificables: se conserva lotes.json y no se publica nada.")
+        print("Sin resultados nuevos verificables: se conserva lotes.json y se permite publicar el catálogo de oficinas.")
+        return
     data_file = ROOT / "lotes.json"
     previous = json.loads(data_file.read_text(encoding="utf-8")) if data_file.exists() else {}
     if any("ejemplo" in office.get("name", "").lower() for office in previous.get("offices", [])):

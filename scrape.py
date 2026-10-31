@@ -35,29 +35,34 @@ DEBUG = ROOT / "debug"
 RX = re.compile(r"LTIMO LOTE RECIBIDO.{0,120}?(\d{4})\s*/\s*(\d+)", re.S | re.I)
 MAX_AGE_DAYS = 30
 RETRIES = 2
+PORTAL_INDEX_URL = "https://portalextranjeria.com/lotes-nie/"
 
-# Configuración extensible por provincia. Solo se habilitan URLs y marcadores
-# cuya estructura se ha observado en el repositorio. Para otras fuentes, TODO.
+# El portal publica un índice común; cada provincia declara sus alias y el
+# marcador HTML de oficina. Las fuentes no verificadas quedan como TODO explícito.
+PORTAL_OFFICE_PATTERN = re.compile(
+    r"(?:Comisar[ií]a de Polic[ií]a de|Comisar[ií]a de|Oficina de)\\s+(.{2,100}?)\\s+"
+    r"LOTE NIE ACTUAL\\s*:\\s*(20\\d{2})\\s*/\\s*0*(\\d{1,5})\\s*"
+    r"\\(Actualizado\\s*:\\s*(\\d{1,2})/(\\d{1,2})/(\\d{4})\\)",
+    re.I,
+)
+PROVINCE_ALIASES = {
+    "Araba/Álava": ("alava", "araba", "araba alava"),
+    "Balears (Illes)": ("baleares", "illes balears", "islas baleares"),
+    "Guipúzcoa / Gipuzkoa": ("guipuzcoa", "gipuzkoa"),
+    "Vizcaya / Bizkaia": ("vizcaya", "bizkaia"),
+    "A Coruña": ("la coruna", "coruna"),
+    "Santa Cruz de Tenerife": ("tenerife", "santa cruz de tenerife"),
+}
 FALLBACK_CONFIG = {
     province: {
+        "aliases": PROVINCE_ALIASES.get(province, (normalize(province),)),
         "sources": {
             "portal_extranjeria": {
-                "index_url": "https://portalextranjeria.com/lotes-nie/",
-                "province_url": None,  # Se resuelve exclusivamente desde enlaces del índice.
-                "office_specs": [
-                    {
-                        "pattern": re.compile(
-                            r"(?:Comisar[ií]a de Polic[ií]a de|Comisar[ií]a de|Oficina de)\\s+(.{2,100}?)\\s+"
-                            r"LOTE NIE ACTUAL\\s*:\\s*0*(\\d{1,4})\\s*"
-                            r"\(Actualizado\\s*:\\s*(\\d{1,2})/(\\d{1,2})/(\\d{4})\\)",
-                            re.I,
-                        ),
-                        "date_format": "dmy",
-                    }
-                ],
+                "url": PORTAL_INDEX_URL,
+                "office_specs": [{"pattern": PORTAL_OFFICE_PATTERN, "date_format": "dmy"}],
             },
-            # TODO: añadir fuentes independientes solo tras verificar URL, HTML,
-            # atribución y marcadores de oficina/lote para esta provincia.
+            # TODO: añadir fuentes provinciales solo tras verificar URL, estructura
+            # HTML, fecha de publicación y marcador que incluya año explícito.
         },
     }
     for province in PROVINCES
@@ -81,22 +86,22 @@ def parse_official_lot(text: str):
     return (int(match.group(1)), int(match.group(2))) if match else None
 
 def parse_portal_html(html_text: str, province: str, source_url: str, checked: str | None = None):
-    """Parser fixtureable para el patrón explícito conocido de Portal Extranjería."""
+    """Extrae solo lotes con año explícito; nunca deduce el año desde la fecha publicada."""
     checked = checked or dt.date.today().isoformat()
     parser = _TextExtractor()
     parser.feed(html_text)
     output = []
-    specs = FALLBACK_CONFIG.get(province, {}).get("sources", {}).get("portal_extranjeria", {}).get("office_specs", [])
-    for spec in specs:
+    source_cfg = FALLBACK_CONFIG.get(province, {}).get("sources", {}).get("portal_extranjeria", {})
+    for spec in source_cfg.get("office_specs", []):
         for match in spec["pattern"].finditer(parser.text):
-            name = re.sub(r"\s+", " ", match.group(1)).strip(" :-–")
-            published = parse_date(*match.group(3, 4, 5))
+            name = re.sub(r"\\s+", " ", match.group(1)).strip(" :-–")
+            year, number = int(match.group(2)), int(match.group(3))
+            published = parse_date(*match.group(4, 5, 6))
             if not name or not published:
                 continue
             output.append({
                 "id": slug(province + "-" + name)[:48],
-                "prov": province, "name": name,
-                "y": int(published[:4]), "n": int(match.group(2)),
+                "prov": province, "name": name, "y": year, "n": number,
                 "checked": checked, "published": published,
                 "source": "Portal Extranjería", "source_url": source_url,
                 "source_type": "public_unofficial",
@@ -303,16 +308,17 @@ def merge(prev, results, today):
         dates = []
         for field in ("published", "checked"):
             value = office.get(field)
+            if not value:
+                continue
             try:
-                dates.append(dt.date.fromisoformat(value[:10]) if value else None)
+                dates.append(dt.date.fromisoformat(str(value)[:10]))
             except (TypeError, ValueError):
+                # Una fecha presente pero inválida impide retener el registro.
                 dates.append(None)
-        # Se considera caducado si cualquiera de las fechas disponibles supera
-        # 30 días; sin fechas no se conserva como dato vigente.
-        valid_dates = [date for date in dates if date is not None]
-        if valid_dates and all(date >= cutoff for date in valid_dates):
+        # Si cualquiera de las fechas conocidas es antigua (o inválida),
+        # descartar. Sin ninguna fecha no se puede acreditar vigencia.
+        if dates and all(date is not None and date >= cutoff for date in dates):
             retained.append(office)
-    fresh = {office["id"]: office for office in results}
     output = []
     for record in results:
         previous = old.get(record["id"], {})
@@ -341,49 +347,61 @@ def _fetch_html(url):
     return raw.decode("utf-8", "replace")
 
 async def fallback_public_sources():
-    """Extrae candidatos configurados y solo publica coincidencias independientes."""
+    """Consulta fuentes configuradas y exige dos dominios independientes."""
     today = dt.date.today().isoformat()
     candidates = []
-    index_url = "https://portalextranjeria.com/lotes-nie/"
-    try:
-        index = _TextExtractor()
-        index.feed(_fetch_html(index_url))
-        links = {}
-        for href, label in index.links:
-            absolute = urljoin(index_url, href).split("#", 1)[0]
-            parsed = urlparse(absolute)
-            if parsed.netloc.lower() != "portalextranjeria.com":
-                continue
-            if re.fullmatch(r"/lotes-nie-[a-z0-9-]+/?", parsed.path):
-                links[parsed.path.rstrip("/") + "/"] = absolute
-        print(f"[fallback:Portal Extranjería] páginas verificadas en índice: {len(links)}")
-        for path, url in links.items():
-            try:
-                html_text = _fetch_html(url)
-                page_parser = _TextExtractor()
-                page_parser.feed(html_text)
-                title_match = re.search(r"Lotes NIE\s+(.+?)\s+(?:hoy|actual)", page_parser.text, re.I)
-                if not title_match:
-                    continue
-                page_province = title_match.group(1).strip(" :-")
-                province = next((p for p in PROVINCES if normalize(p) == normalize(page_province)), None)
-                aliases = {"alava": "Araba/Álava", "vizcaya": "Vizcaya / Bizkaia",
-                           "guipuzcoa": "Guipúzcoa / Gipuzkoa", "baleares": "Balears (Illes)"}
-                if province is None:
-                    province = aliases.get(normalize(page_province))
-                if province not in FALLBACK_CONFIG:
-                    print(f"[fallback] provincia no reconocida en título: {page_province!r}")
-                    continue
-                records = parse_portal_html(html_text, province, url, today)
-                candidates.extend(records)
-                print(f"[fallback:{province}] {len(records)} registros candidatos")
-            except Exception as exc:
-                print(f"[fallback] error en página {url}: {exc}")
-    except Exception as exc:
-        print(f"[fallback] índice Portal no disponible: {exc}")
+    # La configuración por provincia controla URLs, alias y marcadores.
+    configs_by_url = defaultdict(list)
+    for province, config in FALLBACK_CONFIG.items():
+        for source_id, source in config.get("sources", {}).items():
+            if source.get("url"):
+                configs_by_url[(source_id, source["url"])].append(province)
 
-    # Fuente adicional conocida en sources.py; se toma como candidata, no como
-    # evidencia independiente si comparte el mismo dominio o atribución.
+    fetched_indexes = {}
+    for (source_id, index_url), provinces in configs_by_url.items():
+        if source_id != "portal_extranjeria":
+            # TODO: implementar un parser cuando se verifique la estructura HTML.
+            print(f"[fallback:{source_id}] parser pendiente; no se extraen datos")
+            continue
+        try:
+            if index_url not in fetched_indexes:
+                index_parser = _TextExtractor()
+                index_parser.feed(_fetch_html(index_url))
+                links = {}
+                for href, label in index_parser.links:
+                    absolute = urljoin(index_url, href).split("#", 1)[0]
+                    parsed = urlparse(absolute)
+                    if parsed.netloc.lower() != "portalextranjeria.com":
+                        continue
+                    if re.fullmatch(r"/lotes-nie-[a-z0-9-]+/?", parsed.path):
+                        links[parsed.path.rstrip("/") + "/"] = absolute
+                fetched_indexes[index_url] = links
+                print(f"[fallback:{source_id}] páginas de provincia en índice: {len(links)}")
+            links = fetched_indexes[index_url]
+            for path, url in links.items():
+                try:
+                    page_parser = _TextExtractor()
+                    page_parser.feed(_fetch_html(url))
+                    title_match = re.search(r"Lotes NIE\\s+(.+?)\\s+(?:hoy|actual)", page_parser.text, re.I)
+                    if not title_match:
+                        continue
+                    page_name = normalize(title_match.group(1))
+                    matched_province = None
+                    for province in provinces:
+                        aliases = FALLBACK_CONFIG[province].get("aliases", (normalize(province),))
+                        if any(page_name == normalize(alias) for alias in aliases):
+                            matched_province = province
+                            break
+                    if not matched_province:
+                        continue
+                    records = parse_portal_html(_fetch_html(url), matched_province, url, today)
+                    candidates.extend(records)
+                    print(f"[fallback:{matched_province}] {len(records)} candidatos ({url})")
+                except Exception as exc:
+                    print(f"[fallback:{path}] error ({classify_error(exc)}): {exc}")
+        except Exception as exc:
+            print(f"[fallback:{source_id}] índice no disponible ({classify_error(exc)}): {exc}")
+
     try:
         from sources import scrape_secondary_sources
         candidates.extend(await asyncio.to_thread(scrape_secondary_sources))
@@ -392,29 +410,32 @@ async def fallback_public_sources():
 
     grouped = defaultdict(list)
     for item in candidates:
+        # Año y fecha de publicación explícitos son requisitos para publicar.
         if not item.get("published") or not item.get("y"):
             continue
         grouped[(normalize(item["prov"]), normalize(item["name"]), item["y"], item["n"])].append(item)
+
     accepted = []
     for key, records in grouped.items():
-        independent = {urlparse(record.get("source_url", "")).netloc.lower()
-                       for record in records if record.get("source_url")}
+        independent = {
+            urlparse(record.get("source_url", "")).netloc.lower()
+            for record in records
+            if record.get("source_url") and urlparse(record["source_url"]).netloc
+        }
         if len(independent) < 2:
             continue
-        # Las observaciones deben ser del mismo lote/oficina; no se fusionan
-        # publicaciones con diferente número o año.
         chosen = sorted(records, key=lambda record: (
             record.get("source_type") != "official_public_notice",
             record.get("published") or "",
-        ), reverse=False)[0].copy()
-        chosen["source"] = " / ".join(sorted({record.get("source", "") for record in records}))
+        ))[0].copy()
+        chosen["source"] = " / ".join(sorted({record.get("source", "") for record in records if record.get("source")}))
         chosen["source_url"] = records[0].get("source_url", "")
         chosen["source_type"] = "public_unofficial" if all(
             record.get("source_type") != "official_public_notice" for record in records
         ) else "official_public_notice"
         chosen["sources_count"] = len(independent)
         accepted.append(chosen)
-    print(f"[fallback] candidatos={len(candidates)} aceptados con ≥2 fuentes={len(accepted)}")
+    print(f"[fallback] candidatos={len(candidates)} aceptados con ≥2 fuentes independientes={len(accepted)}")
     return accepted
 
 async def main():

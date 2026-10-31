@@ -143,6 +143,12 @@ for filename in ("favicon.svg","logo.svg","og.png","manifest.json","service-work
     if source.exists():
         shutil.copy2(source,OUT/filename)
 write("lotes.json",json.dumps(data,ensure_ascii=False))
+catalog_file = ROOT / "oficinas.json"
+if catalog_file.exists():
+    catalog = json.loads(catalog_file.read_text(encoding="utf-8"))
+else:
+    catalog = {"updated": None, "source_url": "", "offices": []}
+write("oficinas.json", json.dumps(catalog, ensure_ascii=False))
 write("sitemap.xml",'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+"".join(
  f"<url><loc>{esc(url)}</loc><lastmod>{data.get('updated','')}</lastmod></url>\n" for url in urls)+"</urlset>\n")
 write("robots.txt",f"User-agent: *\nAllow: /\n\nSitemap: {DOMAIN}/sitemap.xml\n")

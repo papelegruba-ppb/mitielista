@@ -92,7 +92,12 @@ jobs:
           git config user.email "lotes-bot@users.noreply.github.com"
           git add lotes.json oficinas.json
           git diff --cached --quiet || git commit -m "Actualiza lotes y oficinas"
-          git pull --rebase origin main
+          if ! git pull --rebase origin main; then
+            echo "Conflicto de datos generados al rebasar sobre main; se conserva la versión recién calculada."
+            git checkout --theirs -- lotes.json oficinas.json
+            git add lotes.json oficinas.json
+            GIT_EDITOR=true git rebase --continue
+          fi
           git push
       - uses: actions/upload-pages-artifact@v3
         with:

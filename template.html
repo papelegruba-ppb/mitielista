@@ -46,10 +46,6 @@ main{max-width:520px;margin:0 auto;padding:28px 20px 40px}
 h1{font:700 2rem/1.1 "Bricolage Grotesque",system-ui,sans-serif;letter-spacing:-.02em;margin:0 0 8px}
 .lead{color:var(--muted);margin:0 0 24px}
 .demo{background:var(--wait-bg);color:var(--wait);border-radius:8px;padding:10px 12px;margin:0 0 20px;font-size:.9rem}
-.update-status{background:var(--wait-bg);color:var(--wait);border-radius:10px;padding:12px 14px;margin:0 0 20px;font-size:.92rem}
-.update-status strong{display:block;margin-bottom:3px}
-.update-status[hidden]{display:none}
-.update-time{font-variant-numeric:tabular-nums;font-weight:700}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
 label{display:block;font-weight:600;margin:0 0 6px}
 .field{margin:0 0 16px}
@@ -104,7 +100,6 @@ main{width:min(calc(100% - 48px),1440px);margin:0 auto;padding:34px 0 60px;displ
 h1{grid-area:title;font-size:clamp(2.4rem,4vw,3.6rem);line-height:1.04;letter-spacing:-.055em;margin:0 0 12px;font-weight:780}
 h1::after{content:".";color:#ff9a55}
 .lead{grid-area:lead;max-width:680px;color:#625b6c;font-size:1rem;margin:0 0 20px}
-#update-status{grid-area:status;margin:0 0 22px}
 .card{grid-area:form;min-width:0;width:100%;background:rgba(255,255,255,.86);border:1px solid rgba(226,216,238,.9);border-radius:20px;padding:26px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}
 #out{grid-area:output;min-width:0;margin:0 0 24px;align-self:start}
 .info{grid-area:info}
@@ -131,7 +126,6 @@ footer{padding-top:22px;color:var(--muted);font-size:.85rem}
  .brand-mark{width:46px;height:46px;flex-basis:46px}
  h1{font-size:clamp(2rem,9vw,2.65rem);margin-bottom:10px}
  .lead{font-size:.95rem;margin-bottom:18px}
- #update-status{margin-bottom:18px}
  .card{width:100%;padding:22px 18px;border-radius:18px}
  #out{width:100%;margin-top:18px}
  #out:not(:empty){padding:20px 18px}
@@ -150,7 +144,7 @@ footer{padding-top:22px;color:var(--muted);font-size:.85rem}
   <div class="brand-row"><a class="brand" href="/" aria-label="Mi TIE Lista, inicio"><svg class="brand-mark" width="54" height="54" viewBox="0 0 128 128" aria-hidden="true" focusable="false"><defs><linearGradient id="logo-bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#efe3ff"/><stop offset="1" stop-color="#fff0dc"/></linearGradient><linearGradient id="logo-accent" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b27be9"/><stop offset="1" stop-color="#ff9c62"/></linearGradient></defs><rect x="3" y="3" width="122" height="122" rx="30" fill="url(#logo-bg)"/><rect x="25" y="25" width="78" height="78" rx="23" fill="#fff" stroke="#e6d8f4" stroke-width="2"/><rect x="39" y="39" width="50" height="50" rx="15" fill="url(#logo-accent)"/><path d="M48 52h32v7H68v19h-8V59H48z" fill="#fff"/><circle cx="94" cy="31" r="5" fill="#ff9c62"/></svg><span>Mi TIE Lista</span></a><button class="install-app" id="install-app" type="button" hidden>Instalar aplicación</button></div>
   <h1>{{H1}}</h1>
   <p class="lead">{{LEAD}}</p>
-  <div id="update-status" class="update-status" role="status" aria-live="polite" hidden><strong>Obteniendo datos de los lotes</strong><span>La actualización está en curso. Tiempo transcurrido: <span id="update-elapsed" class="update-time">00:00</span>. Puedes consultar los últimos datos guardados mientras termina.</span></div>
+  <p id="updated-status" class="hint" role="status" aria-live="polite">Fecha de actualización no disponible.</p>
 
   <form class="card" id="f" novalidate>
     <div class="field">
@@ -190,25 +184,6 @@ var CITA="https://icp.administracionelectronica.gob.es/icpplus/index.html";
 // Los resultados se cargan exclusivamente desde lotes.json; nunca se muestran datos inventados.
 var $=function(i){return document.getElementById(i)};
 var DATA=null;
-var updateTimer=null;
-function elapsedText(ms){
-  var s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
-  return (h?String(h).padStart(2,"0")+":":"")+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0");
-}
-function checkUpdateStatus(){
-  fetch("https://api.github.com/repos/papelegruba-ppb/mitielista/actions/workflows/lotes.yml/runs?per_page=5",{cache:"no-store"})
-    .then(function(r){if(!r.ok)throw new Error("status unavailable");return r.json()})
-    .then(function(d){
-      var run=(d.workflow_runs||[]).filter(function(x){return x.status==="in_progress"})[0];
-      var box=$("update-status");
-      if(!run||!run.created_at){box.hidden=true;if(updateTimer)clearInterval(updateTimer);updateTimer=null;return}
-      var started=Date.parse(run.created_at);
-      box.hidden=false;
-      function tick(){ $("update-elapsed").textContent=elapsedText(Date.now()-started); }
-      tick();if(updateTimer)clearInterval(updateTimer);updateTimer=setInterval(tick,1000);
-    }).catch(function(){ $("update-status").hidden=true; });
-}
-
 function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||"null");localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
 function pd(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2])}
 function biz(a,b){var c=0,d=new Date(a);while(d<b){d.setDate(d.getDate()+1);var w=d.getDay();if(w>0&&w<6)c++}return c}
@@ -261,14 +236,13 @@ function check(){
   }
   var U={y:year,n:num},ref={y:o.y,n:o.n},uTxt=U.y+"/"+U.n,lTxt=ref.y+"/"+ref.n;
   var cmp=(U.y-ref.y)||(U.n-ref.n),falta=Math.max(0,U.n-ref.n);
-  var nums='<div class="situation"><div class="situation-kicker">Tu situación de hoy</div><div class="situation-place">'+esc(o.name)+' · '+esc(prov)+'</div><div class="situation-gap">'+(cmp>0?'Estás a <strong>'+falta+' lotes</strong> de tu tarjeta.':'Tu lote está dentro del último lote indicado.')+'</div><div class="nums"><div><small>ÚLTIMO LOTE DE ESTA OFICINA</small><b>'+lTxt+'</b></div><div><small>TU LOTE</small><b>'+uTxt+'</b></div></div><p class="hint">'+(o.source_type==="official_public_notice"?"Aviso oficial (no confirma disponibilidad individual)":"Fuente no oficial")+' · '+esc(o.source||"Fuente no identificada")+'. Publicado: '+esc(o.published||"sin fecha de publicación confirmada")+'. Comprobado: '+esc(o.checked||DATA.d.updated||"fecha desconocida")+'. '+(/^https:\/\//.test(String(o.source_url||""))?'<a href="'+esc(o.source_url)+'" target="_blank" rel="noopener noreferrer">Ver fuente original</a>':"Fuente original no disponible")+'. El lote no confirma que tu tarjeta individual esté lista.</p><p class="hint">La comparación y la estimación usan únicamente los datos de esta oficina.</p></div>'
+  var officialNotice=o.source_type==="public_unofficial"?'<p class="hint" role="note">Dato no oficial, publicado el '+esc(o.published?pd(o.published).toLocaleDateString("es-ES"):"fecha no confirmada")+' en '+esc(o.source||"fuente no identificada")+' . Confirma con la oficina.</p>':"";
+  var nums=officialNotice+'<div class="situation"><div class="situation-kicker">Tu situación de hoy</div><div class="situation-place">'+esc(o.name)+' · '+esc(prov)+'</div><div class="situation-gap">'+(cmp>0?'Estás a <strong>'+falta+' lotes</strong> de tu tarjeta.':'Tu lote está dentro del último lote indicado.')+'</div><div class="nums"><div><small>ÚLTIMO LOTE DE ESTA OFICINA</small><b>'+lTxt+'</b></div><div><small>TU LOTE</small><b>'+uTxt+'</b></div></div><p class="hint">'+(o.source_type==="official_public_notice"?"Aviso oficial (no confirma disponibilidad individual)":"Fuente no oficial")+' · '+esc(o.source||"Fuente no identificada")+'. Publicado: '+esc(o.published||"sin fecha de publicación confirmada")+'. Comprobado: '+esc(o.checked||DATA.d.updated||"fecha desconocida")+'. '+(/^https:\/\//.test(String(o.source_url||""))?'<a href="'+esc(o.source_url)+'" target="_blank" rel="noopener noreferrer">Ver fuente original</a>':"Fuente original no disponible")+'. El lote no confirma que tu tarjeta individual esté lista.</p><p class="hint">La comparación y la estimación usan únicamente los datos de esta oficina.</p></div>'
   store("tie",{p:prov,o:officeId,l:raw});
   var wa='<a class="btn alt" target="_blank" rel="noopener" href="https://wa.me/'+WA+'?text='+encodeURIComponent("Hola, tengo dudas con mi TIE. Mi lote es "+uTxt+" en "+prov+".")+'">Preguntar por WhatsApp</a>';
   var cita='<a class="btn" target="_blank" rel="noopener" href="'+CITA+'">Pedir cita de recogida</a>';
   if(cmp<=0){show("ok","Tu lote podría estar listo","<p>El lote más avanzado encontrado en esta provincia es igual o posterior al tuyo. Comprueba tu oficina antes de desplazarte.</p>",nums,cita+wa);return}
-  var est="",r=rate(o);
-  if(U.y>ref.y){show("wait","Tu lote es de un año posterior","<p>El lote de referencia es de un año anterior al tuyo.</p>",nums,wa);return}
-  if(r>0&&DATA.d.updated){var d=addBiz(pd(DATA.d.updated),Math.ceil(falta/r));var early=new Date(d);early.setDate(early.getDate()-4);var late=new Date(d);late.setDate(late.getDate()+4);est="<div class=\\"estimate\\"><div class=\\"estimate-label\\">Si el ritmo se mantiene</div><div class=\\"estimate-date\\">"+fmt(d)+" "+d.getFullYear()+"</div><p>Fecha orientativa. Puede cambiar si cambia el ritmo de la oficina.</p><p class=\\"estimate-range\\">Rango orientativo por variación del ritmo: "+fmt(early)+" – "+fmt(late)+"</p></div>"}
+  var est='<div class="estimate"><div class="estimate-label">Si el ritmo se mantiene</div><div class="estimate-date">'+fmt(d)+" "+d.getFullYear()+'</div><p>Fecha orientativa. Puede cambiar si cambia el ritmo de la oficina.</p><p class="estimate-range">Rango orientativo por variación del ritmo: '+fmt(early)+" – "+fmt(late)+"</p></div>"}
   show("wait","Tu lote aún no aparece como alcanzado",est||"<p>Faltan "+falta+" lotes según el número introducido. No hay datos suficientes para estimar una fecha.</p>",nums,wa);
 }
 
@@ -277,7 +251,7 @@ $("f").addEventListener("submit",function(e){e.preventDefault();check()});
 
 
 $("wa").href="https://wa.me/"+WA+"?text="+encodeURIComponent("Hola, necesito ayuda con un trámite.");
-checkUpdateStatus();setInterval(checkUpdateStatus,60000);
+
 
 var installPrompt=null;
 var installButton=$("install-app");
@@ -294,9 +268,10 @@ $("prov").innerHTML='<option value="">Elige provincia</option>'+PROVINCIAS_BASE.
 $("of").innerHTML='<option value="">Cargando oficinas…</option>';
 $("of").disabled=true;
 function loadOfficeData(){
-  fetch("/lotes.json?v=20261028b",{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(function(d){
+  fetch("/lotes.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(function(d){
     if(!d||!Array.isArray(d.offices))throw new Error("Formato de datos inválido");
     DATA={d:d};fillProv();
+    $("updated-status").textContent=d.updated?"Datos actualizados el "+pd(d.updated).toLocaleDateString("es-ES"):"Fecha de actualización no disponible.";
     var s=store("tie");
     if(window.PRESET){var po=DATA.d.offices.filter(function(x){return x.id===PRESET})[0];if(po){$("prov").value=po.prov;fillOf();$("of").value=po.id}}
     else if(s){$("prov").value=s.p||"";fillOf();$("of").value=s.o||"";$("lote").value=s.l||"";}

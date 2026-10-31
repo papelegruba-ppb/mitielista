@@ -242,7 +242,10 @@ function check(){
   var wa='<a class="btn alt" target="_blank" rel="noopener" href="https://wa.me/'+WA+'?text='+encodeURIComponent("Hola, tengo dudas con mi TIE. Mi lote es "+uTxt+" en "+prov+".")+'">Preguntar por WhatsApp</a>';
   var cita='<a class="btn" target="_blank" rel="noopener" href="'+CITA+'">Pedir cita de recogida</a>';
   if(cmp<=0){show("ok","Tu lote podría estar listo","<p>El lote más avanzado encontrado en esta provincia es igual o posterior al tuyo. Comprueba tu oficina antes de desplazarte.</p>",nums,cita+wa);return}
-  var est='<div class="estimate"><div class="estimate-label">Si el ritmo se mantiene</div><div class="estimate-date">'+fmt(d)+" "+d.getFullYear()+'</div><p>Fecha orientativa. Puede cambiar si cambia el ritmo de la oficina.</p><p class="estimate-range">Rango orientativo por variación del ritmo: '+fmt(early)+" – "+fmt(late)+"</p></div>"}
+  var est="",r=rate(o);
+  if(U.y>ref.y){show("wait","Tu lote es de un año posterior","<p>El lote de referencia es de un año anterior al tuyo.</p>",nums,wa);return}
+  if(r>0&&o.checked){var d=addBiz(pd(o.checked),Math.ceil(falta/r));var early=new Date(d);early.setDate(early.getDate()-4);var late=new Date(d);late.setDate(late.getDate()+4);
+est='<div class="estimate"><div class="estimate-label">Si el ritmo se mantiene</div><div class="estimate-date">'+fmt(d)+" "+d.getFullYear()+'</div><p>Fecha orientativa. Puede cambiar si cambia el ritmo de la oficina.</p><p class="estimate-range">Rango orientativo por variación del ritmo: '+fmt(early)+" – "+fmt(late)+"</p></div>"}
   show("wait","Tu lote aún no aparece como alcanzado",est||"<p>Faltan "+falta+" lotes según el número introducido. No hay datos suficientes para estimar una fecha.</p>",nums,wa);
 }
 

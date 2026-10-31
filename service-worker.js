@@ -1,5 +1,5 @@
 // Sube CACHE a v3, v4, etc. cada vez que cambien los assets precacheados o su estrategia.
-const CACHE = "mi-tie-lista-v3";
+const CACHE = "mi-tie-lista-v4";
 const BASE = new URL(self.registration.scope).pathname;
 const SHELL = [BASE, BASE + "manifest.json", BASE + "logo.svg", BASE + "favicon.svg"];
 
@@ -22,7 +22,7 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", event => {
   const request = event.request;
   const url = new URL(request.url);
-  if (request.method !== "GET" || url.origin !== self.location.origin || url.pathname.endsWith("/lotes.json")) return;
+  if (request.method !== "GET" || url.origin !== self.location.origin || (url.pathname.endsWith("/lotes.json") || url.pathname.endsWith("/oficinas.json"))) return;
 
   if (request.mode === "navigate") {
     event.respondWith(

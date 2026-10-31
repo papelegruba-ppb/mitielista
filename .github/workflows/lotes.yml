@@ -69,6 +69,18 @@ jobs:
           retention-days: 7
       - name: Reconstruir sitio
         run: python build.py
+      - name: Validar JavaScript generado
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          page = Path("site/index.html").read_text(encoding="utf-8")
+          scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>", page, re.S)
+          if not scripts:
+              raise SystemExit("No se encontró el script inline")
+          Path("/tmp/mi-tie-lista.js").write_text(scripts[-1], encoding="utf-8")
+          PY
+          node --check /tmp/mi-tie-lista.js
       - name: Guardar histórico
         run: |
           git config user.name "lotes-bot"

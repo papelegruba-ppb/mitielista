@@ -59,10 +59,10 @@ def office_info(o):
 def render(title, desc, relpath, h1, lead, preset="", info="", crumbs=None):
     title = title[:60]
     desc = desc[:155]
-    page_url = DOMAIN + BASE + relpath
+    page_url = DOMAIN + ("/" + relpath if relpath else "/")
     canonical = "" if IS_GITHUB_IO else f'<link rel="canonical" href="{esc(page_url, quote=True)}">'
     graph = [{
-      "@type":"WebApplication","name":SITE,"url":DOMAIN + BASE,
+      "@type":"WebApplication","name":SITE,"url":DOMAIN + "/",
       "applicationCategory":"UtilitiesApplication","operatingSystem":"Any",
       "inLanguage":"es","isAccessibleForFree":True,
       "offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},
@@ -102,7 +102,7 @@ write("index.html",render(
  "Mi TIE Lista: consulta tu lote TIE",
  "Comprueba el último lote TIE publicado por oficina y consulta una estimación orientativa. Gratis y sin publicidad.",
  "", "¿Está lista tu TIE?", "Escribe el lote de tu resguardo de huellas y consulta el último dato disponible.", info=home_info))
-urls.append(DOMAIN + BASE)
+urls.append(DOMAIN + "/")
 
 province_names = PROVINCES + sorted(p for p in {o.get("prov","") for o in offices} if p and p not in PROVINCES)
 for prov in province_names:
@@ -120,21 +120,21 @@ for prov in province_names:
         parts_html.append(f'<li>No hay datos de lotes disponibles para {esc(prov)}. Esta ausencia no significa que no exista oficina o que no se entreguen tarjetas.</li>')
     parts_html.append(f'</ul><p>{official_link()}</p></section>')
     rel = province_path(prov)
-    crumbs = [("Inicio",DOMAIN+BASE),("Provincias",DOMAIN+BASE+"lote-tie/"),(prov,DOMAIN+BASE+rel)]
+    crumbs = [("Inicio",DOMAIN+"/"),("Provincias",DOMAIN+"/lote-tie/"),(prov,DOMAIN+"/"+rel)]
     title = f"Lotes TIE en {prov} | Mi TIE Lista"
     desc = f"Consulta oficinas y últimos lotes TIE disponibles en {prov}. Distingue datos no oficiales y accede a la sede oficial."
     write(rel+"index.html",render(title,desc,rel,f"Lotes TIE en {prov}",f"Oficinas y último lote conocido en {prov}.",info="".join(parts_html),crumbs=crumbs))
-    urls.append(DOMAIN+BASE+rel)
+    urls.append(DOMAIN+"/"+rel)
 
 for o in offices:
     rel = office_path(o)
     provrel = province_path(o["prov"])
-    crumbs = [("Inicio",DOMAIN+BASE),(o["prov"],DOMAIN+BASE+provrel),(o["name"],DOMAIN+BASE+rel)]
+    crumbs = [("Inicio",DOMAIN+"/"),(o["prov"],DOMAIN+"/"+provrel),(o["name"],DOMAIN+"/"+rel)]
     title = f"Lote TIE {o['name']} {o['prov']} | Mi TIE Lista"
     desc = f"Último lote TIE de {o['name']} ({o['prov']}): {o['y']}/{o['n']}. Consulta fuente y fecha."
     content = '<section class="info">'+office_info(o)+f'<p>{official_link()}</p></section>'
     write(rel+"index.html",render(title,desc,rel,f"Lote TIE en {o['name']}",f"Último dato disponible para {o['name']}, {o['prov']}.",o["id"],content,crumbs))
-    urls.append(DOMAIN+BASE+rel)
+    urls.append(DOMAIN+"/"+rel)
 
 if not IS_GITHUB_IO:
     write("CNAME",HOST+"\\n")

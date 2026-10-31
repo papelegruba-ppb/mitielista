@@ -66,7 +66,9 @@ class DirectoryParser(HTMLParser):
             self._save()
             self.current_province = ALIASES.get(norm(m.group(1)))
             return
-        if re.match(r"Volver a |Dependencias policiales|Oficinas de trámites",title,re.I):
+        if re.match(r"Volver a |Dependencias policiales|Oficinas de denuncia|Oficinas de expedición|Oficinas de trámites de (?!extranjería en)",title,re.I):
+            self._save()
+            self.current_province = None
             return
         if self.current_province and title:
             self._save()

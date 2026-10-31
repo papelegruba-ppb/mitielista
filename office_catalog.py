@@ -42,7 +42,7 @@ class DirectoryParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         if re.fullmatch(r"h[1-6]",tag):
             self.heading_tag, self.heading = tag, []
-        if tag in ("br","p","li","div","section","article","dt","dd"):
+        if tag in ("br","p","li","div","section","article","dt","dd") and self.current:
             self.current["text"] += "\n"
     def handle_endtag(self, tag):
         if self.heading_tag == tag:

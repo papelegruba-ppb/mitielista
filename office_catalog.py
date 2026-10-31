@@ -93,7 +93,7 @@ def parse_directory(html):
             line=re.sub(r"\s+"," ",line).strip()
             if line and re.search(r"expedici[oó]n.*TIE|tarjeta de identidad de extranjero|toma de huellas|tarjetas de residencia",line,re.I):
                 if line not in services: services.append(line)
-        ident=re.sub(r"[^a-z0-9]+","-",norm(item["prov"]+" "+item["name"])).strip("-")[:64]
+        ident=re.sub(r"[^a-z0-9]+","-",norm(item["prov"]+" "+item["name"])).strip("-")[:48]
         records.append({"id":ident,"prov":item["prov"],"name":item["name"],
             "address":field("Direcci[oó]n"),"phone":field("Tel[eé]fono"),
             "services":services,"source":"Policía Nacional","source_url":URL,

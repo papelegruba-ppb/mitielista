@@ -186,22 +186,34 @@ async def select_office(page, value):
     raise RuntimeError(f"la oficina con identificador {value!r} no aparece tras elegir el trámite")
 
 async def read_lote(page, province, value, province_ready=False):
-    # La provincia se abre una vez por lote provincial; para las oficinas
-    # siguientes se reutiliza el contexto/página y se vuelve a elegir el trámite.
+    # La página y el contexto se reutilizan durante toda la provincia. Tras
+    # leer un lote se vuelve atrás al formulario para elegir la siguiente oficina.
     if not province_ready:
         await open_province(page, province)
-    await pick_tramite(page)
+    try:
+        await pick_tramite(page)
+    except Exception:
+        # Recuperación excepcional si la navegación anterior dejó el formulario
+        # en otra etapa; solo aquí se vuelve a cargar el inicio.
+        await open_province(page, province)
+        await pick_tramite(page)
     await accept(page)
     await select_office(page, value)
     await accept(page)
-    lot = parse_official_lot(await page.inner_text("body"))
+    body = await page.inner_text("body")
+    lot = parse_official_lot(body)
     if not lot:
-        body = (await page.inner_text("body")).lower()
-        if "captcha" in body or "robot" in body:
+        lower = body.lower()
+        if "captcha" in lower or "robot" in lower:
             raise RuntimeError("captcha")
-        if any(word in body for word in ("bloqueado", "demasiadas solicitudes", "access denied", "forbidden")):
+        if any(word in lower for word in ("bloqueado", "demasiadas solicitudes", "access denied", "forbidden")):
             raise RuntimeError("bloqueo")
         raise RuntimeError("timeout/dato no encontrado: no aparece el último lote")
+    try:
+        await page.go_back(wait_until="domcontentloaded", timeout=15000)
+    except Exception:
+        # El siguiente intento/oficina recuperará el flujo mediante el fallback.
+        pass
     return lot
 
 async def snap(page, name):
@@ -283,7 +295,7 @@ async def scrape(results: list[dict] | None = None):
                     # El siguiente intento/oficina debe recuperar el estado del flujo.
                     province_ready = False
                 else:
-                    province_ready = False
+                    province_ready = True
                 await asyncio.sleep(random.uniform(0.5, 1.2))
         await browser.close()
     print("Resumen ICP+: " + ", ".join(f"{key}={stats[key]}" for key in ("ok", "errors", "province_errors")))

@@ -1,5 +1,1885 @@
 {
-  "updated": null,
-  "source_url": "",
-  "offices": []
+  "updated": "2026-10-31",
+  "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+  "offices": [
+    {
+      "id": "a-coruna-comisaria-de-ferrol-naron",
+      "prov": "A Coruña",
+      "name": "Comisaría de Ferrol - Narón",
+      "address": "Avda. de Vigo n.º 165",
+      "phone": "981333865",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "a-coruna-comisaria-de-santa-uxia-de-ribeira",
+      "prov": "A Coruña",
+      "name": "Comisaría de Santa Uxía de Ribeira",
+      "address": "Avda. Miguel Rodríguez Bautista n.º 24",
+      "phone": "981876087",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "a-coruna-comisaria-de-santiago-de-compostela",
+      "prov": "A Coruña",
+      "name": "Comisaría de Santiago de Compostela",
+      "address": "C/ Rodrigo de Padrón s/n",
+      "phone": "981551159",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "a-coruna-jefatura-superior-de-policia-de-galicia",
+      "prov": "A Coruña",
+      "name": "Jefatura Superior de Policía de Galicia",
+      "address": "Avda. do Porto da Coruña n.º 5-7",
+      "phone": "981127050",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "albacete-oficina-de-extranjeros-de-albacete",
+      "prov": "Albacete",
+      "name": "Oficina de Extranjeros de Albacete",
+      "address": "C/ Periodista del Campo Aguilar nº 1",
+      "phone": "967769170",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "almeria-comisaria-de-el-ejido-dalias",
+      "prov": "Almería",
+      "name": "Comisaría de El Ejido-Dalias",
+      "address": "Avda. del Bulevar n.º 117",
+      "phone": "950573192",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "almeria-oficina-de-extranjeria-expedicion-de-doc",
+      "prov": "Almería",
+      "name": "Oficina de Extranjería - Expedición de Documentos",
+      "address": "C/ Marruecos, 1",
+      "phone": "Fax",
+      "services": [
+        "Toma de huellas (expedición de tarjeta) y renovación de tarjeta de larga duración.",
+        "Duplicado de tarjeta de identidad de extranjero.",
+        "Recogida de tarjeta de identidad de extranjero (TIE)."
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "araba-alava-brigada-provincial-de-extranjeria-y-",
+      "prov": "Araba/Álava",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Vitoria/Gasteiz",
+      "address": "C/ Oñate s/n",
+      "phone": "945209642",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "asturias-comisaria-de-aviles",
+      "prov": "Asturias",
+      "name": "Comisaría de Avilés",
+      "address": "C/ Río San Martín n.º 2",
+      "phone": "985129242",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "asturias-comisaria-de-gijon",
+      "prov": "Asturias",
+      "name": "Comisaría de Gijón",
+      "address": "Pl. Padre Máximo González s/n",
+      "phone": "985179208",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "asturias-comisaria-de-luarca",
+      "prov": "Asturias",
+      "name": "Comisaría de Luarca",
+      "address": "C/ Olavarrieta n.º 25",
+      "phone": "985642810",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "asturias-unidad-de-documentacion-de-extranjeros-",
+      "prov": "Asturias",
+      "name": "Unidad de Documentación de Extranjeros de Oviedo",
+      "address": "Pl. de España n.º 3",
+      "phone": "984769333",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "badajoz-brigada-provincial-de-extranjeria-y-fron",
+      "prov": "Badajoz",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Badajoz",
+      "address": "Avda. del Cuerpo Nacional de Policía s/n",
+      "phone": "924205494",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "badajoz-comisaria-de-almendralejo",
+      "prov": "Badajoz",
+      "name": "Comisaría de Almendralejo",
+      "address": "Pl. de España n.º 2",
+      "phone": "924662354",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "badajoz-comisaria-de-don-benito-villanueva-de-la",
+      "prov": "Badajoz",
+      "name": "Comisaría de Don Benito-Villanueva de la Serena",
+      "address": "Avda. de Córdoba, s/n",
+      "phone": "924808109",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "badajoz-comisaria-de-merida",
+      "prov": "Badajoz",
+      "name": "Comisaría de Mérida",
+      "address": "Avda. de las Comunidades, s/n",
+      "phone": "924314711",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "balears-illes-comisaria-de-eivissa",
+      "prov": "Balears (Illes)",
+      "name": "Comisaría de Eivissa",
+      "address": "Avda. de la Paz s/n",
+      "phone": "971398831",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "balears-illes-comisaria-de-mahon",
+      "prov": "Balears (Illes)",
+      "name": "Comisaría de Mahón",
+      "address": "C/ Concepción n.º 1",
+      "phone": "971363712",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "balears-illes-oficina-de-extranjeros-de-palma-de",
+      "prov": "Balears (Illes)",
+      "name": "Oficina de Extranjeros de Palma de Mallorca",
+      "address": "C/ Feliciá Fuster n.º 7",
+      "phone": "971989441",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-brigada-provincial-de-extranjeria-y-fr",
+      "prov": "Barcelona",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Barcelona (Guipuzcoa)",
+      "address": "Rbla. Guipuzcoa n.º 74",
+      "phone": "932951071",
+      "services": [
+        "Expedición de TIE a ciudadanos no comunitarios"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-castelldefels-gava",
+      "prov": "Barcelona",
+      "name": "Comisaría de Castelldefels-Gavá",
+      "address": "C/ Obispo Urguinaona n.º 17",
+      "phone": "936350303",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-cerdanyola",
+      "prov": "Barcelona",
+      "name": "Comisaría de Cerdanyola",
+      "address": "C/ Mare de Deu de les Feixes n.º 4",
+      "phone": "935942480",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-cornella-de-llobregat-dep",
+      "prov": "Barcelona",
+      "name": "Comisaría de Cornella de Llobregat (Dependencia de Viladecans)",
+      "address": "C/ Ballester n.º 8",
+      "phone": "936473172",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-cornella-esplugas-de-llob",
+      "prov": "Barcelona",
+      "name": "Comisaría de Cornellá - Esplugas de Llobregat",
+      "address": "Avda. Sant Ildefons s/n",
+      "phone": "932619091",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-igualada",
+      "prov": "Barcelona",
+      "name": "Comisaría de Igualada",
+      "address": "C/ Prat de la Riba n.º 13",
+      "phone": "938037979",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-l-hospitalet-de-llobregat",
+      "prov": "Barcelona",
+      "name": "Comisaría de L'Hospitalet de Llobregat",
+      "address": "Pl. Repartidor n.º 8",
+      "phone": "932602709",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-manresa",
+      "prov": "Barcelona",
+      "name": "Comisaría de Manresa",
+      "address": "C/ Soler i March n.º 5",
+      "phone": "938749910",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-mataro",
+      "prov": "Barcelona",
+      "name": "Comisaría de Mataró",
+      "address": "Avda. Gatassa n.º 15",
+      "phone": "937416170",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-mataro-dependencia-de-gra",
+      "prov": "Barcelona",
+      "name": "Comisaría de Mataró (Dependencia de Granollers)",
+      "address": "C/ Isabel de Villena n.º 30",
+      "phone": "938614850",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-montcada-i-reixac",
+      "prov": "Barcelona",
+      "name": "Comisaría de Montcada i Reixac",
+      "address": "C/ Major n.º 38",
+      "phone": "935642450",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-ripollet",
+      "prov": "Barcelona",
+      "name": "Comisaría de Ripollet",
+      "address": "C/ Tamarit n.º 78",
+      "phone": "936911255",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-rubi",
+      "prov": "Barcelona",
+      "name": "Comisaría de Rubí",
+      "address": "C/ Terrassa, 16-18",
+      "phone": "935886969",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-sabadell",
+      "prov": "Barcelona",
+      "name": "Comisaría de Sabadell",
+      "address": "C/ Montseny, 137",
+      "phone": "937247500",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-sant-boi-de-llobregat",
+      "prov": "Barcelona",
+      "name": "Comisaría de Sant Boi de Llobregat",
+      "address": "C/ Riera Basté n.º 43 Local-1 (Mercat Municipal Centre-La Muntanyeta)",
+      "phone": "936522013",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-sant-cugat-del-valles",
+      "prov": "Barcelona",
+      "name": "Comisaría de Sant Cugat del Vallés",
+      "address": "C/ Vallés n.º 1-3",
+      "phone": "936747858",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-sant-feliu-de-llobregat",
+      "prov": "Barcelona",
+      "name": "Comisaría de Sant Feliú de LLobregat",
+      "address": "C/ Carreretes n.º 9-11",
+      "phone": "936327440",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-santa-coloma-de-gramanet",
+      "prov": "Barcelona",
+      "name": "Comisaría de Santa Coloma de Gramanet",
+      "address": "C/ Irlanda n.º 67",
+      "phone": "934665202",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-terrasa",
+      "prov": "Barcelona",
+      "name": "Comisaría de Terrasa",
+      "address": "C/ Baldrich n.º 9-13",
+      "phone": "937869050",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-vic",
+      "prov": "Barcelona",
+      "name": "Comisaría de Vic",
+      "address": "C/ Bisbe Morgades n.º 4",
+      "phone": "938894444",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "barcelona-comisaria-de-vilanova-i-la-geltru",
+      "prov": "Barcelona",
+      "name": "Comisaría de Vilanova i La Geltrú",
+      "address": "Carrer d'Olèrdola, 47",
+      "phone": "938930015",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "burgos-comisaria-provincial-de-burgos",
+      "prov": "Burgos",
+      "name": "Comisaría Provincial de Burgos",
+      "address": "Avda. Castilla y León n.º 3",
+      "phone": "947282345",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "burgos-comisaria-de-miranda-de-ebro",
+      "prov": "Burgos",
+      "name": "Comisaría de Miranda de Ebro",
+      "address": "C/ Antonio Cabezón n.º 14",
+      "phone": "947347921",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "cantabria-comisaria-de-centro",
+      "prov": "Cantabria",
+      "name": "Comisaría de Centro",
+      "address": "C/ Jose Ramon Lopez-Doriga n.º 4",
+      "phone": "942361034",
+      "services": [
+        "Toma de huella y expedición TIE: 942361050"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "castellon-brigada-provincial-de-extranjeria-y-fr",
+      "prov": "Castellón",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Castellón",
+      "address": "Pl. Teodoro Izquierdo n.º 6",
+      "phone": "964231658",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "castellon-comisaria-provincial-de-castellon",
+      "prov": "Castellón",
+      "name": "Comisaría Provincial de Castellón",
+      "address": "C/ Río Sella n.º 5",
+      "phone": "964469500",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "ceuta-jefatura-superior-de-policia-de-ceuta",
+      "prov": "Ceuta",
+      "name": "Jefatura Superior de Policía de Ceuta",
+      "address": "P.º de Colón n.º 4",
+      "phone": "956524314",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "ciudad-real-comisaria-provincial-de-ciudad-real",
+      "prov": "Ciudad Real",
+      "name": "Comisaría Provincial de Ciudad Real",
+      "address": "Rda. de Toledo n.º 27",
+      "phone": "926277916",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "cuenca-comisaria-provincial-de-cuenca",
+      "prov": "Cuenca",
+      "name": "Comisaría Provincial de Cuenca",
+      "address": "C/ Astrana Marín n.º 4",
+      "phone": "969240902",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "caceres-brigada-provincial-de-extranjeria-y-fron",
+      "prov": "Cáceres",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Cáceres",
+      "address": "C/ Diego María Crehuet n.º 6",
+      "phone": "927626525",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "cadiz-brigada-provincial-de-extranjeria-y-fronte",
+      "prov": "Cádiz",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Cádiz",
+      "address": "Avda. de Andalucía n.º 28",
+      "phone": "956297560",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "cadiz-comisaria-de-algeciras",
+      "prov": "Cádiz",
+      "name": "Comisaría de Algeciras",
+      "address": "Avda. del Cuerpo Nacional de Policía s/n (antigua Avda. Embarcadero s/n)",
+      "phone": "956588432",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "cadiz-comisaria-de-el-puerto-de-santa-maria-puer",
+      "prov": "Cádiz",
+      "name": "Comisaría de El Puerto de Santa María - Puerto Real (2)",
+      "address": "C/ Carpintero de Ribera s/n",
+      "phone": "956564358",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "cadiz-comisaria-de-jerez-de-la-frontera",
+      "prov": "Cádiz",
+      "name": "Comisaría de Jerez de la Frontera",
+      "address": "Pl. del Arroyo n.º 46-47",
+      "phone": "956326949",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "cadiz-comisaria-de-la-linea-de-la-concepcion",
+      "prov": "Cádiz",
+      "name": "Comisaría de La Línea de la Concepción",
+      "address": "Avda. Menéndez Pelayo n.º 2",
+      "phone": "956691096",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "cadiz-comisaria-de-rota",
+      "prov": "Cádiz",
+      "name": "Comisaría de Rota",
+      "address": "Avda. Príncipes de España n.º 113",
+      "phone": "956812974",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "cordoba-brigada-provincial-de-extranjeria-y-fron",
+      "prov": "Córdoba",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Córdoba",
+      "address": "Avda. del Mediterráneo s/n",
+      "phone": "957594724",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "girona-comisaria-de-figueras",
+      "prov": "Girona",
+      "name": "Comisaría de Figueras",
+      "address": "C/ Pep Ventura n.º 8",
+      "phone": "972677560",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "girona-comisaria-de-lloret-de-mar",
+      "prov": "Girona",
+      "name": "Comisaría de Lloret de Mar",
+      "address": "C/ Verge de Loreto n.º 51",
+      "phone": "972361598",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "girona-comisaria-de-sant-feliu-de-guixols",
+      "prov": "Girona",
+      "name": "Comisaría de Sant Feliú de Guixols",
+      "address": "C/ Ortiz de la Vega n.º 6-8",
+      "phone": "972320160",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "girona-unidad-extranjeria-y-documentacion-de-cam",
+      "prov": "Girona",
+      "name": "Unidad Extranjería y Documentación de Camprodón",
+      "address": "Crta. Comarcal- c-38, km 11.500",
+      "phone": "972740233",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "girona-unidad-extranjeria-y-documentacion-de-la-",
+      "prov": "Girona",
+      "name": "Unidad Extranjería y Documentación de La Junquera",
+      "address": "C/ Major n.º 136-138",
+      "phone": "972554826",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "girona-unidad-extranjeria-y-documentacion-de-por",
+      "prov": "Girona",
+      "name": "Unidad Extranjería y Documentación de Portbou",
+      "address": "Edif. Estació Renfe s/n",
+      "phone": "972390090",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "girona-unidad-extranjeria-y-documentacion-de-pui",
+      "prov": "Girona",
+      "name": "Unidad Extranjería y Documentación de Puigcerdá",
+      "address": "Avinguda de Francia n.º 2",
+      "phone": "972884520",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "granada-brigada-provincial-de-extranjeria-y-fron",
+      "prov": "Granada",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Granada",
+      "address": "C/ La Palmita s/n",
+      "phone": "958808181",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "granada-comisaria-de-baza",
+      "prov": "Granada",
+      "name": "Comisaría de Baza",
+      "address": "C/ Alhóndiga n.º 18",
+      "phone": "958700391",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "granada-comisaria-de-motril",
+      "prov": "Granada",
+      "name": "Comisaría de Motril",
+      "address": "C/ Aguas del Hospital s/n",
+      "phone": "958834908",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "guadalajara-comisaria-provincial-de-guadalajara",
+      "prov": "Guadalajara",
+      "name": "Comisaría Provincial de Guadalajara",
+      "address": "Avda. del Ejército n.º 12",
+      "phone": "949248416",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "guipuzcoa-gipuzkoa-comisaria-provincial-de-donos",
+      "prov": "Guipúzcoa / Gipuzkoa",
+      "name": "Comisaría Provincial de Donostia/San Sebastián",
+      "address": "Calle José María Salaberría s/n",
+      "phone": "943449809",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "guipuzcoa-gipuzkoa-comisaria-de-irun",
+      "prov": "Guipúzcoa / Gipuzkoa",
+      "name": "Comisaría de Irún",
+      "address": "Pl. del Ensanche, 1",
+      "phone": "943639533",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "huelva-brigada-provincial-de-extranjeria-y-front",
+      "prov": "Huelva",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Huelva",
+      "address": "P.º de la Glorieta s/n",
+      "phone": "959541922",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "huesca-brigada-provincial-de-extranjeria-y-front",
+      "prov": "Huesca",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Huesca",
+      "address": "Pl. Luis Buñuel n.º 3",
+      "phone": "974238812",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "huesca-comisaria-de-jaca",
+      "prov": "Huesca",
+      "name": "Comisaría de Jaca",
+      "address": "Avda. de Zaragoza n.º 14",
+      "phone": "974356830",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "jaen-brigada-provincial-de-extranjeria-y-fronter",
+      "prov": "Jaén",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Jaén",
+      "address": "C/ Arquitecto Berges n.º 11",
+      "phone": "953295282",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "jaen-comisaria-de-andujar",
+      "prov": "Jaén",
+      "name": "Comisaría de Andújar",
+      "address": "C/ Corredera S. Bartolomé n.º 43",
+      "phone": "953515260",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "la-rioja-brigada-provincial-de-extranjeria-y-fro",
+      "prov": "La Rioja",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Logroño",
+      "address": "Avda. Jorge Vigón n.º 72",
+      "phone": "941759217",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "las-palmas-brigada-provincial-de-extranjeria-y-f",
+      "prov": "Las Palmas",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Las Palmas",
+      "address": "Pl. de la Feria n.º 24",
+      "phone": "928999281",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "las-palmas-comisaria-de-maspalomas",
+      "prov": "Las Palmas",
+      "name": "Comisaría de Maspalomas",
+      "address": "Avda. de Moya, 4",
+      "phone": "928730447",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "las-palmas-comisaria-de-santa-lucia-de-tirajana",
+      "prov": "Las Palmas",
+      "name": "Comisaría de Santa Lucía de Tirajana",
+      "address": "C/ Escorial esquina Dr. Negrín s/n",
+      "phone": "Fax",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "leon-comisaria-provincial-de-leon",
+      "prov": "León",
+      "name": "Comisaría Provincial de León",
+      "address": "C/ Villa Benavente, 6",
+      "phone": "987218911",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "leon-comisaria-de-astorga",
+      "prov": "León",
+      "name": "Comisaría de Astorga",
+      "address": "Pl. de los Marqueses s/n",
+      "phone": "987616091",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "leon-comisaria-de-ponferrada",
+      "prov": "León",
+      "name": "Comisaría de Ponferrada",
+      "address": "C/ Río Oza, s/n",
+      "phone": "987409110",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "leon-comisaria-de-san-andres-de-rabanedo",
+      "prov": "León",
+      "name": "Comisaría de San Andrés de Rabanedo",
+      "address": "Gta. de Donantes de Sangre, 1",
+      "phone": "987875276",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "lleida-brigada-provincial-de-extranjeria-y-front",
+      "prov": "Lleida",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Lleida",
+      "address": "C/ Jaume II",
+      "phone": "973214274",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "lleida-unidad-de-extranjeria-y-documentacion-de-",
+      "prov": "Lleida",
+      "name": "Unidad de Extranjería y Documentación de Les",
+      "address": "Avda. Sant Jaime n.º 58",
+      "phone": "973648014",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "lugo-comisaria-provincial-de-lugo",
+      "prov": "Lugo",
+      "name": "Comisaría Provincial de Lugo",
+      "address": "C/ Chantada s/n",
+      "phone": "982265165",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "lugo-comisaria-de-monforte-de-lemos",
+      "prov": "Lugo",
+      "name": "Comisaría de Monforte de Lemos",
+      "address": "C/ Miguel de Cervantes n.º 1",
+      "phone": "982402245",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "lugo-comisaria-de-viveiro",
+      "prov": "Lugo",
+      "name": "Comisaría de Viveiro",
+      "address": "Avda. Ramón Canosa s/n",
+      "phone": "982570662",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "madrid-seccion-de-documentacion-de-extranjeros-d",
+      "prov": "Madrid",
+      "name": "Sección de Documentación de Extranjeros de la Secretaría Gral. de la JSP.",
+      "address": "Avda. de los Poblados s/n",
+      "phone": "Fax",
+      "services": [
+        "Expedición de Tarjeta de Identidad de Extranjeros",
+        "Equipo móvil para expedición de Tarjeta de Identidad de Extranjeros en Centros Penitenciarios, Hospitales, domicilio, etc… (Presentar familiares la correspondiente documentación en el Registro sito en la Avda de los Poblados s/n en horario de Lunes a Viernes de 9 a 14 horas)"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "melilla-jefatura-superior-de-policia-de-melilla",
+      "prov": "Melilla",
+      "name": "Jefatura Superior de Policía de Melilla",
+      "address": "C/ Actor Tallaví n.º 3",
+      "phone": "952695696",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "murcia-brigada-provincial-de-extranjeria-y-front",
+      "prov": "Murcia",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Murcia",
+      "address": "C/ Francisco Alonso Hidalgo Martínez n.º 38, Km 388 N-301, Cabezo Cortao",
+      "phone": "968989600",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "murcia-comisaria-de-cartagena",
+      "prov": "Murcia",
+      "name": "Comisaría de Cartagena",
+      "address": "C/ Menéndez y Pelayo n.º 6",
+      "phone": "968320795",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "murcia-comisaria-de-lorca",
+      "prov": "Murcia",
+      "name": "Comisaría de Lorca",
+      "address": "Pl. de la Policía Nacional n.º 1",
+      "phone": "968477296",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "murcia-comisaria-de-molina-de-segura",
+      "prov": "Murcia",
+      "name": "Comisaría de Molina de Segura",
+      "address": "C/ Canarias, 2",
+      "phone": "968386303",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "murcia-comisaria-de-yecla",
+      "prov": "Murcia",
+      "name": "Comisaría de Yecla",
+      "address": "C/ Rambla, 34",
+      "phone": "968719078",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "malaga-brigada-provincial-de-extranjeria-y-front",
+      "prov": "Málaga",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Málaga",
+      "address": "Pl. Manuel Azaña n.º 3",
+      "phone": "952046468",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "malaga-comisaria-de-antequera",
+      "prov": "Málaga",
+      "name": "Comisaría de Antequera",
+      "address": "C/ Ciudad de Oaxaca",
+      "phone": "952706360",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "malaga-comisaria-de-estepona",
+      "prov": "Málaga",
+      "name": "Comisaría de Estepona",
+      "address": "C/ Valle Inclán n.º 1",
+      "phone": "952798530",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "malaga-comisaria-de-fuengirola",
+      "prov": "Málaga",
+      "name": "Comisaría de Fuengirola",
+      "address": "Avda. Conde San Isidro n.º 98",
+      "phone": "952198369",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "malaga-comisaria-de-marbella",
+      "prov": "Málaga",
+      "name": "Comisaría de Marbella",
+      "address": "Avda. Arias de Velasco n.º 25",
+      "phone": "952867241",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "malaga-comisaria-de-ronda",
+      "prov": "Málaga",
+      "name": "Comisaría de Ronda",
+      "address": "C/ Rio Tinto n.º 2",
+      "phone": "952161227",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "malaga-comisaria-de-torremolinos-benalmadena",
+      "prov": "Málaga",
+      "name": "Comisaría de Torremolinos - Benalmádena",
+      "address": "C/ Skal n.º 12",
+      "phone": "952378435",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "malaga-comisaria-de-velez-malaga",
+      "prov": "Málaga",
+      "name": "Comisaría de Vélez Málaga",
+      "address": "Calle Puerta del Mar, 4",
+      "phone": "952046500",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "navarra-brigada-provincial-de-extranjeria-y-fron",
+      "prov": "Navarra",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Pamplona",
+      "address": "C/ Avenida de Guipuzcoa n.º 40",
+      "phone": "948979200",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "navarra-comisaria-de-tudela",
+      "prov": "Navarra",
+      "name": "Comisaría de Tudela",
+      "address": "Plaza Padre Lasa, 7",
+      "phone": "948402514",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "ourense-comisaria-provincial-de-ourense",
+      "prov": "Ourense",
+      "name": "Comisaría Provincial de Ourense",
+      "address": "C/ Mestre Vide n.º 4",
+      "phone": "988391830",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "palencia-comisaria-provincial-de-palencia",
+      "prov": "Palencia",
+      "name": "Comisaría Provincial de Palencia",
+      "address": "Avda. Simón Nieto, 8",
+      "phone": "979167400",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "pontevedra-centro-de-cooperacion-policial-y-adua",
+      "prov": "Pontevedra",
+      "name": "Centro de Cooperación Policial y Aduanera de Tui",
+      "address": "C/ Párroco Rodríguez Vázquez n.º 3",
+      "phone": "986600316",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "pontevedra-comisaria-provincial-de-pontevedra",
+      "prov": "Pontevedra",
+      "name": "Comisaría Provincial de Pontevedra",
+      "address": "C/ Joaquín Costa n.º 17",
+      "phone": "986868849",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "pontevedra-comisaria-de-marin",
+      "prov": "Pontevedra",
+      "name": "Comisaría de Marín",
+      "address": "C/ Lameira n.º 27 bajo",
+      "phone": "986839576",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "pontevedra-comisaria-de-vilagarcia-de-arousa",
+      "prov": "Pontevedra",
+      "name": "Comisaría de Vilagarcía de Arousa",
+      "address": "Avda. de la Marina n.º 9",
+      "phone": "986565753",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "pontevedra-unidad-de-extranjeria-y-documentacion",
+      "prov": "Pontevedra",
+      "name": "Unidad de Extranjería y Documentación de Salvaterra de Miño",
+      "address": "Avda. de Portugal n.º 2",
+      "phone": "986658081",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "salamanca-comisaria-provincial-de-salamanca-2",
+      "prov": "Salamanca",
+      "name": "Comisaría Provincial de Salamanca (2)",
+      "address": "C/ Jardines s/n",
+      "phone": "923127779",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "santa-cruz-de-tenerife-comisaria-de-puerto-de-la",
+      "prov": "Santa Cruz de Tenerife",
+      "name": "Comisaría de Puerto de la Cruz - Los Realejos",
+      "address": "Avda. José del Campo Llarena, 3",
+      "phone": "922376831",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "segovia-comisaria-provincial-de-segovia",
+      "prov": "Segovia",
+      "name": "Comisaría Provincial de Segovia",
+      "address": "P.º Ezequiel González n.º 22",
+      "phone": "921414726",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "sevilla-brigada-provincial-de-extranjeria-y-fron",
+      "prov": "Sevilla",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Sevilla",
+      "address": "Avenida Blas Infante 2",
+      "phone": "954289715",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "soria-comisaria-provincial-de-soria",
+      "prov": "Soria",
+      "name": "Comisaría Provincial de Soria",
+      "address": "C/ León nº 5",
+      "phone": "975239343",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "tarragona-comisaria-provincial-de-tarragona",
+      "prov": "Tarragona",
+      "name": "Comisaría Provincial de Tarragona",
+      "address": "Pl. de Orleans s/n",
+      "phone": "977248613",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "tarragona-comisaria-de-reus",
+      "prov": "Tarragona",
+      "name": "Comisaría de Reus",
+      "address": "C/ General Moragues n.º 54",
+      "phone": "977327522",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "tarragona-comisaria-de-tortosa",
+      "prov": "Tarragona",
+      "name": "Comisaría de Tortosa",
+      "address": "P.º Joan Moreira n.º 3",
+      "phone": "977449731",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "teruel-comisaria-provincial-de-teruel",
+      "prov": "Teruel",
+      "name": "Comisaría Provincial de Teruel",
+      "address": "C/ Córdoba n.º 2",
+      "phone": "978625031",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "toledo-comisaria-de-talavera-de-la-reina",
+      "prov": "Toledo",
+      "name": "Comisaría de Talavera de la Reina",
+      "address": "C/ Carlos Barral n.º 2",
+      "phone": "925721757",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "toledo-oficina-de-extranjeros-de-toledo",
+      "prov": "Toledo",
+      "name": "Oficina de Extranjeros de Toledo",
+      "address": "Rda. de Buenavista n.º 57",
+      "phone": "Fax",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "valencia-comisaria-de-alcira-algemesi",
+      "prov": "Valencia",
+      "name": "Comisaría de Alcira-Algemesí",
+      "address": "C/ Pedro Morell n.º 4",
+      "phone": "962456319",
+      "services": [
+        "Expedición TIE (Tarjetas)"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "valencia-comisaria-de-gandia",
+      "prov": "Valencia",
+      "name": "Comisaría de Gandía",
+      "address": "C/ Ciudad de Laval n.º 5",
+      "phone": "962954586",
+      "services": [
+        "Expedición TIE (Tarjetas)"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "valencia-comisaria-de-onteniente",
+      "prov": "Valencia",
+      "name": "Comisaría de Onteniente",
+      "address": "Pcta. L'Escura, nº 2",
+      "phone": "962380605",
+      "services": [
+        "Expedición TIE (Tarjetas)"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "valencia-comisaria-de-sagunto",
+      "prov": "Valencia",
+      "name": "Comisaría de Sagunto",
+      "address": "C/ Progreso n.º 14",
+      "phone": "962670091",
+      "services": [
+        "Expedición TIE (Tarjetas)"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "valencia-comisaria-de-valencia-patraix",
+      "prov": "Valencia",
+      "name": "Comisaría de Valencia Patraix",
+      "address": "C/ D' Els Gremis n.º 6, Polígono Vara de Quart",
+      "phone": "963136106",
+      "services": [
+        "Expedición TIE (Tarjetas)"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "valladolid-brigada-provincial-de-extranjeria-y-f",
+      "prov": "Valladolid",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Valladolid",
+      "address": "C/ Gerona s/n",
+      "phone": "983456553",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "valladolid-comisaria-de-medina-del-campo",
+      "prov": "Valladolid",
+      "name": "Comisaría de Medina del Campo",
+      "address": "C/ Valladolid, 30-32",
+      "phone": "983812645",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "vizcaya-bizkaia-jefatura-superior-de-policia-del",
+      "prov": "Vizcaya / Bizkaia",
+      "name": "Jefatura Superior de Policía del País Vasco",
+      "address": "C/ Gordóniz n.º 8",
+      "phone": "944709151",
+      "services": [
+        "Expedición de TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "zamora-comisaria-provincial-de-zamora",
+      "prov": "Zamora",
+      "name": "Comisaría Provincial de Zamora",
+      "address": "Avda. de Requejo n.º 12",
+      "phone": "980509250",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "zaragoza-brigada-provincial-de-extranjeria-y-fro",
+      "prov": "Zaragoza",
+      "name": "Brigada Provincial de Extranjería y Fronteras de Zaragoza",
+      "address": "Avda. de Valencia n.º 50",
+      "phone": "976791495",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "zaragoza-comisaria-de-calatayud",
+      "prov": "Zaragoza",
+      "name": "Comisaría de Calatayud",
+      "address": "C/ Coral Bilbilitana n.º 8",
+      "phone": "976889450",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    },
+    {
+      "id": "avila-comisaria-provincial-de-avila",
+      "prov": "Ávila",
+      "name": "Comisaría Provincial de Ávila",
+      "address": "P.º San Roque n.º 34",
+      "phone": "920353947",
+      "services": [
+        "Expedición TIE"
+      ],
+      "source": "Policía Nacional",
+      "source_url": "https://sede.policia.gob.es/portalCiudadano/_es/dependencias_localizador_accesible.php",
+      "checked": "2026-10-31T17:05:01.943251+00:00",
+      "official": true
+    }
+  ]
 }

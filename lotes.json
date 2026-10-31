@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-29",
+ "updated": "2026-10-31",
  "offices": [
   {
    "id": "a-coruna-extranjeria-de-a-coruna",
@@ -27,20 +27,6 @@
    "source_url": "https://portalextranjeria.com/lotes-nie-a-coruna/",
    "source_type": "public_unofficial",
    "source_checked": "2026-10-29T21:04:20.477698+00:00",
-   "h": []
-  },
-  {
-   "id": "a-coruna-extranjeria-de-santa-uxia-de-ribeira",
-   "prov": "A Coruña",
-   "name": "Extranjería de Santa Uxía de Ribeira",
-   "y": 2026,
-   "n": 17,
-   "checked": "2026-10-29",
-   "published": "2026-09-23",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-a-coruna/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:20.477712+00:00",
    "h": []
   },
   {
@@ -254,20 +240,6 @@
    "h": []
   },
   {
-   "id": "asturias-extranjeria-de-gijon",
-   "prov": "Asturias",
-   "name": "Extranjería de Gijón",
-   "y": 2026,
-   "n": 96,
-   "checked": "2026-10-29",
-   "published": "2026-06-27",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-asturias/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:25.599289+00:00",
-   "h": []
-  },
-  {
    "id": "asturias-extranjeria-de-luarca",
    "prov": "Asturias",
    "name": "Extranjería de Luarca",
@@ -366,34 +338,6 @@
    "h": []
   },
   {
-   "id": "baleares-extranjeria-de-ciutadella",
-   "prov": "Baleares",
-   "name": "Extranjería de Ciutadella",
-   "y": 2026,
-   "n": 102,
-   "checked": "2026-10-29",
-   "published": "2026-06-02",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-baleares/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:28.157415+00:00",
-   "h": []
-  },
-  {
-   "id": "baleares-extranjeria-de-ibiza",
-   "prov": "Baleares",
-   "name": "Extranjería de Ibiza",
-   "y": 2026,
-   "n": 71,
-   "checked": "2026-10-29",
-   "published": "2026-06-02",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-baleares/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:28.157439+00:00",
-   "h": []
-  },
-  {
    "id": "baleares-extranjeria-de-mahon",
    "prov": "Baleares",
    "name": "Extranjería de Mahón",
@@ -433,20 +377,6 @@
    "source_url": "https://portalextranjeria.com/lotes-nie-barcelona/",
    "source_type": "public_unofficial",
    "source_checked": "2026-10-29T21:04:15.296412+00:00",
-   "h": []
-  },
-  {
-   "id": "barcelona-castelldefels",
-   "prov": "Barcelona",
-   "name": "Castelldefels",
-   "y": 2026,
-   "n": 136,
-   "checked": "2026-10-29",
-   "published": "2026-09-25",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-barcelona/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:15.296433+00:00",
    "h": []
   },
   {
@@ -660,20 +590,6 @@
    "h": []
   },
   {
-   "id": "barcelona-sant-cugat-del-valles",
-   "prov": "Barcelona",
-   "name": "Sant Cugat del Vallès",
-   "y": 2026,
-   "n": 1,
-   "checked": "2026-10-29",
-   "published": "2026-02-24",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-barcelona/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:15.296587+00:00",
-   "h": []
-  },
-  {
    "id": "barcelona-sant-feliu-de-llobregat",
    "prov": "Barcelona",
    "name": "Sant Feliu de Llobregat",
@@ -800,48 +716,6 @@
    "h": []
   },
   {
-   "id": "burgos-extranjeria-de-burgos",
-   "prov": "Burgos",
-   "name": "Extranjería de Burgos",
-   "y": 2026,
-   "n": 76,
-   "checked": "2026-10-29",
-   "published": "2026-05-07",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-burgos/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:29.425968+00:00",
-   "h": []
-  },
-  {
-   "id": "burgos-extranjeria-de-miranda-de-ebro",
-   "prov": "Burgos",
-   "name": "Extranjería de Miranda de Ebro",
-   "y": 2026,
-   "n": 143,
-   "checked": "2026-10-29",
-   "published": "2026-09-25",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-burgos/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:29.425955+00:00",
-   "h": []
-  },
-  {
-   "id": "cantabria-extranjeria-de-castro-urdiales",
-   "prov": "Cantabria",
-   "name": "Extranjería de Castro Urdiales",
-   "y": 2026,
-   "n": 30,
-   "checked": "2026-10-29",
-   "published": "2026-08-11",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-cantabria/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:31.995466+00:00",
-   "h": []
-  },
-  {
    "id": "cantabria-extranjeria-de-santander",
    "prov": "Cantabria",
    "name": "Extranjería de Santander",
@@ -867,20 +741,6 @@
    "source_url": "https://portalextranjeria.com/lotes-nie-castellon/",
    "source_type": "public_unofficial",
    "source_checked": "2026-10-29T21:04:33.280150+00:00",
-   "h": []
-  },
-  {
-   "id": "ceuta-ceuta-cerrar-informacion-jefatura-superior",
-   "prov": "Ceuta",
-   "name": "Ceuta ✖ Cerrar información Jefatura Superior de Policía de Ceuta",
-   "y": 2026,
-   "n": 88,
-   "checked": "2026-10-29",
-   "published": "2026-09-21",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-ceuta/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:34.556486+00:00",
    "h": []
   },
   {
@@ -1021,20 +881,6 @@
    "source_url": "https://portalextranjeria.com/lotes-nie-cadiz/",
    "source_type": "public_unofficial",
    "source_checked": "2026-10-29T21:04:08.785918+00:00",
-   "h": []
-  },
-  {
-   "id": "cadiz-extranjeria-de-jerez-de-la-frontera",
-   "prov": "Cádiz",
-   "name": "Extranjería de Jerez de la Frontera",
-   "y": 2026,
-   "n": 102,
-   "checked": "2026-10-29",
-   "published": "2026-09-21",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-cadiz/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:08.785960+00:00",
    "h": []
   },
   {
@@ -1262,20 +1108,6 @@
    "h": []
   },
   {
-   "id": "huelva-extranjeria-de-ayamonte",
-   "prov": "Huelva",
-   "name": "Extranjería de Ayamonte",
-   "y": 2026,
-   "n": 45,
-   "checked": "2026-10-29",
-   "published": "2026-08-10",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-huelva/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:39.690728+00:00",
-   "h": []
-  },
-  {
    "id": "huelva-extranjeria-de-huelva",
    "prov": "Huelva",
    "name": "Extranjería de Huelva",
@@ -1290,62 +1122,6 @@
    "h": []
   },
   {
-   "id": "huesca-extranjeria-de-fraga",
-   "prov": "Huesca",
-   "name": "Extranjería de Fraga",
-   "y": 2026,
-   "n": 18,
-   "checked": "2026-10-29",
-   "published": "2026-09-25",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-huesca/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:40.980517+00:00",
-   "h": []
-  },
-  {
-   "id": "huesca-extranjeria-de-huesca",
-   "prov": "Huesca",
-   "name": "Extranjería de Huesca",
-   "y": 2026,
-   "n": 10,
-   "checked": "2026-10-29",
-   "published": "2026-09-25",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-huesca/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:40.980540+00:00",
-   "h": []
-  },
-  {
-   "id": "huesca-extranjeria-de-jaca",
-   "prov": "Huesca",
-   "name": "Extranjería de Jaca",
-   "y": 2026,
-   "n": 32,
-   "checked": "2026-10-29",
-   "published": "2026-08-28",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-huesca/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:40.980552+00:00",
-   "h": []
-  },
-  {
-   "id": "huesca-extranjeria-de-monzon",
-   "prov": "Huesca",
-   "name": "Extranjería de Monzón",
-   "y": 2026,
-   "n": 9,
-   "checked": "2026-10-29",
-   "published": "2026-09-25",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-huesca/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:40.980562+00:00",
-   "h": []
-  },
-  {
    "id": "jaen-extranjeria-y-tie-jaen",
    "prov": "Jaén",
    "name": "Extranjería y TIE Jaén",
@@ -1357,20 +1133,6 @@
    "source_url": "https://portalextranjeria.com/lotes-nie-jaen/",
    "source_type": "public_unofficial",
    "source_checked": "2026-10-29T21:04:42.257834+00:00",
-   "h": []
-  },
-  {
-   "id": "la-rioja-extranjeria-de-calahorra",
-   "prov": "La Rioja",
-   "name": "Extranjería de Calahorra",
-   "y": 2026,
-   "n": 76,
-   "checked": "2026-10-29",
-   "published": "2026-06-26",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-la-rioja/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:43.540967+00:00",
    "h": []
   },
   {
@@ -1455,20 +1217,6 @@
    "source_url": "https://portalextranjeria.com/lotes-nie-las-palmas/",
    "source_type": "public_unofficial",
    "source_checked": "2026-10-29T21:04:44.834229+00:00",
-   "h": []
-  },
-  {
-   "id": "las-palmas-extranjeria-de-tuineje",
-   "prov": "Las Palmas",
-   "name": "Extranjería de Tuineje",
-   "y": 2026,
-   "n": 106,
-   "checked": "2026-10-29",
-   "published": "2026-09-24",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-las-palmas/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:44.834240+00:00",
    "h": []
   },
   {
@@ -1603,19 +1351,51 @@
    "name": "Ir al contenido Castellano Castellano Català Gallego Euskara Valencià English Buscar Cerra",
    "y": 2026,
    "n": 144,
-   "checked": "2026-10-29",
+   "checked": "2026-10-31",
    "published": null,
    "source": "Delegación del Gobierno en Melilla",
    "source_url": "https://mptmd.gob.es/portal/delegaciones_gobierno/delegaciones/melilla/proyectos-ci/tabl-n-anuncios-extranjer-a/lotes-de-tarjetas-de-identidad-de-extranjeros-disponibles-en-la-oficina",
    "source_type": "official_public_notice",
-   "source_checked": "2026-10-29T21:05:09.714442+00:00",
+   "source_checked": "2026-10-31T17:35:42.849564+00:00",
    "card_type": "fronterizos",
    "raw_text": "lote 144/2026",
-   "confidence": "high",
+   "confidence": "low",
+   "sources_count": 1,
    "h": [
     [
      "2026-10-29",
      144
+    ],
+    [
+     "2026-10-31",
+     144
+    ]
+   ]
+  },
+  {
+   "id": "melilla-ir-al-contenido-castellano-castellano-ca",
+   "prov": "Melilla",
+   "name": "Ir al contenido Castellano Castellano Català Gallego Euskara Valencià English Buscar Cerra",
+   "y": 2026,
+   "n": 146,
+   "checked": "2026-10-31",
+   "published": null,
+   "source": "Delegación del Gobierno en Melilla",
+   "source_url": "https://mptmd.gob.es/portal/delegaciones_gobierno/delegaciones/melilla/proyectos-ci/tabl-n-anuncios-extranjer-a/lotes-de-tarjetas-de-identidad-de-extranjeros-disponibles-en-la-oficina",
+   "source_type": "official_public_notice",
+   "source_checked": "2026-10-31T17:35:42.849606+00:00",
+   "card_type": "fronterizos",
+   "raw_text": "Lote 146/2026",
+   "confidence": "low",
+   "sources_count": 1,
+   "h": [
+    [
+     "2026-10-29",
+     144
+    ],
+    [
+     "2026-10-31",
+     146
     ]
    ]
   },
@@ -1723,15 +1503,16 @@
    "name": "OFICINA DE EXTRANJERÍA DE MURCIA",
    "y": 2026,
    "n": 425,
-   "checked": "2026-10-29",
-   "published": "2026-10-28",
+   "checked": "2026-10-31",
+   "published": "2026-10-30",
    "source": "Extranjería Murcia",
    "source_url": "https://www.extranjeriamurcia.com/lotes-recibidos",
    "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:05:09.989316+00:00",
+   "source_checked": "2026-10-31T17:35:43.171608+00:00",
    "card_type": "otros",
-   "raw_text": "060 press to zoom 016 press to zoom extranjeria-murcia press to zoom 060 press to zoom 1/4 CITA PREVIA COMPRUEBE SU LOTE FECHAS DE GESTIÓN SOLICITUDES MERCURIO REGULARIZACIÓN EXTRAORDINARIA LOTES DE TIE RECIBIDOS EN LA PROVINCIA DE MURCIA ACTUALIZADO A FECHA 28/10/2026 OFICINA DE EXTRANJERÍA DE MURCIA: HASTA LOTE 425 / 2026 COMISARÍA DE CARTAGENA: HASTA LOTE 195 / 2026 COMISARÍA DE LORCA: HASTA LOTE 196 / 2026 COMISARÍA DE MOLINA DE SEGURA: HASTA LOTE 177 / 2026 COMISARÍA DE YECLA: HASTA LOTE 87",
-   "confidence": "medium",
+   "raw_text": "060 press to zoom 016 press to zoom extranjeria-murcia press to zoom 060 press to zoom 1/4 CITA PREVIA COMPRUEBE SU LOTE FECHAS DE GESTIÓN SOLICITUDES MERCURIO REGULARIZACIÓN EXTRAORDINARIA LOTES DE TIE RECIBIDOS EN LA PROVINCIA DE MURCIA ACTUALIZADO A FECHA 30/10/2026 OFICINA DE EXTRANJERÍA DE MURCIA: HASTA LOTE 425 / 2026 COMISARÍA DE CARTAGENA: HASTA LOTE 199 / 2026 COMISARÍA DE LORCA: HASTA LOTE 200 / 2026 COMISARÍA DE MOLINA DE SEGURA: HASTA LOTE 185 / 2026 COMISARÍA DE YECLA: HASTA LOTE 90",
+   "confidence": "low",
+   "sources_count": 1,
    "h": []
   },
   {
@@ -1861,20 +1642,6 @@
    "h": []
   },
   {
-   "id": "navarra-extranjeria-de-tudela",
-   "prov": "Navarra",
-   "name": "Extranjería de Tudela",
-   "y": 2026,
-   "n": 163,
-   "checked": "2026-10-29",
-   "published": "2026-09-07",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-navarra/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:51.248907+00:00",
-   "h": []
-  },
-  {
    "id": "ourense-extranjeria-de-o-barco-de-valdeorras",
    "prov": "Ourense",
    "name": "Extranjería de O Barco de Valdeorras",
@@ -1956,20 +1723,6 @@
    "source_url": "https://portalextranjeria.com/lotes-nie-pontevedra/",
    "source_type": "public_unofficial",
    "source_checked": "2026-10-29T21:04:55.097262+00:00",
-   "h": []
-  },
-  {
-   "id": "pontevedra-extranjeria-de-tui",
-   "prov": "Pontevedra",
-   "name": "Extranjería de Tui",
-   "y": 2026,
-   "n": 10,
-   "checked": "2026-10-29",
-   "published": "2026-06-02",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-pontevedra/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:04:55.097273+00:00",
    "h": []
   },
   {
@@ -2183,34 +1936,6 @@
    "h": []
   },
   {
-   "id": "teruel-extranjeria-de-alcaniz",
-   "prov": "Teruel",
-   "name": "Extranjería de Alcañiz",
-   "y": 2026,
-   "n": 12,
-   "checked": "2026-10-29",
-   "published": "2026-09-25",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-teruel/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:05:02.937495+00:00",
-   "h": []
-  },
-  {
-   "id": "teruel-extranjeria-de-teruel",
-   "prov": "Teruel",
-   "name": "Extranjería de Teruel",
-   "y": 2026,
-   "n": 12,
-   "checked": "2026-10-29",
-   "published": "2026-09-25",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-teruel/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:05:02.937518+00:00",
-   "h": []
-  },
-  {
    "id": "toledo-extranjeria-de-talavera-de-la-reina",
    "prov": "Toledo",
    "name": "Extranjería de Talavera de la Reina",
@@ -2348,34 +2073,6 @@
    "source_url": "https://portalextranjeria.com/lotes-nie-zamora/",
    "source_type": "public_unofficial",
    "source_checked": "2026-10-29T21:05:06.806998+00:00",
-   "h": []
-  },
-  {
-   "id": "zaragoza-calatayud",
-   "prov": "Zaragoza",
-   "name": "Calatayud",
-   "y": 2026,
-   "n": 30,
-   "checked": "2026-10-29",
-   "published": "2026-09-10",
-   "source": "Lotenie",
-   "source_url": "https://lotenie.es/zaragoza/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T12:34:20.285258+00:00",
-   "h": []
-  },
-  {
-   "id": "zaragoza-extranjeria-de-calatayud",
-   "prov": "Zaragoza",
-   "name": "Extranjería de Calatayud",
-   "y": 2026,
-   "n": 30,
-   "checked": "2026-10-29",
-   "published": "2026-09-10",
-   "source": "Portal Extranjería",
-   "source_url": "https://portalextranjeria.com/lotes-nie-zaragoza/",
-   "source_type": "public_unofficial",
-   "source_checked": "2026-10-29T21:05:08.084498+00:00",
    "h": []
   },
   {

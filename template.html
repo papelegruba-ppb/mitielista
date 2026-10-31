@@ -104,22 +104,36 @@ function rate(o){
   return days>0&&b[1]>a[1]?(b[1]-a[1])/days:0;
 }
 
+function canonicalProv(value){
+  var key=String(value||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z]/g,"");
+  var aliases={
+    alava:"Araba/Álava",arabaalava:"Araba/Álava",
+    baleares:"Balears (Illes)",balearsilles:"Balears (Illes)",illesbalears:"Balears (Illes)",
+    gipuzkoa:"Guipúzcoa / Gipuzkoa",guipuzcoagipuzkoa:"Guipúzcoa / Gipuzkoa",
+    bizkaia:"Vizcaya / Bizkaia",vizcaya:"Vizcaya / Bizkaia",
+    coruna:"A Coruña",acoruna:"A Coruña",lacoruna:"A Coruña",
+    tenerife:"Santa Cruz de Tenerife",santacruzdetenerife:"Santa Cruz de Tenerife"
+  };
+  return aliases[key]||value;
+}
 function fillProv(){
-  var provs=["A Coruña","Albacete","Alicante","Almería","Araba/Álava","Asturias","Ávila","Badajoz","Balears (Illes)","Barcelona","Burgos","Cáceres","Cádiz","Cantabria","Castellón","Ceuta","Ciudad Real","Córdoba","Cuenca","Girona","Granada","Guadalajara","Guipúzcoa / Gipuzkoa","Huelva","Huesca","Jaén","La Rioja","Las Palmas","León","Lleida","Lugo","Madrid","Málaga","Melilla","Murcia","Navarra","Ourense","Palencia","Pontevedra","Salamanca","Santa Cruz de Tenerife","Segovia","Sevilla","Soria","Tarragona","Teruel","Toledo","Valencia","Valladolid","Vizcaya / Bizkaia","Zamora","Zaragoza"];
-  DATA.d.offices.forEach(function(o){if(provs.indexOf(o.prov)<0)provs.push(o.prov)});
-  var withData=Array.from(new Set(DATA.d.offices.map(function(o){return o.prov})));
-  provs.sort(function(a,b){var ad=withData.indexOf(a)>=0,bd=withData.indexOf(b)>=0;return ad===bd?a.localeCompare(b,"es"):ad?-1:1});
-  $("prov").innerHTML='<option value="">Elige provincia</option>'+provs.map(function(p){return withData.indexOf(p)>=0?'<option>'+esc(p)+'</option>':'<option disabled>'+esc(p)+' — sin datos; consulta sede oficial</option>'}).join("");
+  var provs=PROVINCIAS_BASE.slice();
+  DATA.d.offices.forEach(function(o){
+    var p=canonicalProv(o.prov);
+    if(p&&provs.indexOf(p)<0)provs.push(p);
+  });
+  provs.sort(function(a,b){return a.localeCompare(b,"es")});
+  $("prov").innerHTML='<option value="">Elige provincia</option>'+provs.map(function(p){return '<option value="'+esc(p)+'">'+esc(p)+'</option>'}).join("");
 }
 function fillOf(){
-  var prov=$("prov").value, sel=$("of");
-  var offices=DATA.d.offices.filter(function(o){return o.prov===prov}).sort(function(a,b){return a.name.localeCompare(b.name,"es")});
+  var prov=canonicalProv($("prov").value), sel=$("of");
+  var offices=DATA.d.offices.filter(function(o){return canonicalProv(o.prov)===prov}).sort(function(a,b){return a.name.localeCompare(b.name,"es")});
   sel.innerHTML='<option value="">Elige oficina</option>'+offices.map(function(o){return '<option value="'+esc(o.id)+'">'+esc(o.name)+'</option>'}).join("");
   sel.disabled=!prov||!offices.length;
   var status=$("office-data-status");
-  if(!prov){sel.innerHTML='<option value="">Primero elige provincia</option>';status.textContent="Selecciona una provincia para consultar qué datos se han podido extraer.";}
-  else if(!offices.length){sel.innerHTML='<option value="">Sin datos — consulta sede oficial</option>';status.textContent="No hay datos de lotes para "+prov+". Consulta la sede oficial: "+CITA;}
-  else{status.textContent="Datos encontrados para "+offices.length+" oficina(s) de "+prov+". Si tu oficina no aparece, no se han podido extraer sus datos."; }
+  if(!prov){sel.innerHTML='<option value="">Primero elige provincia</option>';status.textContent="Selecciona una provincia para consultar las oficinas.";}
+  else if(!offices.length){sel.innerHTML='<option value="">Todavía no hay lotes detectados</option>';status.textContent="No hay lotes verificables publicados para "+prov+". Esto no significa que no existan oficinas ni que no se estén entregando tarjetas. Puedes consultar la información de la sede oficial: "+CITA;}
+  else{status.textContent="Datos disponibles para "+offices.length+" oficina(s) de "+prov+". Si tu oficina no aparece, todavía no se ha podido verificar su lote."; }
 }
 
 function show(cls,title,body,nums,acts){
@@ -175,8 +189,8 @@ function loadOfficeData(){
     DATA={d:d};fillProv();
     $("updated-status").textContent=d.updated?"Datos actualizados el "+pd(d.updated).toLocaleDateString("es-ES"):"Fecha de actualización no disponible.";
     var s=store("tie");
-    if(window.PRESET){var po=DATA.d.offices.filter(function(x){return x.id===PRESET})[0];if(po){$("prov").value=po.prov;fillOf();$("of").value=po.id}}
-    else if(s){$("prov").value=s.p||"";fillOf();$("of").value=s.o||"";$("lote").value=s.l||"";}
+    if(window.PRESET){var po=DATA.d.offices.filter(function(x){return x.id===PRESET})[0];if(po){$("prov").value=canonicalProv(po.prov);fillOf();$("of").value=po.id}}
+    else if(s){$("prov").value=canonicalProv(s.p||"");fillOf();$("of").value=s.o||"";$("lote").value=s.l||"";}
     if(!$("prov").value)fillOf();
   }).catch(function(){
     DATA={d:{updated:null,offices:[]}};

@@ -25,25 +25,56 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install playwright && playwright install --with-deps chromium
+      - name: Instalar Playwright
+        run: |
+          pip install playwright==1.55.0
+          playwright install --with-deps chromium
       - name: Tests de parsers
+        if: github.event_name != 'push'
         run: python -m unittest discover -s tests
       - name: Consultar lotes
+        if: github.event_name != 'push'
         run: python scrape.py
         timeout-minutes: 35
+      - name: Comprobar antigüedad de los datos
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import date, datetime, timezone
+          from pathlib import Path
+
+          data = json.loads(Path("lotes.json").read_text(encoding="utf-8"))
+          raw = data.get("updated")
+          try:
+              updated = date.fromisoformat(str(raw))
+          except (TypeError, ValueError):
+              raise SystemExit(f"ERROR: lotes.json tiene un campo 'updated' ausente o inválido: {raw!r}")
+
+          today = datetime.now(timezone.utc).date()
+          age = (today - updated).days
+          if age > 3:
+              raise SystemExit(
+                  f"ERROR: los datos están obsoletos: updated={updated.isoformat()} "
+                  f"({age} días; máximo permitido: 3). No se publicará el sitio."
+              )
+          print(f"OK: datos actualizados el {updated.isoformat()} (antigüedad: {age} días).")
+          PY
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && github.event_name != 'push'
         with:
           name: debug
           path: debug/
           if-no-files-found: ignore
-      - run: python build.py
+          retention-days: 7
+      - name: Reconstruir sitio
+        run: python build.py
       - name: Guardar histórico
         run: |
           git config user.name "lotes-bot"
           git config user.email "lotes-bot@users.noreply.github.com"
           git add lotes.json
           git diff --cached --quiet || git commit -m "Actualiza lotes"
+          git pull --rebase origin main
           git push
       - uses: actions/upload-pages-artifact@v3
         with:

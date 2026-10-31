@@ -1,79 +1,149 @@
-"""Genera el sitio estático SEO: build.py -> site/
-Uso: python build.py   (lee lotes.json y template.html)
-Cambia DOMAIN al comprar el dominio."""
-import json, re, unicodedata, pathlib, html, shutil
-DOMAIN = "https://mitielista.com"
-BRAND = "Papelegruba"
-SITE = "Mi TIE Lista"
+"""Genera páginas estáticas para Mi TIE Lista."""
+import html, json, os, pathlib, re, shutil, unicodedata
+from urllib.parse import urlsplit
+
 ROOT = pathlib.Path(__file__).parent
 OUT = ROOT / "site"
 tpl = (ROOT / "template.html").read_text(encoding="utf-8")
 data = json.loads((ROOT / "lotes.json").read_text(encoding="utf-8"))
-offices = data["offices"]
-FAQ = [
- ("¿Qué es el lote de la TIE?", "Es el número de tanda (año/número) que figura en el resguardo de la toma de huellas. La comisaría recibe las tarjetas por lotes y por orden."),
- ("¿Dónde encuentro mi lote?", "En el resguardo que te dan tras la toma de huellas, con el formato año/número, por ejemplo 2026/233. Al final del documento se indica también dónde recoger la tarjeta."),
- ("¿Cómo sé si mi TIE está lista?", "Compara tu lote con el último lote publicado por tu oficina. Si tu lote es igual o inferior, podría haber llegado el turno de tu tarjeta, pero la web no confirma que esté físicamente disponible. Confirma siempre con la oficina antes de desplazarte."),
- ("¿La fecha estimada es oficial?", "No. Se calcula con el ritmo reciente de avance de los lotes de cada oficina y es solo orientativa."),
+offices = data.get("offices", [])
+DOMAIN = os.environ.get("DOMAIN", "https://mitielista.com").strip().rstrip("/")
+BRAND, SITE = "Papelegruba", "Mi TIE Lista"
+CITA = "https://icp.administracionelectronica.gob.es/icpplus/index.html"
+parts = urlsplit(DOMAIN)
+HOST = parts.netloc.lower()
+IS_GITHUB_IO = HOST.endswith(".github.io") or HOST == "github.io"
+BASE_PATH = parts.path.strip("/")
+BASE = "/" + BASE_PATH + "/" if BASE_PATH else "/"
+PROVINCES = [
+ "A Coruña","Albacete","Alicante","Almería","Araba/Álava","Asturias","Ávila","Badajoz",
+ "Balears (Illes)","Barcelona","Burgos","Cáceres","Cádiz","Cantabria","Castellón","Ceuta",
+ "Ciudad Real","Córdoba","Cuenca","Girona","Granada","Guadalajara","Guipúzcoa / Gipuzkoa",
+ "Huelva","Huesca","Jaén","La Rioja","Las Palmas","León","Lleida","Lugo","Madrid","Málaga",
+ "Melilla","Murcia","Navarra","Ourense","Palencia","Pontevedra","Salamanca",
+ "Santa Cruz de Tenerife","Segovia","Sevilla","Soria","Tarragona","Teruel","Toledo",
+ "Valencia","Valladolid","Vizcaya / Bizkaia","Zamora","Zaragoza"
 ]
 esc = html.escape
-def slug(s):
-    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
-    return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
-def path(o): return f"/lote-tie/{slug(o['prov'])}/{slug(o['name'])}/"
-def fdate(d): y, m, dd = d.split("-"); return f"{dd}/{m}/{y}"
 
-def info(o=None):
-    p = ['<section class="info">']
-    if o:
-        published = fdate(o["published"]) if o.get("published") else "sin fecha de publicación confirmada"
-        source = esc(o.get("source", "fuente no identificada"))
-        source_url = esc(o.get("source_url", ""))
-        checked = fdate(o.get("checked", data["updated"]))
-        link = f'<a href="{source_url}" target="_blank" rel="noopener noreferrer">fuente original</a>' if source_url.startswith("https://") else "fuente original no disponible"
-        if o.get("source_type") == "official_public_notice":
-            p.append(f'<h2>Lote indicado en aviso oficial: {esc(o["name"])}</h2><p><b>{o["y"]}/{o["n"]}</b>. Aviso de {source}, publicado {published}; consultado el {checked}. Consulta el {link}. El aviso puede referirse a una categoría de tarjeta o a un lote general; no confirma que una tarjeta individual esté lista.</p>')
-        else:
-            p.append(f'<h2>Último lote publicado en {esc(o["name"])}</h2><p><b>{o["y"]}/{o["n"]}</b>. Dato <b>no oficial</b> de {source}, publicado {published}; comprobado el {checked}. Consulta la {link}. Puede estar desfasado y no confirma que tu tarjeta esté disponible. Confirma con la oficina antes de desplazarte.</p>')
-    if not offices:
-        p.append("<p>En este momento no hay lotes de oficinas que se hayan podido verificar. No mostramos números de ejemplo ni estimaciones inventadas. Vuelve a consultar cuando se recuperen las fuentes.</p>")
-    p.append("<h2>Preguntas frecuentes</h2>")
-    p += [f"<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>" for q, a in FAQ]
-    p.append("<h2>Último lote por oficina</h2><ul>" + "".join(f'<li><a href="{path(x)}">{esc(x["name"])}</a>: {x["y"]}/{x["n"]}</li>' for x in offices) + "</ul></section>")
-    return "".join(p)
+def slug(value):
+    value = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
 
-og = ('<meta property="og:image" content="%s/og.png">\n<meta name="twitter:card" content="summary_large_image">' % DOMAIN) if (ROOT / "og.png").exists() else '<meta name="twitter:card" content="summary">'
+def province_path(prov):
+    return "lote-tie/" + slug(prov) + "/"
 
-def render(title, desc, url, h1, lead, preset, inf):
-    ld = {"@context": "https://schema.org", "@graph": [
-        {"@type": "WebApplication", "name": SITE, "url": url, "applicationCategory": "UtilitiesApplication",
-         "operatingSystem": "Any", "inLanguage": "es", "isAccessibleForFree": True,
-         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@type": "Person", "name": BRAND}},
-        {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in FAQ]}]}
-    vals = {"TITLE": esc(title), "DESC": esc(desc), "URL": url, "H1": esc(h1), "LEAD": esc(lead), "PRESET": preset,
-            "OGIMG": og, "JSONLD": json.dumps(ld, ensure_ascii=False).replace("</", "<\\/"), "INFO": inf}
-    out = tpl
-    for k, v in vals.items(): out = out.replace("{{" + k + "}}", v)
-    return out
+def office_path(o):
+    return province_path(o["prov"]) + slug(o["name"]) + "/"
+
+def date_es(value):
+    try:
+        y, m, d = value[:10].split("-")
+        return f"{d}/{m}/{y}"
+    except (TypeError, ValueError, IndexError):
+        return "fecha no confirmada"
+
+def official_link():
+    return f'<a href="{CITA}" target="_blank" rel="noopener noreferrer">Consultar sede y cita oficial</a>'
+
+def office_info(o):
+    source = esc(o.get("source") or "fuente no identificada")
+    published = date_es(o.get("published"))
+    checked = date_es(o.get("checked") or data.get("updated"))
+    source_url = o.get("source_url", "")
+    link = f'<a href="{esc(source_url, quote=True)}" target="_blank" rel="noopener noreferrer">fuente original</a>' if source_url.startswith("https://") else "fuente original no disponible"
+    if o.get("source_type") == "official_public_notice":
+        return f'<p><strong>Último lote indicado: {o["y"]}/{o["n"]}</strong>. Aviso oficial de {source}, publicado {published}; comprobado {checked}. {link}. No confirma la disponibilidad individual.</p>'
+    return f'<p><strong>Último lote: {o["y"]}/{o["n"]}</strong>. <strong>Dato no oficial</strong> de {source}, publicado {published}; comprobado {checked}. {link}. Confirma con la oficina.</p>'
+
+def render(title, desc, relpath, h1, lead, preset="", info="", crumbs=None):
+    title = title[:60]
+    desc = desc[:155]
+    page_url = DOMAIN + BASE + relpath
+    canonical = "" if IS_GITHUB_IO else f'<link rel="canonical" href="{esc(page_url, quote=True)}">'
+    graph = [{
+      "@type":"WebApplication","name":SITE,"url":DOMAIN + BASE,
+      "applicationCategory":"UtilitiesApplication","operatingSystem":"Any",
+      "inLanguage":"es","isAccessibleForFree":True,
+      "offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},
+      "author":{"@type":"Person","name":BRAND}
+    }]
+    if crumbs:
+        graph.append({"@type":"BreadcrumbList","itemListElement":[
+          {"@type":"ListItem","position":i,"name":name,"item":url}
+          for i,(name,url) in enumerate(crumbs,1)
+        ]})
+    breadcrumb_html = ""
+    if crumbs:
+        breadcrumb_html = '<nav aria-label="Migas de pan" class="hint">' + " › ".join(esc(x[0]) for x in crumbs) + "</nav>"
+    values = {
+      "TITLE":esc(title), "DESC":esc(desc), "URL":esc(page_url, quote=True),
+      "H1":esc(h1), "LEAD":esc(lead), "PRESET":esc(preset, quote=True),
+      "OGIMG":'<meta name="twitter:card" content="summary">',
+      "JSONLD":json.dumps({"@context":"https://schema.org","@graph":graph},ensure_ascii=False).replace("</","<\\/"),
+      "INFO":info, "BASE":BASE, "CANONICAL":canonical, "BREADCRUMBS":breadcrumb_html
+    }
+    result = tpl
+    for key,value in values.items():
+        result = result.replace("{{"+key+"}}",value)
+    return result
 
 def write(rel, content):
-    f = OUT / rel.lstrip("/"); f.parent.mkdir(parents=True, exist_ok=True); f.write_text(content, encoding="utf-8")
+    target = OUT / rel
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(content, encoding="utf-8")
 
-if OUT.exists(): shutil.rmtree(OUT)
-urls = [DOMAIN + "/"]
-write("index.html", render("Mi TIE Lista: comprueba tu lote y cuándo recogerla",
-    "Escribe tu lote y comprueba al instante si tu TIE está lista para recoger. Último lote publicado por oficina, fecha estimada y sin publicidad.",
-    DOMAIN + "/", "¿Está lista tu TIE?", "Escribe el lote de tu resguardo de huellas y míralo al instante, sin pasos extra.", "", info()))
+if OUT.exists():
+    shutil.rmtree(OUT)
+OUT.mkdir(parents=True)
+urls = []
+home_info = '<section class="info"><h2>Información</h2><p>Herramienta gratuita y sin publicidad. Las estimaciones son orientativas.</p></section>'
+write("index.html",render(
+ "Mi TIE Lista: consulta tu lote TIE",
+ "Comprueba el último lote TIE publicado por oficina y consulta una estimación orientativa. Gratis y sin publicidad.",
+ "", "¿Está lista tu TIE?", "Escribe el lote de tu resguardo de huellas y consulta el último dato disponible.", info=home_info))
+urls.append(DOMAIN + BASE)
+
+province_names = PROVINCES + sorted(p for p in {o.get("prov","") for o in offices} if p and p not in PROVINCES)
+for prov in province_names:
+    rows = sorted((o for o in offices if o.get("prov") == prov),key=lambda o:o.get("name",""))
+    parts_html = ['<section class="info"><h2>Oficinas y últimos lotes</h2><ul>']
+    if rows:
+        for o in rows:
+            link = BASE + office_path(o)
+            parts_html.append(f'<li><a href="{esc(link,quote=True)}">{esc(o.get("name","Oficina"))}</a>: {o["y"]}/{o["n"]}. ')
+            if o.get("source_type") == "public_unofficial":
+                parts_html.append(f'<strong>Dato no oficial</strong>, publicado {date_es(o.get("published"))} en {esc(o.get("source") or "fuente no identificada")}.</li>')
+            else:
+                parts_html.append('Aviso oficial; no confirma disponibilidad individual.</li>')
+    else:
+        parts_html.append(f'<li>No hay datos de lotes disponibles para {esc(prov)}. Esta ausencia no significa que no exista oficina o que no se entreguen tarjetas.</li>')
+    parts_html.append(f'</ul><p>{official_link()}</p></section>')
+    rel = province_path(prov)
+    crumbs = [("Inicio",DOMAIN+BASE),("Provincias",DOMAIN+BASE+"lote-tie/"),(prov,DOMAIN+BASE+rel)]
+    title = f"Lotes TIE en {prov} | Mi TIE Lista"
+    desc = f"Consulta oficinas y últimos lotes TIE disponibles en {prov}. Distingue datos no oficiales y accede a la sede oficial."
+    write(rel+"index.html",render(title,desc,rel,f"Lotes TIE en {prov}",f"Oficinas y último lote conocido en {prov}.",info="".join(parts_html),crumbs=crumbs))
+    urls.append(DOMAIN+BASE+rel)
+
 for o in offices:
-    u = DOMAIN + path(o); urls.append(u)
-    write(path(o) + "index.html", render((lambda t: t + (' | ' + SITE if len(t) <= 45 else ''))(f"Lote TIE {o['name']} hoy: {o['y']}/{o['n']}"),
-        f"Último lote TIE publicado en {o['name']} ({o['prov']}): {o['y']}/{o['n']}. Dato no oficial; comprueba la fecha de publicación y confirma con la oficina.",
-        u, f"Lote TIE en {o['name']}", f"Último lote publicado: {o['y']}/{o['n']}. Dato no oficial si se indica; confirma siempre con la oficina.", o["id"], info(o)))
-write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-      "".join(f"<url><loc>{u}</loc><lastmod>{data['updated']}</lastmod></url>\n" for u in urls) + "</urlset>\n")
-write("robots.txt", f"User-agent: *\nAllow: /\n\nSitemap: {DOMAIN}/sitemap.xml\n")
-write("CNAME", DOMAIN.split("//")[1] + "\n")
-for f in ("favicon.svg", "logo.svg", "og.png", "manifest.json", "service-worker.js"):
-    if (ROOT / f).exists(): shutil.copy(ROOT / f, OUT / f)
-write("lotes.json", json.dumps(data, ensure_ascii=False))
-print(len(urls), "URLs en el sitemap")
+    rel = office_path(o)
+    provrel = province_path(o["prov"])
+    crumbs = [("Inicio",DOMAIN+BASE),(o["prov"],DOMAIN+BASE+provrel),(o["name"],DOMAIN+BASE+rel)]
+    title = f"Lote TIE {o['name']} {o['prov']} | Mi TIE Lista"
+    desc = f"Último lote TIE de {o['name']} ({o['prov']}): {o['y']}/{o['n']}. Consulta fuente y fecha."
+    content = '<section class="info">'+office_info(o)+f'<p>{official_link()}</p></section>'
+    write(rel+"index.html",render(title,desc,rel,f"Lote TIE en {o['name']}",f"Último dato disponible para {o['name']}, {o['prov']}.",o["id"],content,crumbs))
+    urls.append(DOMAIN+BASE+rel)
+
+if not IS_GITHUB_IO:
+    write("CNAME",HOST+"\\n")
+for filename in ("favicon.svg","logo.svg","og.png","manifest.json","service-worker.js"):
+    source = ROOT/filename
+    if source.exists():
+        shutil.copy2(source,OUT/filename)
+write("lotes.json",json.dumps(data,ensure_ascii=False))
+write("sitemap.xml",'<?xml version="1.0" encoding="UTF-8"?>\\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\\n'+"".join(
+ f"<url><loc>{esc(url)}</loc><lastmod>{data.get('updated','')}</lastmod></url>\\n" for url in urls)+"</urlset>\\n")
+write("robots.txt",f"User-agent: *\\nAllow: /\\n\\nSitemap: {DOMAIN}{BASE}sitemap.xml\\n")
+print(f"{len(urls)} URLs en sitemap; {len(province_names)} provincias; DOMAIN={DOMAIN}; BASE={BASE}")

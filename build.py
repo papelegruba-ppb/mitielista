@@ -137,13 +137,13 @@ for o in offices:
     urls.append(DOMAIN+"/"+rel)
 
 if not IS_GITHUB_IO:
-    write("CNAME",HOST+"\\n")
+    write("CNAME",HOST+"\n")
 for filename in ("favicon.svg","logo.svg","og.png","manifest.json","service-worker.js"):
     source = ROOT/filename
     if source.exists():
         shutil.copy2(source,OUT/filename)
 write("lotes.json",json.dumps(data,ensure_ascii=False))
-write("sitemap.xml",'<?xml version="1.0" encoding="UTF-8"?>\\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\\n'+"".join(
- f"<url><loc>{esc(url)}</loc><lastmod>{data.get('updated','')}</lastmod></url>\\n" for url in urls)+"</urlset>\\n")
-write("robots.txt",f"User-agent: *\\nAllow: /\\n\\nSitemap: {DOMAIN}{BASE}sitemap.xml\\n")
+write("sitemap.xml",'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+"".join(
+ f"<url><loc>{esc(url)}</loc><lastmod>{data.get('updated','')}</lastmod></url>\n" for url in urls)+"</urlset>\n")
+write("robots.txt",f"User-agent: *\nAllow: /\n\nSitemap: {DOMAIN}{BASE}sitemap.xml\n")
 print(f"{len(urls)} URLs en sitemap; {len(province_names)} provincias; DOMAIN={DOMAIN}; BASE={BASE}")

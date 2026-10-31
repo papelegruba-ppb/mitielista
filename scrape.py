@@ -49,7 +49,7 @@ FALLBACK_CONFIG = {
                         "pattern": re.compile(
                             r"(?:Comisar[ií]a de Polic[ií]a de|Comisar[ií]a de|Oficina de)\\s+(.{2,100}?)\\s+"
                             r"LOTE NIE ACTUAL\\s*:\\s*0*(\\d{1,4})\\s*"
-                            r"\\(Actualizado\\s*:\\s*(\\d{1,2})/(\\d{1,2})/(\\d{4})\\)",
+                            r"\(Actualizado\\s*:\\s*(\\d{1,2})/(\\d{1,2})/(\\d{4})\\)",
                             re.I,
                         ),
                         "date_format": "dmy",
@@ -89,7 +89,7 @@ def parse_portal_html(html_text: str, province: str, source_url: str, checked: s
     specs = FALLBACK_CONFIG.get(province, {}).get("sources", {}).get("portal_extranjeria", {}).get("office_specs", [])
     for spec in specs:
         for match in spec["pattern"].finditer(parser.text):
-            name = re.sub(r"\\s+", " ", match.group(1)).strip(" :-–")
+            name = re.sub(r"\s+", " ", match.group(1)).strip(" :-–")
             published = parse_date(*match.group(3, 4, 5))
             if not name or not published:
                 continue
@@ -173,10 +173,6 @@ async def pick_tramite(page):
 async def select_office(page, value):
     for select in await page.locator("select").all():
         try:
-            if await select.locator("option").filter(
-                has=page.locator("option")
-            ).count() < 0:
-                continue
             if await select.locator(f'option[value="{value}"]').count():
                 await select.select_option(value=value)
                 return
@@ -361,25 +357,28 @@ async def fallback_public_sources():
             if re.fullmatch(r"/lotes-nie-[a-z0-9-]+/?", parsed.path):
                 links[parsed.path.rstrip("/") + "/"] = absolute
         print(f"[fallback:Portal Extranjería] páginas verificadas en índice: {len(links)}")
-        for province, config in FALLBACK_CONFIG.items():
-            source_cfg = config["sources"].get("portal_extranjeria")
-            if not source_cfg:
-                continue
-            # Se enlaza página por índice y se contrasta la provincia desde URL
-            # contra el nombre normalizado. No se inventan URLs de provincias.
-            matching = [(path, url) for path, url in links.items()
-                        if normalize(path.rsplit("-", 1)[-1]) == normalize(province)]
-            # Fallback a slug completo únicamente si el enlace existe realmente.
-            expected = "/lotes-nie-" + slug(province) + "/"
-            matching += [(expected, links[expected])] if expected in links and all(expected != p for p, _ in matching) else []
-            for path, url in matching:
-                try:
-                    html_text = _fetch_html(url)
-                    records = parse_portal_html(html_text, province, url, today)
-                    candidates.extend(records)
-                    print(f"[fallback:{province}] {len(records)} registros candidatos")
-                except Exception as exc:
-                    print(f"[fallback:{province}] error fuente Portal: {exc}")
+        for path, url in links.items():
+            try:
+                html_text = _fetch_html(url)
+                page_parser = _TextExtractor()
+                page_parser.feed(html_text)
+                title_match = re.search(r"Lotes NIE\s+(.+?)\s+(?:hoy|actual)", page_parser.text, re.I)
+                if not title_match:
+                    continue
+                page_province = title_match.group(1).strip(" :-")
+                province = next((p for p in PROVINCES if normalize(p) == normalize(page_province)), None)
+                aliases = {"alava": "Araba/Álava", "vizcaya": "Vizcaya / Bizkaia",
+                           "guipuzcoa": "Guipúzcoa / Gipuzkoa", "baleares": "Balears (Illes)"}
+                if province is None:
+                    province = aliases.get(normalize(page_province))
+                if province not in FALLBACK_CONFIG:
+                    print(f"[fallback] provincia no reconocida en título: {page_province!r}")
+                    continue
+                records = parse_portal_html(html_text, province, url, today)
+                candidates.extend(records)
+                print(f"[fallback:{province}] {len(records)} registros candidatos")
+            except Exception as exc:
+                print(f"[fallback] error en página {url}: {exc}")
     except Exception as exc:
         print(f"[fallback] índice Portal no disponible: {exc}")
 

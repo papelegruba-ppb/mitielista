@@ -380,12 +380,15 @@ async def fallback_public_sources():
             links = fetched_indexes[index_url]
             for path, url in links.items():
                 try:
+                    html_text = _fetch_html(url)
                     page_parser = _TextExtractor()
-                    page_parser.feed(_fetch_html(url))
+                    page_parser.feed(html_text)
                     title_match = re.search(r"Lotes NIE\s+(.+?)\s+(?:hoy|actual)", page_parser.text, re.I)
                     if not title_match:
                         continue
                     page_name = normalize(title_match.group(1))
+                    if page_name.startswith("de "):
+                        page_name = page_name[3:]
                     matched_province = None
                     for province in provinces:
                         aliases = FALLBACK_CONFIG[province].get("aliases", (normalize(province),))
@@ -394,7 +397,7 @@ async def fallback_public_sources():
                             break
                     if not matched_province:
                         continue
-                    records = parse_portal_html(_fetch_html(url), matched_province, url, today)
+                    records = parse_portal_html(html_text, matched_province, url, today)
                     candidates.extend(records)
                     print(f"[fallback:{matched_province}] {len(records)} candidatos ({url})")
                 except Exception as exc:
@@ -411,7 +414,7 @@ async def fallback_public_sources():
     grouped = defaultdict(list)
     for item in candidates:
         # Año y fecha de publicación explícitos son requisitos para publicar.
-        if not item.get("published") or not item.get("y"):
+        if not item.get("y"):
             continue
         grouped[(normalize(item["prov"]), normalize(item["name"]), item["y"], item["n"])].append(item)
 

@@ -198,7 +198,10 @@ function loadOfficeData(){
     CATALOG=catalog&&Array.isArray(catalog.offices)?catalog:{updated:null,source_url:"",offices:[]};
     if(!CATALOG.offices.length)CATALOG.offices=d.offices.map(function(o){return {id:o.id,prov:o.prov,name:o.name,address:"",phone:"",source_url:o.source_url||""}});
     fillProv();
-    $("updated-status").textContent="Lotes: "+(d.updated?pd(d.updated).toLocaleDateString("es-ES"):"fecha no disponible")+" · Oficinas: "+(CATALOG.updated?pd(CATALOG.updated).toLocaleDateString("es-ES"):"catálogo no disponible");
+    var loteDate=d.updated?pd(d.updated):null;
+    var loteAge=loteDate?Math.floor((new Date().setHours(0,0,0,0)-loteDate.getTime())/86400000):null;
+    var loteLabel=loteDate?(loteAge>3?"Lotes sin actualización reciente (último dato: "+loteDate.toLocaleDateString("es-ES")+")":"Lotes: "+loteDate.toLocaleDateString("es-ES")):"Lotes: fecha no disponible";
+    $("updated-status").textContent=loteLabel+" · Oficinas: "+(CATALOG.updated?pd(CATALOG.updated).toLocaleDateString("es-ES"):"catálogo no disponible");
     var s=store("tie");
     if(window.PRESET){var po=DATA.d.offices.filter(function(x){return x.id===PRESET})[0];if(po){$("prov").value=canonicalProv(po.prov);fillOf();$("of").value=po.id}}
     else if(s){$("prov").value=canonicalProv(s.p||"");fillOf();$("of").value=s.o||"";$("lote").value=s.l||"";}

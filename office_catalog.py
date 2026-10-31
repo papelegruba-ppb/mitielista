@@ -49,7 +49,7 @@ class DirectoryParser(HTMLParser):
             title = re.sub(r"\s+"," "," ".join(self.heading)).strip()
             self._heading(title)
             self.heading_tag = None
-        if tag in ("br","p","li","div","section","article","dt","dd"):
+        if tag in ("br","p","li","div","section","article","dt","dd") and self.current:
             self.current["text"] += "\n"
     def handle_data(self, data):
         if self.heading_tag:

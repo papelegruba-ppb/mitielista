@@ -32,7 +32,7 @@ START_TIE = "https://icp.administracionelectronica.gob.es/icpplustiem/citar?loca
 TRAMITE = "RECOGIDA DE TARJETA DE IDENTIDAD DE EXTRANJERO"
 ROOT = pathlib.Path(__file__).parent
 DEBUG = ROOT / "debug"
-RX = re.compile(r"LTIMO LOTE RECIBIDO.{0,120}?(\d{4})\s*/\s*(\d+)", re.S | re.I)
+RX = re.compile(r"(?:Ú|U)?LTIMO LOTE RECIBIDO.{0,120}?(\d{4})\s*/\s*(\d+)", re.S | re.I)
 MAX_AGE_DAYS = 30
 RETRIES = 2
 PORTAL_INDEX_URL = "https://portalextranjeria.com/lotes-nie/"
@@ -40,9 +40,9 @@ PORTAL_INDEX_URL = "https://portalextranjeria.com/lotes-nie/"
 # El portal publica un índice común; cada provincia declara sus alias y el
 # marcador HTML de oficina. Las fuentes no verificadas quedan como TODO explícito.
 PORTAL_OFFICE_PATTERN = re.compile(
-    r"(?:Comisar[ií]a de Polic[ií]a de|Comisar[ií]a de|Oficina de)\\s+(.{2,100}?)\\s+"
-    r"LOTE NIE ACTUAL\\s*:\\s*(20\\d{2})\\s*/\\s*0*(\\d{1,5})\\s*"
-    r"\\(Actualizado\\s*:\\s*(\\d{1,2})/(\\d{1,2})/(\\d{4})\\)",
+    r"(?:Comisar[ií]a de Polic[ií]a de|Comisar[ií]a de|Oficina de)\s+(.{2,100}?)\s+"
+    r"LOTE NIE ACTUAL\s*:\s*(20\d{2})\s*/\s*0*(\d{1,5})\s*"
+    r"\(Actualizado\s*:\s*(\d{1,2})/(\d{1,2})/(\d{4})\)",
     re.I,
 )
 PROVINCE_ALIASES = {
@@ -55,7 +55,7 @@ PROVINCE_ALIASES = {
 }
 FALLBACK_CONFIG = {
     province: {
-        "aliases": PROVINCE_ALIASES.get(province, (normalize(province),)),
+        "aliases": PROVINCE_ALIASES.get(province, (province,)),
         "sources": {
             "portal_extranjeria": {
                 "url": PORTAL_INDEX_URL,
@@ -94,7 +94,7 @@ def parse_portal_html(html_text: str, province: str, source_url: str, checked: s
     source_cfg = FALLBACK_CONFIG.get(province, {}).get("sources", {}).get("portal_extranjeria", {})
     for spec in source_cfg.get("office_specs", []):
         for match in spec["pattern"].finditer(parser.text):
-            name = re.sub(r"\\s+", " ", match.group(1)).strip(" :-–")
+            name = re.sub(r"\s+", " ", match.group(1)).strip(" :-–")
             year, number = int(match.group(2)), int(match.group(3))
             published = parse_date(*match.group(4, 5, 6))
             if not name or not published:
@@ -139,7 +139,7 @@ class _TextExtractor(HTMLParser):
             self._link[1].append(data)
     @property
     def text(self):
-        return re.sub(r"\\s+", " ", " ".join(self.parts)).strip()
+        return re.sub(r"\s+", " ", " ".join(self.parts)).strip()
 
 async def accept(page):
     try:
@@ -382,7 +382,7 @@ async def fallback_public_sources():
                 try:
                     page_parser = _TextExtractor()
                     page_parser.feed(_fetch_html(url))
-                    title_match = re.search(r"Lotes NIE\\s+(.+?)\\s+(?:hoy|actual)", page_parser.text, re.I)
+                    title_match = re.search(r"Lotes NIE\s+(.+?)\s+(?:hoy|actual)", page_parser.text, re.I)
                     if not title_match:
                         continue
                     page_name = normalize(title_match.group(1))

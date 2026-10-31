@@ -43,18 +43,19 @@ class DirectoryParser(HTMLParser):
         if re.fullmatch(r"h[1-6]",tag):
             self.heading_tag, self.heading = tag, []
         if tag in ("br","p","li","div","section","article","dt","dd"):
-            self.lines.append("\n")
+            self.current["text"] += "\n"
     def handle_endtag(self, tag):
         if self.heading_tag == tag:
             title = re.sub(r"\s+"," "," ".join(self.heading)).strip()
             self._heading(title)
             self.heading_tag = None
         if tag in ("br","p","li","div","section","article","dt","dd"):
-            self.lines.append("\n")
+            self.current["text"] += "\n"
     def handle_data(self, data):
         if self.heading_tag:
             self.heading.append(data)
-        self.lines.append(data)
+        elif self.current:
+            self.current["text"] += data
     def _save(self):
         if self.current:
             self.offices.append(self.current)

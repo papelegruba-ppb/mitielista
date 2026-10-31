@@ -88,6 +88,7 @@ var CITA="https://icp.administracionelectronica.gob.es/icpplus/index.html";
 // Los resultados se cargan exclusivamente desde lotes.json; nunca se muestran datos inventados.
 var $=function(i){return document.getElementById(i)};
 var DATA=null;
+var CATALOG={updated:null,source_url:'',offices:[]};
 function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||"null");localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
 function pd(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2])}
 function biz(a,b){var c=0,d=new Date(a);while(d<b){d.setDate(d.getDate()+1);var w=d.getDay();if(w>0&&w<6)c++}return c}
@@ -118,7 +119,7 @@ function canonicalProv(value){
 }
 function fillProv(){
   var provs=PROVINCIAS_BASE.slice();
-  DATA.d.offices.forEach(function(o){
+  CATALOG.offices.forEach(function(o){
     var p=canonicalProv(o.prov);
     if(p&&provs.indexOf(p)<0)provs.push(p);
   });
@@ -127,13 +128,13 @@ function fillProv(){
 }
 function fillOf(){
   var prov=canonicalProv($("prov").value), sel=$("of");
-  var offices=DATA.d.offices.filter(function(o){return canonicalProv(o.prov)===prov}).sort(function(a,b){return a.name.localeCompare(b.name,"es")});
+  var offices=CATALOG.offices.filter(function(o){return canonicalProv(o.prov)===prov}).sort(function(a,b){return a.name.localeCompare(b.name,"es")});
   sel.innerHTML='<option value="">Elige oficina</option>'+offices.map(function(o){return '<option value="'+esc(o.id)+'">'+esc(o.name)+'</option>'}).join("");
   sel.disabled=!prov||!offices.length;
   var status=$("office-data-status");
   if(!prov){sel.innerHTML='<option value="">Primero elige provincia</option>';status.textContent="Selecciona una provincia para consultar las oficinas.";}
-  else if(!offices.length){sel.innerHTML='<option value="">Todavía no hay lotes detectados</option>';status.textContent="No hay lotes verificables publicados para "+prov+". Esto no significa que no existan oficinas ni que no se estén entregando tarjetas. Puedes consultar la información de la sede oficial: "+CITA;}
-  else{status.textContent="Datos disponibles para "+offices.length+" oficina(s) de "+prov+". Si tu oficina no aparece, todavía no se ha podido verificar su lote."; }
+  else if(!offices.length){sel.innerHTML='<option value="">No hay oficinas TIE en el catálogo</option>';status.textContent="El directorio oficial no devuelve oficinas con servicios TIE para "+prov+". Consulta la sede oficial: "+CITA;}
+  else{status.textContent=offices.length+" oficina(s) con servicios TIE en el directorio oficial. La disponibilidad de lotes se consulta por separado."; }
 }
 
 function show(cls,title,body,nums,acts){
@@ -149,9 +150,12 @@ function check(){
   if(parsed){year=parsed.y;num=parsed.n}
   else if(/^\d{1,6}$/.test(raw)){year=new Date().getFullYear();num=Number(raw)}
   else {show("bad","Revisa tu lote","<p>Escribe el número, por ejemplo 193, o el año y número, por ejemplo 2026/193.</p>");return}
-  var o=DATA.d.offices.filter(function(x){return x.id===officeId&&x.prov===prov})[0];
+  var o=DATA.d.offices.filter(function(x){return x.id===officeId&&canonicalProv(x.prov)===canonicalProv(prov)})[0];
   if(!o){
-    show("wait","Datos automáticos no disponibles","<p>Aún no tenemos el último lote publicado para esta provincia. La consulta se completará cuando el sistema consiga leer los datos oficiales. No hace falta que introduzcas el último lote manualmente.</p>");
+    var office=CATALOG.offices.filter(function(x){return x.id===officeId})[0];
+    var detail=office?'<p><strong>'+esc(office.name)+'</strong><br>'+esc(office.address||"Dirección no disponible")+(office.phone?'<br>Tel. '+esc(office.phone):'')+'</p>':"";
+    var source=office&&office.source_url?'<p><a href="'+esc(office.source_url)+'" target="_blank" rel="noopener noreferrer">Ver directorio oficial de Policía Nacional</a></p>':"";
+    show("wait","Todavía no hay un lote verificable para esta oficina",detail+"<p>La oficina figura en el directorio oficial con servicios relacionados con TIE, pero no se ha encontrado un número de lote verificable. Esto no significa que no esté entregando tarjetas.</p>"+source);
     return;
   }
   var U={y:year,n:num},ref={y:o.y,n:o.n},uTxt=U.y+"/"+U.n,lTxt=ref.y+"/"+ref.n;
@@ -184,19 +188,26 @@ $("prov").innerHTML='<option value="">Elige provincia</option>'+PROVINCIAS_BASE.
 $("of").innerHTML='<option value="">Cargando oficinas…</option>';
 $("of").disabled=true;
 function loadOfficeData(){
-  fetch(BASE+"lotes.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(function(d){
-    if(!d||!Array.isArray(d.offices))throw new Error("Formato de datos inválido");
-    DATA={d:d};fillProv();
-    $("updated-status").textContent=d.updated?"Datos actualizados el "+pd(d.updated).toLocaleDateString("es-ES"):"Fecha de actualización no disponible.";
+  Promise.all([
+    fetch(BASE+"lotes.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("lotes.json HTTP "+r.status);return r.json()}),
+    fetch(BASE+"oficinas.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("oficinas.json HTTP "+r.status);return r.json()}).catch(function(){return {updated:null,source_url:"",offices:[]}})
+  ]).then(function(values){
+    var d=values[0], catalog=values[1];
+    if(!d||!Array.isArray(d.offices))throw new Error("Formato de lotes inválido");
+    DATA={d:d};
+    CATALOG=catalog&&Array.isArray(catalog.offices)?catalog:{updated:null,source_url:"",offices:[]};
+    if(!CATALOG.offices.length)CATALOG.offices=d.offices.map(function(o){return {id:o.id,prov:o.prov,name:o.name,address:"",phone:"",source_url:o.source_url||""}});
+    fillProv();
+    $("updated-status").textContent="Lotes: "+(d.updated?pd(d.updated).toLocaleDateString("es-ES"):"fecha no disponible")+" · Oficinas: "+(CATALOG.updated?pd(CATALOG.updated).toLocaleDateString("es-ES"):"catálogo no disponible");
     var s=store("tie");
     if(window.PRESET){var po=DATA.d.offices.filter(function(x){return x.id===PRESET})[0];if(po){$("prov").value=canonicalProv(po.prov);fillOf();$("of").value=po.id}}
     else if(s){$("prov").value=canonicalProv(s.p||"");fillOf();$("of").value=s.o||"";$("lote").value=s.l||"";}
     if(!$("prov").value)fillOf();
   }).catch(function(){
     DATA={d:{updated:null,offices:[]}};
-    $("of").innerHTML='<option value="">No se pudieron cargar las oficinas; recarga la página</option>';
+    $("of").innerHTML='<option value="">No se pudieron cargar los datos; recarga la página</option>';
     $("of").disabled=true;
-    show("bad","No se pudieron cargar los datos","<p>La lista de provincias está disponible, pero no se ha podido descargar el archivo de oficinas. Comprueba la conexión y recarga la página.</p>");
+    show("bad","No se pudieron cargar los datos","<p>No se ha podido descargar lotes.json. Comprueba la conexión y recarga la página.</p>");
   });
 }
 loadOfficeData();

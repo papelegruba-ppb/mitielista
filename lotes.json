@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-31",
+ "updated": "2026-11-01",
  "offices": [
   {
    "id": "a-coruna-extranjeria-de-a-coruna",
@@ -1351,12 +1351,12 @@
    "name": "Ir al contenido Castellano Castellano Català Gallego Euskara Valencià English Buscar Cerra",
    "y": 2026,
    "n": 144,
-   "checked": "2026-10-31",
+   "checked": "2026-11-01",
    "published": null,
    "source": "Delegación del Gobierno en Melilla",
    "source_url": "https://mptmd.gob.es/portal/delegaciones_gobierno/delegaciones/melilla/proyectos-ci/tabl-n-anuncios-extranjer-a/lotes-de-tarjetas-de-identidad-de-extranjeros-disponibles-en-la-oficina",
    "source_type": "official_public_notice",
-   "source_checked": "2026-10-31T18:43:10.538287+00:00",
+   "source_checked": "2026-11-01T04:21:39.617402+00:00",
    "card_type": "fronterizos",
    "raw_text": "lote 144/2026",
    "confidence": "low",
@@ -1369,6 +1369,10 @@
     [
      "2026-10-31",
      146
+    ],
+    [
+     "2026-11-01",
+     144
     ]
    ]
   },
@@ -1378,12 +1382,12 @@
    "name": "Ir al contenido Castellano Castellano Català Gallego Euskara Valencià English Buscar Cerra",
    "y": 2026,
    "n": 146,
-   "checked": "2026-10-31",
+   "checked": "2026-11-01",
    "published": null,
    "source": "Delegación del Gobierno en Melilla",
    "source_url": "https://mptmd.gob.es/portal/delegaciones_gobierno/delegaciones/melilla/proyectos-ci/tabl-n-anuncios-extranjer-a/lotes-de-tarjetas-de-identidad-de-extranjeros-disponibles-en-la-oficina",
    "source_type": "official_public_notice",
-   "source_checked": "2026-10-31T18:43:10.538338+00:00",
+   "source_checked": "2026-11-01T04:21:39.617450+00:00",
    "card_type": "fronterizos",
    "raw_text": "Lote 146/2026",
    "confidence": "low",
@@ -1395,6 +1399,10 @@
     ],
     [
      "2026-10-31",
+     146
+    ],
+    [
+     "2026-11-01",
      146
     ]
    ]
@@ -1503,12 +1511,12 @@
    "name": "OFICINA DE EXTRANJERÍA DE MURCIA",
    "y": 2026,
    "n": 425,
-   "checked": "2026-10-31",
+   "checked": "2026-11-01",
    "published": "2026-10-30",
    "source": "Extranjería Murcia",
    "source_url": "https://www.extranjeriamurcia.com/lotes-recibidos",
    "source_type": "public_unofficial",
-   "source_checked": "2026-10-31T18:43:10.799617+00:00",
+   "source_checked": "2026-11-01T04:21:39.826827+00:00",
    "card_type": "otros",
    "raw_text": "060 press to zoom 016 press to zoom extranjeria-murcia press to zoom 060 press to zoom 1/4 CITA PREVIA COMPRUEBE SU LOTE FECHAS DE GESTIÓN SOLICITUDES MERCURIO REGULARIZACIÓN EXTRAORDINARIA LOTES DE TIE RECIBIDOS EN LA PROVINCIA DE MURCIA ACTUALIZADO A FECHA 30/10/2026 OFICINA DE EXTRANJERÍA DE MURCIA: HASTA LOTE 425 / 2026 COMISARÍA DE CARTAGENA: HASTA LOTE 199 / 2026 COMISARÍA DE LORCA: HASTA LOTE 200 / 2026 COMISARÍA DE MOLINA DE SEGURA: HASTA LOTE 185 / 2026 COMISARÍA DE YECLA: HASTA LOTE 90",
    "confidence": "low",
